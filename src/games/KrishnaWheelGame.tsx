@@ -359,6 +359,7 @@ const KrishnaWheelGame: React.FC<KrishnaWheelGameProps> = ({ onBack }) => {
 
   return (
     <div className="krishna-wheel-container">
+      <button onClick={onBack} className="back-btn-corner">← Back</button>
       <div className="wheel-section">
         <canvas ref={canvasRef} className="wheel-canvas" onClick={spin} />
       </div>
