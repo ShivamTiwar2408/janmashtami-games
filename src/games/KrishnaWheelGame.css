@@ -12,8 +12,8 @@
 }
 
 .wheel-canvas {
-  width: min(98vh, 48vw);
-  height: min(98vh, 48vw);
+  width: min(100vh, 100vw);
+  height: min(100vh, 100vw);
   cursor: pointer;
   border-radius: 50%;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);

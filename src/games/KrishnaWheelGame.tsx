@@ -167,8 +167,8 @@ const KrishnaWheelGame: React.FC<KrishnaWheelGameProps> = ({ onBack }) => {
 
   const drawMarker = useCallback((ctx: CanvasRenderingContext2D, centerX: number, centerY: number, radius: number) => {
     // Draw a large black triangular pointer on the right side (like original)
-    const markerSize = Math.min(60, radius * 0.15); // Responsive but much larger
-    const markerX = centerX + radius + 5;
+    const markerSize = radius * 0.25; // Responsive but much larger
+    const markerX = centerX + radius - 20;
     const markerY = centerY;
 
     // Draw marker shadow first
@@ -188,22 +188,6 @@ const KrishnaWheelGame: React.FC<KrishnaWheelGameProps> = ({ onBack }) => {
     // Fill with solid black
     ctx.fillStyle = '#000000';
     ctx.fill();
-
-    // Add thick white border for maximum visibility
-    ctx.strokeStyle = '#FFFFFF';
-    ctx.lineWidth = 8;
-    ctx.stroke();
-
-    ctx.restore();
-
-    // Add a larger circle at the tip for better visual connection
-    ctx.beginPath();
-    ctx.arc(markerX, markerY, 15, 0, 2 * Math.PI);
-    ctx.fillStyle = '#000000';
-    ctx.fill();
-    ctx.strokeStyle = '#FFFFFF';
-    ctx.lineWidth = 5;
-    ctx.stroke();
   }, []);
 
   const drawWheel = useCallback((ctx: CanvasRenderingContext2D, size: number) => {
