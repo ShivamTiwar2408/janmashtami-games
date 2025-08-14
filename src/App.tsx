@@ -69,7 +69,7 @@ function HomePage() {
               <div 
                 className="game-visual krishna-visual"
                 style={{
-                  backgroundImage: `url('/BG_Krishna.jpg')`
+                  backgroundImage: `url('/wheel_game_card.png')`
                 }}
               >
               </div>
