@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import { Analytics } from '@vercel/analytics/react';
 import './App.css';
 import KrishnaWheelGame from './games/KrishnaWheelGame';
 import YudhishtiraQuestGame from './games/YudhishtiraQuestGame';
@@ -173,6 +174,7 @@ function App() {
         <Route path="/krishna-wheel" element={<KrishnaWheelGamePage />} />
         <Route path="/yudhishtira-quest" element={<YudhishtiraQuestGamePage />} />
       </Routes>
+      <Analytics />
     </Router>
   );
 }
