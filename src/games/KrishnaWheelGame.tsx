@@ -13,9 +13,9 @@ interface Message {
 const KrishnaWheelGame: React.FC<KrishnaWheelGameProps> = ({ onBack }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isSpinning, setIsSpinning] = useState(false);
-  const [currentMessage, setCurrentMessage] = useState<Message | null>(null);
   const [currentRotation, setCurrentRotation] = useState(0);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [currentMessage, setCurrentMessage] = useState<Message | null>(null);
   const krishnaImageRef = useRef<HTMLImageElement | null>(null);
 
   const messages: Message[] = [
@@ -69,8 +69,24 @@ const KrishnaWheelGame: React.FC<KrishnaWheelGameProps> = ({ onBack }) => {
     }
   ];
 
+  // Shorter versions for wheel display
+  const wheelTexts = [
+    "Right to duty, not fruits",
+    "Soul is eternal",
+    "Own dharma is better",
+    "Mind can be controlled",
+    "Wise see true action",
+    "Offer all to Divine",
+    "I am same to all",
+    "Surrender unto Me",
+    "I reside in devotees",
+    "Steady mind in meditation",
+    "Rise with own efforts",
+    "I am Time itself"
+  ];
+
   const colors = [
-    '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', 
+    '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4',
     '#FFEAA7', '#DDA0DD', '#98D8C8', '#F7DC6F',
     '#BB8FCE', '#85C1E9', '#F8C471', '#82E0AA'
   ];
@@ -82,39 +98,39 @@ const KrishnaWheelGame: React.FC<KrishnaWheelGameProps> = ({ onBack }) => {
   ];
 
   const drawTextOnArc = useCallback((
-    ctx: CanvasRenderingContext2D, 
-    text: string, 
-    angle: number, 
-    radius: number, 
-    centerX: number, 
+    ctx: CanvasRenderingContext2D,
+    text: string,
+    angle: number,
+    radius: number,
+    centerX: number,
     centerY: number
   ) => {
     ctx.save();
-    
+
     const x = centerX + Math.cos(angle) * radius;
     const y = centerY + Math.sin(angle) * radius;
-    
+
     ctx.translate(x, y);
     ctx.rotate(angle + Math.PI / 2);
-    
+
     ctx.strokeText(text, 0, 0);
     ctx.fillText(text, 0, 0);
-    
+
     ctx.restore();
   }, []);
 
   const drawTextAlongRadius = useCallback((
-    ctx: CanvasRenderingContext2D, 
-    text: string, 
-    startAngle: number, 
-    endAngle: number, 
-    centerX: number, 
-    centerY: number, 
+    ctx: CanvasRenderingContext2D,
+    text: string,
+    startAngle: number,
+    endAngle: number,
+    centerX: number,
+    centerY: number,
     radius: number
   ) => {
     const midAngle = (startAngle + endAngle) / 2;
     const words = text.split(' ');
-    
+
     const fontSize = Math.max(16, Math.min(20, radius / 25));
     ctx.font = `bold ${fontSize}px Arial, sans-serif`;
     ctx.fillStyle = '#FFFFFF';
@@ -122,28 +138,28 @@ const KrishnaWheelGame: React.FC<KrishnaWheelGameProps> = ({ onBack }) => {
     ctx.lineWidth = 4;
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    
+
     let currentRadius = radius * 0.85;
     const radiusStep = fontSize + 4;
     const maxRadius = radius * 0.4;
-    
+
     let currentLine = '';
     const maxCharsPerLine = Math.floor((radius * 0.25) / (fontSize * 0.5));
-    
+
     for (let i = 0; i < words.length; i++) {
       const testLine = currentLine + (currentLine ? ' ' : '') + words[i];
-      
+
       if (testLine.length > maxCharsPerLine && currentLine) {
         drawTextOnArc(ctx, currentLine, midAngle, currentRadius, centerX, centerY);
         currentLine = words[i];
         currentRadius -= radiusStep;
-        
+
         if (currentRadius < maxRadius) break;
       } else {
         currentLine = testLine;
       }
     }
-    
+
     if (currentLine && currentRadius >= maxRadius) {
       drawTextOnArc(ctx, currentLine, midAngle, currentRadius, centerX, centerY);
     }
@@ -154,32 +170,32 @@ const KrishnaWheelGame: React.FC<KrishnaWheelGameProps> = ({ onBack }) => {
     const markerSize = Math.min(60, radius * 0.15); // Responsive but much larger
     const markerX = centerX + radius + 5;
     const markerY = centerY;
-    
+
     // Draw marker shadow first
     ctx.save();
     ctx.shadowColor = 'rgba(0, 0, 0, 0.8)';
     ctx.shadowBlur = 15;
     ctx.shadowOffsetX = 5;
     ctx.shadowOffsetY = 5;
-    
+
     // Draw the large triangular pointer pointing left towards the wheel
     ctx.beginPath();
     ctx.moveTo(markerX, markerY); // Sharp point of the triangle (pointing at wheel)
-    ctx.lineTo(markerX + markerSize, markerY - markerSize/2); // Top corner
-    ctx.lineTo(markerX + markerSize, markerY + markerSize/2); // Bottom corner
+    ctx.lineTo(markerX + markerSize, markerY - markerSize / 2); // Top corner
+    ctx.lineTo(markerX + markerSize, markerY + markerSize / 2); // Bottom corner
     ctx.closePath();
-    
+
     // Fill with solid black
     ctx.fillStyle = '#000000';
     ctx.fill();
-    
+
     // Add thick white border for maximum visibility
     ctx.strokeStyle = '#FFFFFF';
     ctx.lineWidth = 8;
     ctx.stroke();
-    
+
     ctx.restore();
-    
+
     // Add a larger circle at the tip for better visual connection
     ctx.beginPath();
     ctx.arc(markerX, markerY, 15, 0, 2 * Math.PI);
@@ -196,19 +212,19 @@ const KrishnaWheelGame: React.FC<KrishnaWheelGameProps> = ({ onBack }) => {
     const radius = (size / 2) - 8;
 
     ctx.clearRect(0, 0, size, size);
-    
+
     // Fill background with white
     ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, size, size);
-    
+
     const segments = messages.length;
     const anglePerSegment = (2 * Math.PI) / segments;
-    
+
     // Draw segments with gradients
     for (let i = 0; i < segments; i++) {
       const startAngle = (i * anglePerSegment) + currentRotation;
       const endAngle = ((i + 1) * anglePerSegment) + currentRotation;
-      
+
       // Create gradient for each segment
       const gradient = ctx.createRadialGradient(
         centerX, centerY, 80,
@@ -216,7 +232,7 @@ const KrishnaWheelGame: React.FC<KrishnaWheelGameProps> = ({ onBack }) => {
       );
       gradient.addColorStop(0, colors[i]);
       gradient.addColorStop(1, darkColors[i]);
-      
+
       // Draw segment
       ctx.beginPath();
       ctx.moveTo(centerX, centerY);
@@ -224,40 +240,40 @@ const KrishnaWheelGame: React.FC<KrishnaWheelGameProps> = ({ onBack }) => {
       ctx.closePath();
       ctx.fillStyle = gradient;
       ctx.fill();
-      
+
       // Add segment border
       ctx.strokeStyle = '#FFFFFF';
       ctx.lineWidth = 2;
       ctx.stroke();
-      
+
       // Draw message text along the radius
-      drawTextAlongRadius(ctx, messages[i].text, startAngle, endAngle, centerX, centerY, radius);
+      drawTextAlongRadius(ctx, wheelTexts[i], startAngle, endAngle, centerX, centerY, radius);
     }
-    
+
     // Draw center circle with white background
     ctx.beginPath();
     ctx.arc(centerX, centerY, 80, 0, 2 * Math.PI);
     ctx.fillStyle = 'white';
     ctx.fill();
-    
+
     // Draw Krishna image in center if loaded
     if (imageLoaded && krishnaImageRef.current) {
       ctx.save();
       ctx.beginPath();
       ctx.arc(centerX, centerY, 75, 0, 2 * Math.PI);
       ctx.clip();
-      
+
       const imageSize = 150;
       ctx.drawImage(
         krishnaImageRef.current,
-        centerX - imageSize/2,
-        centerY - imageSize/2,
+        centerX - imageSize / 2,
+        centerY - imageSize / 2,
         imageSize,
         imageSize
       );
       ctx.restore();
     }
-    
+
     // Draw marker on the right side
     drawMarker(ctx, centerX, centerY, radius);
   }, [currentRotation, imageLoaded, messages, colors, darkColors, drawTextAlongRadius, drawMarker]);
@@ -271,23 +287,22 @@ const KrishnaWheelGame: React.FC<KrishnaWheelGameProps> = ({ onBack }) => {
       if (!container) return;
 
       const containerRect = container.getBoundingClientRect();
-      const size = Math.max(300, Math.min(containerRect.width - 30, containerRect.height - 30)); // Ensure minimum size
-      
+      // Make the wheel as large as possible - use the minimum of container width and height
+      // Leave minimal margin for visual breathing room
+      const size = Math.min(containerRect.width - 10, containerRect.height - 10);
+
       console.log('Canvas setup - Container size:', containerRect, 'Canvas size:', size);
-      
+
       const dpr = window.devicePixelRatio || 1;
       canvas.width = size * dpr;
       canvas.height = size * dpr;
       canvas.style.width = size + 'px';
       canvas.style.height = size + 'px';
-      
+
       const ctx = canvas.getContext('2d');
       if (ctx) {
         ctx.scale(dpr, dpr);
         console.log('Drawing wheel with size:', size);
-        
-
-        
         drawWheel(ctx, size);
       }
     };
@@ -302,50 +317,48 @@ const KrishnaWheelGame: React.FC<KrishnaWheelGameProps> = ({ onBack }) => {
 
   const spin = () => {
     if (isSpinning) return;
-    
+
     setIsSpinning(true);
-    setCurrentMessage(null);
-    
+
     const segmentAngle = (2 * Math.PI) / messages.length;
     const baseSpins = 4 + Math.random() * 3;
     const randomSegment = Math.floor(Math.random() * messages.length);
     const targetSegmentCenter = randomSegment * segmentAngle + (segmentAngle / 2);
     const finalRotation = currentRotation + (baseSpins * 2 * Math.PI) + targetSegmentCenter;
-    
+
     const duration = 3000;
     const startTime = Date.now();
     const startRotation = currentRotation;
-    
+
     const animate = () => {
       const elapsed = Date.now() - startTime;
       const progress = Math.min(elapsed / duration, 1);
       const easeProgress = 1 - Math.pow(1 - progress, 6);
-      
+
       setCurrentRotation(startRotation + (finalRotation - startRotation) * easeProgress);
-      
+
       if (progress < 1) {
         requestAnimationFrame(animate);
       } else {
         setCurrentRotation(finalRotation);
-        stopSpin(finalRotation);
+        setIsSpinning(false);
+        
+        // Calculate which segment the marker is actually pointing to
+        // The marker is at 0 degrees (right side), so we need to find which segment is at that position
+        const normalizedRotation = finalRotation % (2 * Math.PI);
+        // Since segments start at 0 and go counter-clockwise, and marker points right (0 degrees)
+        // We need to find which segment is currently at 0 degrees position
+        const markerAngle = (2 * Math.PI - normalizedRotation) % (2 * Math.PI);
+        const winningSegmentIndex = Math.floor(markerAngle / segmentAngle) % messages.length;
+        
+        setCurrentMessage(messages[winningSegmentIndex]);
       }
     };
-    
+
     animate();
   };
 
-  const stopSpin = (finalRotation: number) => {
-    setIsSpinning(false);
-    
-    const normalizedRotation = (finalRotation % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
-    const segmentAngle = (2 * Math.PI) / messages.length;
-    const markerAngle = (0) - normalizedRotation;
-    const adjustedAngle = (markerAngle + 2 * Math.PI) % (2 * Math.PI);
-    const selectedSegment = Math.floor(adjustedAngle / segmentAngle);
-    const messageIndex = selectedSegment % messages.length;
-    
-    setCurrentMessage(messages[messageIndex]);
-  };
+
 
   useEffect(() => {
     const img = new Image();
@@ -361,58 +374,42 @@ const KrishnaWheelGame: React.FC<KrishnaWheelGameProps> = ({ onBack }) => {
   }, []);
 
   return (
-    <div className="krishna-wheel-game" style={{
-      backgroundImage: `linear-gradient(135deg, rgba(102, 126, 234, 0.8) 0%, rgba(118, 75, 162, 0.8) 100%), url('/BG_Krishna.jpg')`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat'
-    }}>
-      <button onClick={onBack} className="back-btn-corner">← Back</button>
-      
-      <div className="game-content">
-        <div className="wheel-container">
-          <canvas ref={canvasRef} className="wheel-canvas" />
+    <div className="krishna-wheel-container">
+      <div className="wheel-section">
+        <canvas ref={canvasRef} className="wheel-canvas" onClick={spin} />
+      </div>
+      <div className="right-section">
+        <div className="game-intro">
+          <h2>🎡 Krishna's Wheel of Wisdom</h2>
+          <p>
+            Spin the sacred wheel to receive divine guidance from Lord Krishna's teachings in the Bhagavad Gita. 
+            Each spin reveals timeless wisdom to guide your spiritual journey.
+          </p>
         </div>
 
-        <div className="game-controls">
-          <div className="game-intro">
-            <h1>Krishna's Wisdom Wheel</h1>
-            <p>Welcome to the divine wheel of Lord Krishna's eternal wisdom. Each spin reveals a sacred teaching from the Bhagavad Gita that will guide you on your spiritual journey.</p>
-            <p>Click the spin button below to receive Krishna's divine guidance for your life's path.</p>
-          </div>
-          
-          <div className="spin-controls">
-            <button 
-              onClick={spin} 
-              disabled={isSpinning}
-              className={`spin-button ${isSpinning ? 'spinning' : ''}`}
-            >
-              {isSpinning ? 'SPINNING...' : 'SPIN THE WHEEL'}
-            </button>
-          </div>
+        <button 
+          className="spin-button" 
+          onClick={spin} 
+          disabled={isSpinning}
+        >
+          {isSpinning ? '🌀 Spinning...' : '✨ Spin the Wheel'}
+        </button>
 
+        <div className="message-display">
           {currentMessage ? (
-            <div className="message-display active-message">
-              <h3>Krishna's Message:</h3>
-              <div className="message-content">
-                <div className="krishna-image-container large">
-                  <img src="/BG_Krishna.jpg" alt="Lord Krishna" className="krishna-message-image" />
-                </div>
-                <div className="krishna-says">Lord Krishna says:</div>
-                <div className="message-text">"{currentMessage.text}"</div>
-                <div className="message-reference">— {currentMessage.reference}</div>
-              </div>
-            </div>
+            <>
+              <img 
+                src="/BG_Krishna.jpg" 
+                alt="Lord Krishna" 
+                className="krishna-image"
+              />
+              <div className="message-text">"{currentMessage.text}"</div>
+              <div className="message-reference">- {currentMessage.reference}</div>
+            </>
           ) : (
-            <div className="message-display">
-              <h3>Krishna's Message:</h3>
-              <div className="message-content">
-                <div className="krishna-image-container large">
-                  <img src="/BG_Krishna.jpg" alt="Lord Krishna" className="krishna-message-image" />
-                </div>
-                <div className="krishna-says">Lord Krishna says:</div>
-                <div className="message-text">Click SPIN to receive Krishna's wisdom</div>
-              </div>
+            <div style={{ opacity: 0.7 }}>
+              <div>🙏</div>
+              <div style={{ marginTop: '1rem' }}>Click the wheel or button above to receive Krishna's wisdom</div>
             </div>
           )}
         </div>
