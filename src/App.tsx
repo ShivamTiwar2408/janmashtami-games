@@ -2,8 +2,8 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { Analytics } from '@vercel/analytics/react';
 import './App.css';
-import KrishnaWheelGame from './games/KrishnaWheelGame';
-import YudhishtiraQuestGame from './games/YudhishtiraQuestGame';
+import KrishnaWheelGame from './games/krishna-wheel';
+import YudhishtiraQuestGame from './games/yudhishtira-quest';
 
 function KrishnaWheelGamePage() {
   const navigate = useNavigate();
