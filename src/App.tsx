@@ -4,6 +4,7 @@ import { Analytics } from '@vercel/analytics/react';
 import './App.css';
 import KrishnaWheelGame from './games/krishna-wheel';
 import YudhishtiraQuestGame from './games/yudhishtira-quest';
+import ArrangeGame from './games/arrange';
 
 function KrishnaWheelGamePage() {
   const navigate = useNavigate();
@@ -13,6 +14,11 @@ function KrishnaWheelGamePage() {
 function YudhishtiraQuestGamePage() {
   const navigate = useNavigate();
   return <YudhishtiraQuestGame onBack={() => navigate('/')} />;
+}
+
+function ArrangeGamePage() {
+  const navigate = useNavigate();
+  return <ArrangeGame onBack={() => navigate('/')} />;
 }
 
 function HomePage() {
@@ -53,7 +59,7 @@ function HomePage() {
             <span className="hero-subtitle">with Divine Games & Wisdom</span>
           </h2>
           <p className="hero-description">
-            Immerse yourself in the joy of Krishna's birthday with interactive games, 
+            Immerse yourself in the joy of Krishna's birthday with interactive games,
             sacred wisdom, and festive celebrations designed for the whole family.
           </p>
         </div>
@@ -63,11 +69,11 @@ function HomePage() {
         <div className="container">
           <h2 className="section-title">Choose Your Divine Adventure</h2>
           <p className="section-subtitle">Experience Krishna's wisdom through interactive gameplay</p>
-          
+
           <div className="games-grid">
             <div className="game-card featured krishna-card" onClick={() => navigate('/krishna-wheel')}>
               <div className="game-badge">Most Popular</div>
-              <div 
+              <div
                 className="game-visual krishna-visual"
                 style={{
                   backgroundImage: `url('/wheel_game_card.png')`
@@ -92,7 +98,7 @@ function HomePage() {
             </div>
 
             <div className="game-card yudhishtira-card" onClick={() => navigate('/yudhishtira-quest')}>
-              <div 
+              <div
                 className="game-visual yudhishtira-visual"
                 style={{
                   backgroundImage: `url('/yudhistir_quest_BG.png')`
@@ -115,6 +121,31 @@ function HomePage() {
                 </div>
               </div>
             </div>
+
+            <div className="game-card arrange-card" onClick={() => navigate('/arrange')}>
+              <div
+                className="game-visual arrange-visual"
+                style={{
+                  backgroundImage: `url('/krishna_lila_landing.png')`
+                }}
+              >
+              </div>
+              <div className="game-content">
+                <h3 className="game-title">Krishna's Story Arrange</h3>
+                <p className="game-description">
+                  Arrange the story tiles in chronological order to tell Krishna's divine birth story within 30 seconds.
+                </p>
+                <div className="game-features">
+                  <span className="feature">🧩 Puzzle Game</span>
+                  <span className="feature">📖 Story Mode</span>
+                  <span className="feature">⏰ 30 Second Timer</span>
+                </div>
+                <div className="game-tags">
+                  <span className="tag puzzle">PUZZLE</span>
+                  <span className="tag medium">MEDIUM</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -125,7 +156,7 @@ function HomePage() {
             <div className="about-text">
               <h3>About Janmashtami Games</h3>
               <p>
-                Celebrate the divine birth of Lord Krishna through interactive games that combine 
+                Celebrate the divine birth of Lord Krishna through interactive games that combine
                 entertainment with spiritual learning. Perfect for families and devotees of all ages.
               </p>
             </div>
@@ -173,6 +204,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/krishna-wheel" element={<KrishnaWheelGamePage />} />
         <Route path="/yudhishtira-quest" element={<YudhishtiraQuestGamePage />} />
+        <Route path="/arrange" element={<ArrangeGamePage />} />
       </Routes>
       <Analytics />
     </Router>
