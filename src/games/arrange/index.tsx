@@ -13,6 +13,15 @@ interface LilaStory {
     order: number;
 }
 
+type GameCategory = 'krishna-lila' | 'mahabharat' | 'gaur-lila';
+
+interface GameCategoryData {
+    id: GameCategory;
+    title: string;
+    subtitle: string;
+    stories: LilaStory[];
+}
+
 const krishnaLilaStories: LilaStory[] = [
     { id: 'birth', image: '/krishna_lila/krishna_birth.png', title: 'Krishna\'s Birth', order: 1 },
     { id: 'vasudeva', image: '/krishna_lila/vasude_carries_krishna.png', title: 'Vasudeva Carries Krishna', order: 2 },
@@ -25,12 +34,57 @@ const krishnaLilaStories: LilaStory[] = [
     { id: 'leaves', image: '/krishna_lila/krishna_leaves_vrindavan.png', title: 'Leaving Vrindavan', order: 9 }
 ];
 
+const mahabharatStories: LilaStory[] = [
+    { id: 'birth-pandavas', image: '/krishna_with_flute.jpg', title: 'Birth of Pandavas', order: 1 },
+    { id: 'education', image: '/krishna_with_flute.jpg', title: 'Education at Hastinapur', order: 2 },
+    { id: 'tournament', image: '/krishna_with_flute.jpg', title: 'Tournament Display', order: 3 },
+    { id: 'marriage-draupadi', image: '/krishna_with_flute.jpg', title: 'Marriage to Draupadi', order: 4 },
+    { id: 'dice-game', image: '/krishna_with_flute.jpg', title: 'The Dice Game', order: 5 },
+    { id: 'exile', image: '/krishna_with_flute.jpg', title: 'Forest Exile', order: 6 },
+    { id: 'kurukshetra', image: '/krishna_lila/krishna_speaks_gita.png', title: 'Kurukshetra War', order: 7 },
+    { id: 'victory', image: '/krishna_with_flute.jpg', title: 'Victory of Dharma', order: 8 }
+];
+
+const gaurLilaStories: LilaStory[] = [
+    { id: 'birth-chaitanya', image: '/krishna_with_flute.jpg', title: 'Birth of Chaitanya', order: 1 },
+    { id: 'childhood', image: '/krishna_with_flute.jpg', title: 'Divine Childhood', order: 2 },
+    { id: 'student-life', image: '/krishna_with_flute.jpg', title: 'Student Life', order: 3 },
+    { id: 'sankirtan', image: '/krishna_with_flute.jpg', title: 'Starting Sankirtan', order: 4 },
+    { id: 'sannyasa', image: '/krishna_with_flute.jpg', title: 'Taking Sannyasa', order: 5 },
+    { id: 'vrindavan', image: '/krishna_with_flute.jpg', title: 'Visiting Vrindavan', order: 6 },
+    { id: 'jagannath', image: '/krishna_with_flute.jpg', title: 'Jagannath Puri', order: 7 },
+    { id: 'final-lila', image: '/krishna_with_flute.jpg', title: 'Final Pastimes', order: 8 }
+];
+
+const gameCategories: GameCategoryData[] = [
+    {
+        id: 'krishna-lila',
+        title: 'Krishna\'s Life Story',
+        subtitle: 'Arrange the tiles in chronological order',
+        stories: krishnaLilaStories
+    },
+    {
+        id: 'mahabharat',
+        title: 'Mahabharat Epic',
+        subtitle: 'Arrange the great epic events in order',
+        stories: mahabharatStories
+    },
+    {
+        id: 'gaur-lila',
+        title: 'Gaur Lila',
+        subtitle: 'Arrange Chaitanya Mahaprabhu\'s pastimes',
+        stories: gaurLilaStories
+    }
+];
+
 const ArrangeGame: React.FC<ArrangeGameProps> = ({ onBack }) => {
     const gridRef = useRef<HTMLDivElement>(null);
     const muuriRef = useRef<Muuri | null>(null);
-    const [gameState, setGameState] = useState<'playing' | 'won' | 'lost'>('playing');
+    const [gameState, setGameState] = useState<'selecting' | 'playing' | 'won' | 'lost'>('selecting');
     const [timeLeft, setTimeLeft] = useState(60);
     const [shuffledStories, setShuffledStories] = useState<LilaStory[]>([]);
+
+    const [currentCategoryData, setCurrentCategoryData] = useState<GameCategoryData>(gameCategories[0]);
 
     // Shuffle array function
     const shuffleArray = (array: LilaStory[]) => {
@@ -42,11 +96,25 @@ const ArrangeGame: React.FC<ArrangeGameProps> = ({ onBack }) => {
         return shuffled;
     };
 
-    // Initialize game
+    // Handle category selection
+    const handleCategorySelect = (categoryId: GameCategory) => {
+        const categoryData = gameCategories.find(cat => cat.id === categoryId);
+        if (categoryData) {
+            setCurrentCategoryData(categoryData);
+            const shuffled = shuffleArray(categoryData.stories);
+            setShuffledStories(shuffled);
+            setGameState('playing');
+            setTimeLeft(60);
+        }
+    };
+
+    // Initialize game when category changes
     useEffect(() => {
-        const shuffled = shuffleArray(krishnaLilaStories);
-        setShuffledStories(shuffled);
-    }, []);
+        if (gameState === 'playing' && currentCategoryData) {
+            const shuffled = shuffleArray(currentCategoryData.stories);
+            setShuffledStories(shuffled);
+        }
+    }, [currentCategoryData, gameState]);
 
     // Initialize Muuri grid
     useEffect(() => {
@@ -99,7 +167,7 @@ const ArrangeGame: React.FC<ArrangeGameProps> = ({ onBack }) => {
 
     // Check win condition
     const checkWinCondition = React.useCallback(() => {
-        if (!muuriRef.current) return;
+        if (!muuriRef.current || !currentCategoryData) return;
 
         const items = muuriRef.current.getItems();
         const currentOrder = items.map(item => {
@@ -107,7 +175,7 @@ const ArrangeGame: React.FC<ArrangeGameProps> = ({ onBack }) => {
             return element?.getAttribute('data-id');
         });
 
-        const correctOrder = krishnaLilaStories
+        const correctOrder = currentCategoryData.stories
             .sort((a, b) => a.order - b.order)
             .map(story => story.id);
 
@@ -116,7 +184,7 @@ const ArrangeGame: React.FC<ArrangeGameProps> = ({ onBack }) => {
         if (isCorrect && gameState === 'playing') {
             setGameState('won');
         }
-    }, [gameState]);
+    }, [gameState, currentCategoryData]);
 
     // Add event listener for drag end
     useEffect(() => {
@@ -138,8 +206,16 @@ const ArrangeGame: React.FC<ArrangeGameProps> = ({ onBack }) => {
     const resetGame = () => {
         setGameState('playing');
         setTimeLeft(60);
-        const shuffled = shuffleArray(krishnaLilaStories);
-        setShuffledStories(shuffled);
+        if (currentCategoryData) {
+            const shuffled = shuffleArray(currentCategoryData.stories);
+            setShuffledStories(shuffled);
+        }
+    };
+
+    const goBackToSelection = () => {
+        setGameState('selecting');
+        setTimeLeft(60);
+        setShuffledStories([]);
     };
 
     const formatTime = (seconds: number) => {
@@ -150,83 +226,148 @@ const ArrangeGame: React.FC<ArrangeGameProps> = ({ onBack }) => {
 
     return (
         <div className="arrange-game">
-            <div className="game-header">
-                <button className="back-button" onClick={onBack}>
-                    ← Back to Games
-                </button>
-                <div className="game-info">
-                    <h1>Krishna's Life Story</h1>
-                    <p>Arrange the tiles in chronological order</p>
-                </div>
-                <div className="game-stats">
-                    <div className="timer">
-                        Time: {formatTime(timeLeft)}
+            <button
+                onClick={gameState === 'selecting' ? onBack : goBackToSelection}
+                className={`back-btn-corner ${gameState === 'won' || gameState === 'lost' ? 'hidden' : ''}`}
+            >
+                ← {gameState === 'selecting' ? 'Back' : 'Categories'}
+            </button>
+
+            {gameState === 'selecting' && (
+                <div className="category-selection">
+                    <div className="selection-header">
+                        <h1 className="selection-title">Choose Your Adventure</h1>
+                        <p className="selection-subtitle">Select a story to arrange in chronological order</p>
                     </div>
-                </div>
-            </div>
-
-            <div className="game-content">
-                <div className="instructions">
-                    <p>Drag and drop the tiles to arrange Krishna's life events in the correct chronological order!</p>
-                </div>
-
-                <div className="grid-container">
-                    <div ref={gridRef} className="muuri-grid">
-                        {shuffledStories.map((story) => (
+                    <div className="category-grid">
+                        {gameCategories.map((category) => (
                             <div
-                                key={story.id}
-                                className="tile"
-                                data-id={story.id}
+                                key={category.id}
+                                className="category-card"
+                                onClick={() => handleCategorySelect(category.id)}
                             >
-                                <div className="tile-content">
-                                    <img
-                                        src={story.image}
-                                        alt={story.title}
-                                        onError={(e) => {
-                                            e.currentTarget.src = '/krishna_with_flute.jpg';
-                                        }}
-                                    />
-                                    <div className="tile-title">{story.title}</div>
+                                <div className="category-content">
+                                    <h3 className="category-title">{category.title}</h3>
+                                    <p className="category-description">{category.subtitle}</p>
+                                    <div className="category-count">
+                                        {category.stories.length} Events
+                                    </div>
                                 </div>
                             </div>
                         ))}
                     </div>
                 </div>
+            )}
 
-                {gameState === 'won' && (
-                    <div className="game-overlay win-overlay">
-                        <div className="overlay-content">
-                            <h2>🎉 Congratulations!</h2>
-                            <p>You've successfully arranged Krishna's life story!</p>
-                            <div className="overlay-buttons">
-                                <button onClick={resetGame} className="play-again-btn">
-                                    Play Again
-                                </button>
-                                <button onClick={onBack} className="back-btn">
-                                    Back to Games
-                                </button>
+            {gameState !== 'selecting' && (
+                <>
+                    <div className="game-header">
+                        <div className="header-top">
+                            <h1 className="game-title">{currentCategoryData.title}</h1>
+                            <div className="timer-section">
+                                <div className={`timer ${timeLeft <= 10 ? 'warning' : ''}`}>
+                                    {formatTime(timeLeft)}
+                                </div>
                             </div>
                         </div>
+                        <p className="game-subtitle">{currentCategoryData.subtitle}</p>
                     </div>
-                )}
+                </>
+            )}
 
-                {gameState === 'lost' && (
-                    <div className="game-overlay lose-overlay">
-                        <div className="overlay-content">
-                            <h2>⏰ Time's Up!</h2>
-                            <p>Don't worry, Krishna's story is eternal. Try again!</p>
-                            <div className="overlay-buttons">
-                                <button onClick={resetGame} className="play-again-btn">
-                                    Try Again
-                                </button>
-                                <button onClick={onBack} className="back-btn">
-                                    Back to Games
-                                </button>
-                            </div>
+            {gameState === 'playing' && (
+                <div className="game-content">
+                    <div className="instructions">
+                        <p>Drag and drop the tiles to arrange the events in the correct chronological order!</p>
+                    </div>
+
+                    <div className="grid-container">
+                        <div ref={gridRef} className="muuri-grid">
+                            {shuffledStories.map((story) => (
+                                <div
+                                    key={story.id}
+                                    className="tile"
+                                    data-id={story.id}
+                                >
+                                    <div className="tile-content">
+                                        <img
+                                            src={story.image}
+                                            alt={story.title}
+                                            onError={(e) => {
+                                                e.currentTarget.src = '/krishna_with_flute.jpg';
+                                            }}
+                                        />
+                                        <div className="tile-title">{story.title}</div>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
-                )}
-            </div>
+                </div>
+            )}
+
+            {gameState === 'won' && (
+                <div className="game-overlay win-overlay">
+                    <div className="celebration-particles">
+                        {Array.from({ length: 100 }, (_, i) => (
+                            <div key={i} className={`particle particle-${i % 8} direction-${i % 4}`}>
+                                {['🎉', '✨', '🌟', '🎊', '💫', '🏆', '🎈', '🌈'][i % 8]}
+                            </div>
+                        ))}
+                    </div>
+                    <div className="fireworks">
+                        {Array.from({ length: 20 }, (_, i) => (
+                            <div key={i} className={`firework firework-${i % 4}`}>
+                                <div className="explosion">
+                                    {Array.from({ length: 12 }, (_, j) => (
+                                        <div key={j} className={`spark spark-${j}`}></div>
+                                    ))}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    <div className="overlay-content">
+                        <div className="victory-icon">🏆</div>
+                        <h2>Congratulations!</h2>
+                        <p className="victory-message">You've successfully arranged the {currentCategoryData.title.toLowerCase()}!</p>
+                        <div className="victory-stats">
+                            <div className="stat">
+                                <span className="stat-value">{60 - timeLeft}s</span>
+                                <span className="stat-label">Time Taken</span>
+                            </div>
+                            <div className="stat">
+                                <span className="stat-value">Perfect!</span>
+                                <span className="stat-label">Accuracy</span>
+                            </div>
+                        </div>
+                        <div className="overlay-buttons">
+                            <button onClick={resetGame} className="play-again-btn">
+                                🎮 Play Again
+                            </button>
+                            <button onClick={goBackToSelection} className="back-btn">
+                                📚 Choose Another Story
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {gameState === 'lost' && (
+                <div className="game-overlay lose-overlay">
+                    <div className="overlay-content">
+                        <h2>⏰ Time's Up!</h2>
+                        <p>Don't worry, these stories are eternal. Try again!</p>
+                        <div className="overlay-buttons">
+                            <button onClick={resetGame} className="play-again-btn">
+                                Try Again
+                            </button>
+                            <button onClick={goBackToSelection} className="back-btn">
+                                📚 Choose Another Story
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
