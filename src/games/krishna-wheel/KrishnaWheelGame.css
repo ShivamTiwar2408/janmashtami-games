@@ -97,31 +97,75 @@
 .message-display {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 15px;
-  padding: 1.5rem;
+  padding: 2rem;
   text-align: center;
   backdrop-filter: blur(10px);
-  min-height: 200px;
+  min-height: 350px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Keyframe animations for Krishna image */
+@keyframes krishnaAppear {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) translateY(50px);
+    filter: blur(10px);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1) translateY(-10px);
+    filter: blur(2px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes krishnaGlow {
+  0%, 100% {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 0 rgba(255, 215, 0, 0);
+  }
+  50% {
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.6);
+  }
 }
 
 .krishna-image {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
+  width: 400px;
+  height: 500px;
+  border-radius: 15px;
   margin-bottom: 1rem;
   object-fit: cover;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  opacity: 0;
+  transform: scale(0.3) translateY(50px);
+  filter: blur(10px);
+}
+
+.krishna-image.animate {
+  animation: krishnaAppear 1.5s ease-out forwards, krishnaGlow 3s ease-in-out infinite 1.5s;
 }
 
 .message-text {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   font-style: italic;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  font-weight: 500;
+  line-height: 1.5;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .message-reference {
-  font-size: 1rem;
-  opacity: 0.8;
+  font-size: 1.1rem;
+  opacity: 0.9;
+  font-weight: bold;
+  color: #ffd700;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }

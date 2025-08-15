@@ -16,6 +16,7 @@ const KrishnaWheelGame: React.FC<KrishnaWheelGameProps> = ({ onBack }) => {
   const [currentRotation, setCurrentRotation] = useState(0);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [currentMessage, setCurrentMessage] = useState<Message | null>(null);
+  const [showKrishnaAnimation, setShowKrishnaAnimation] = useState(false);
   const krishnaImageRef = useRef<HTMLImageElement | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -365,7 +366,13 @@ const KrishnaWheelGame: React.FC<KrishnaWheelGameProps> = ({ onBack }) => {
         const markerAngle = (2 * Math.PI - normalizedRotation) % (2 * Math.PI);
         const winningSegmentIndex = Math.floor(markerAngle / segmentAngle) % messages.length;
 
+        // Reset animation state first, then set message and trigger animation
+        setShowKrishnaAnimation(false);
         setCurrentMessage(messages[winningSegmentIndex]);
+        // Trigger animation after a small delay to ensure state reset
+        setTimeout(() => {
+          setShowKrishnaAnimation(true);
+        }, 50);
       }
     };
 
@@ -419,7 +426,7 @@ const KrishnaWheelGame: React.FC<KrishnaWheelGameProps> = ({ onBack }) => {
               <img
                 src="/BG_Krishna.jpg"
                 alt="Lord Krishna"
-                className="krishna-image"
+                className={`krishna-image ${showKrishnaAnimation ? 'animate' : ''}`}
               />
               <div className="message-text">"{currentMessage.text}"</div>
               <div className="message-reference">- {currentMessage.reference}</div>
