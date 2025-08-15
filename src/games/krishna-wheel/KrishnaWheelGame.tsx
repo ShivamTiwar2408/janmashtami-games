@@ -304,6 +304,7 @@ const KrishnaWheelGame: React.FC<KrishnaWheelGameProps> = ({ onBack }) => {
   const spin = () => {
     if (isSpinning) return;
 
+    setCurrentMessage(null);
     setIsSpinning(true);
 
     // Play wheel sound from 2 seconds to 10 seconds
