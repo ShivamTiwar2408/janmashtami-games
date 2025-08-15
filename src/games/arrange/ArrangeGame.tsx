@@ -68,6 +68,7 @@ const ArrangeGame: React.FC<ArrangeGameProps> = ({ onBack }) => {
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const muuriGridRef = useRef<Muuri | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
+  const celebrationAudioRef = useRef<HTMLAudioElement>(null);
 
   // Shuffle array utility
   const shuffleArray = <T,>(array: T[]): T[] => {
@@ -94,10 +95,14 @@ const ArrangeGame: React.FC<ArrangeGameProps> = ({ onBack }) => {
   const checkWinCondition = React.useCallback((events: LilaStory[]) => {
     const isCorrect = events.every((event, index) => event.order === index + 1);
     if (isCorrect && gameState === 'playing') {
+      // Immediately stop the timer and change game state
+      setGameState('victory-celebration');
       setCelebration(true);
-      setTimeout(() => {
-        setGameState('victory-celebration');
-      }, 4000);
+      
+      // Play celebration sound
+      if (celebrationAudioRef.current) {
+        celebrationAudioRef.current.play().catch(console.error);
+      }
     }
   }, [gameState]);
 
@@ -203,14 +208,56 @@ const ArrangeGame: React.FC<ArrangeGameProps> = ({ onBack }) => {
     };
   }, [gameState, timeLeft]);
 
+  // Audio control effect - play ticking sound from 1-4 seconds in loop
+  useEffect(() => {
+    if (audioRef.current) {
+      const audio = audioRef.current;
+      
+      if (gameState === 'playing' && timeLeft > 0) {
+        // Set up the time range loop (1-4 seconds)
+        const handleTimeUpdate = () => {
+          if (audio.currentTime >= 4) {
+            audio.currentTime = 1; // Loop back to 1 second
+          }
+        };
+        
+        // Start playing from 1 second
+        audio.currentTime = 1;
+        audio.addEventListener('timeupdate', handleTimeUpdate);
+        audio.play().catch(console.error);
+        
+        // Cleanup function to remove event listener
+        return () => {
+          audio.removeEventListener('timeupdate', handleTimeUpdate);
+        };
+      } else {
+        audio.pause();
+        audio.currentTime = 1; // Reset to start position
+      }
+    }
+  }, [gameState, timeLeft]);
+
+  // Celebration audio effect - play when victory state is reached
+  useEffect(() => {
+    if (celebrationAudioRef.current && gameState === 'victory-celebration') {
+      celebrationAudioRef.current.play().catch(console.error);
+    }
+  }, [gameState]);
+
   // Manual validate order
   const validateOrder = () => {
     const currentOrder = getCurrentOrder();
     const isCorrect = currentOrder.every((event, index) => event.order === index + 1);
 
     if (isCorrect) {
+      // Immediately stop the timer and change game state
+      setGameState('victory-celebration');
       setCelebration(true);
-      setTimeout(() => setGameState('victory-celebration'), 4000);
+      
+      // Play celebration sound
+      if (celebrationAudioRef.current) {
+        celebrationAudioRef.current.play().catch(console.error);
+      }
     } else {
       setShowError(true);
       setTimeout(() => setShowError(false), 2000);
@@ -245,12 +292,17 @@ const ArrangeGame: React.FC<ArrangeGameProps> = ({ onBack }) => {
 
   return (
     <div className="arrange-game-app">
+      {/* Audio elements - always available */}
+      <audio ref={audioRef}>
+        <source src="/ticking_effect.mp3" type="audio/mpeg" />
+      </audio>
+      <audio ref={celebrationAudioRef}>
+        <source src="/celebration_effect.mp3" type="audio/mpeg" />
+      </audio>
+
       {/* Game Screen */}
       {gameState === 'playing' && (
         <div className="game-screen">
-          <audio ref={audioRef} loop>
-                    <source src="/game_audio.mp3" type="audio/mpeg" />
-                </audio>
           <div className="arrange-game-header">
             <button className="back-button" onClick={onBack || resetGame}>
               {onBack ? '← Back' : '🔄 New Game'}
