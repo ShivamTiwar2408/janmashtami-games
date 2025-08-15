@@ -46,8 +46,8 @@ const storyData: Record<string, Omit<LilaStory, 'order'>> = {
 // Story sequences - just the order configurations
 const storySequences: string[][] = [
   ['birth', 'vasudeva', 'damodar', 'brahma', 'kalia', 'govardhan', 'leaves', 'kamsa', 'gurukul'],
-  ['birth', 'vasudeva', 'damodar', 'kalia', 'govardhan', 'kamsa', 'gita', 'sudama', 'dwarka'],
-  ['birth', 'damodar', 'brahma', 'govardhan', 'leaves', 'gurukul', 'kamsa', 'gita', 'dwarka']
+  ['birth', 'vasudeva', 'damodar', 'kalia', 'govardhan', 'kamsa', 'dwarka', 'sudama', 'gita'],
+  ['birth', 'damodar', 'brahma', 'govardhan', 'leaves', 'kamsa', 'gurukul', 'dwarka', 'gita']
 ];
 
 // Generate story set from sequence
@@ -98,7 +98,7 @@ const ArrangeGame: React.FC<ArrangeGameProps> = ({ onBack }) => {
       // Immediately stop the timer and change game state
       setGameState('victory-celebration');
       setCelebration(true);
-      
+
       // Play celebration sound
       if (celebrationAudioRef.current) {
         celebrationAudioRef.current.play().catch(console.error);
@@ -212,7 +212,7 @@ const ArrangeGame: React.FC<ArrangeGameProps> = ({ onBack }) => {
   useEffect(() => {
     if (audioRef.current) {
       const audio = audioRef.current;
-      
+
       if (gameState === 'playing' && timeLeft > 0) {
         // Set up the time range loop (1-4 seconds)
         const handleTimeUpdate = () => {
@@ -220,12 +220,12 @@ const ArrangeGame: React.FC<ArrangeGameProps> = ({ onBack }) => {
             audio.currentTime = 1; // Loop back to 1 second
           }
         };
-        
+
         // Start playing from 1 second
         audio.currentTime = 1;
         audio.addEventListener('timeupdate', handleTimeUpdate);
         audio.play().catch(console.error);
-        
+
         // Cleanup function to remove event listener
         return () => {
           audio.removeEventListener('timeupdate', handleTimeUpdate);
@@ -253,7 +253,7 @@ const ArrangeGame: React.FC<ArrangeGameProps> = ({ onBack }) => {
       // Immediately stop the timer and change game state
       setGameState('victory-celebration');
       setCelebration(true);
-      
+
       // Play celebration sound
       if (celebrationAudioRef.current) {
         celebrationAudioRef.current.play().catch(console.error);
