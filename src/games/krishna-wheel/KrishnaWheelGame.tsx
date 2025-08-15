@@ -261,7 +261,7 @@ const KrishnaWheelGame: React.FC<KrishnaWheelGameProps> = ({ onBack }) => {
 
     // Draw marker on the right side
     drawMarker(ctx, centerX, centerY, radius);
-  }, [currentRotation, imageLoaded, messages, colors, darkColors, drawTextAlongRadius, drawMarker]);
+  }, [messages.length, imageLoaded, drawMarker, currentRotation, colors, darkColors, drawTextAlongRadius, wheelTexts]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -305,13 +305,29 @@ const KrishnaWheelGame: React.FC<KrishnaWheelGameProps> = ({ onBack }) => {
 
     setIsSpinning(true);
 
+    // Play wheel sound from 2 seconds to 10 seconds
+    if (audioRef.current) {
+      audioRef.current.currentTime = 2;
+      audioRef.current.play();
+
+      // Stop at 10 seconds
+      const stopAudioTimeout = setTimeout(() => {
+        if (audioRef.current) {
+          audioRef.current.pause();
+        }
+      }, 8000); // 8 seconds duration (from 2s to 10s)
+
+      // Store timeout to clear it if needed
+      audioRef.current.dataset.stopTimeout = stopAudioTimeout.toString();
+    }
+
     const segmentAngle = (2 * Math.PI) / messages.length;
     const baseSpins = 4 + Math.random() * 3;
     const randomSegment = Math.floor(Math.random() * messages.length);
     const targetSegmentCenter = randomSegment * segmentAngle + (segmentAngle / 2);
     const finalRotation = currentRotation + (baseSpins * 2 * Math.PI) + targetSegmentCenter;
 
-    const duration = 3000;
+    const duration = 10000;
     const startTime = Date.now();
     const startRotation = currentRotation;
 
@@ -327,7 +343,20 @@ const KrishnaWheelGame: React.FC<KrishnaWheelGameProps> = ({ onBack }) => {
       } else {
         setCurrentRotation(finalRotation);
         setIsSpinning(false);
-        
+
+        // Stop wheel sound and clear timeout
+        if (audioRef.current) {
+          audioRef.current.pause();
+          audioRef.current.currentTime = 0;
+
+          // Clear the timeout if it exists
+          const timeoutId = audioRef.current.dataset.stopTimeout;
+          if (timeoutId) {
+            clearTimeout(parseInt(timeoutId));
+            delete audioRef.current.dataset.stopTimeout;
+          }
+        }
+
         // Calculate which segment the marker is actually pointing to
         // The marker is at 0 degrees (right side), so we need to find which segment is at that position
         const normalizedRotation = finalRotation % (2 * Math.PI);
@@ -335,7 +364,7 @@ const KrishnaWheelGame: React.FC<KrishnaWheelGameProps> = ({ onBack }) => {
         // We need to find which segment is currently at 0 degrees position
         const markerAngle = (2 * Math.PI - normalizedRotation) % (2 * Math.PI);
         const winningSegmentIndex = Math.floor(markerAngle / segmentAngle) % messages.length;
-        
+
         setCurrentMessage(messages[winningSegmentIndex]);
       }
     };
@@ -368,18 +397,17 @@ const KrishnaWheelGame: React.FC<KrishnaWheelGameProps> = ({ onBack }) => {
         <div className="game-intro">
           <h2>🎡 Krishna's Wheel of Wisdom</h2>
           <p>
-            Spin the sacred wheel to receive divine guidance from Lord Krishna's teachings in the Bhagavad Gita. 
+            Spin the sacred wheel to receive divine guidance from Lord Krishna's teachings in the Bhagavad Gita.
             Each spin reveals timeless wisdom to guide your spiritual journey.
           </p>
         </div>
 
-        {isSpinning && (<audio ref={audioRef} loop>
-                    <source src="/game_audio.mp3" type="audio/mpeg" />
-          </audio>)
-        }
-        <button 
-          className="spin-button" 
-          onClick={spin} 
+        <audio ref={audioRef} loop>
+          <source src="/wheel.mp3" type="audio/mpeg" />
+        </audio>
+        <button
+          className="spin-button"
+          onClick={spin}
           disabled={isSpinning}
         >
           {isSpinning ? '🌀 Spinning...' : '✨ Spin the Wheel'}
@@ -388,9 +416,9 @@ const KrishnaWheelGame: React.FC<KrishnaWheelGameProps> = ({ onBack }) => {
         <div className="message-display">
           {currentMessage ? (
             <>
-              <img 
-                src="/BG_Krishna.jpg" 
-                alt="Lord Krishna" 
+              <img
+                src="/BG_Krishna.jpg"
+                alt="Lord Krishna"
                 className="krishna-image"
               />
               <div className="message-text">"{currentMessage.text}"</div>
