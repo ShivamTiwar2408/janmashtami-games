@@ -1,0 +1,314 @@
+[
+  {
+    "question": "What, according to Yudhisthir, is a man's greatest wonder?",
+    "options": [
+      "That the Sun rises every day",
+      "That a person can achieve all their goals through hard work",
+      "That despite seeing others die, people think they will live forever",
+      "That a person can be born again"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "According to the Mahabharata, in a dialogue with a Yaksha, Yudhisthir states that the greatest wonder is that people, despite witnessing death all around them, act as though they will live forever. The Bhagavad Gita also speaks to the certainty of birth and death, echoing this sentiment.",
+    "brotherIndex": 0
+  },
+  {
+    "question": "What, according to Yudhisthir, is the fastest thing in the world?",
+    "options": [
+      "Wind",
+      "Thought",
+      "Light",
+      "Fire"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "In the same dialogue with the Yaksha, Yudhisthir replies that 'thought' (manas) is the fastest thing in the world, as it can travel instantaneously to any location or time. The Bhagavad Gita also describes the mind as 'restless' and 'turbulent,' highlighting its swift and difficult-to-control nature.",
+    "brotherIndex": 0
+  },
+  {
+    "question": "What is the most important thing for a person to possess, according to the Yudhisthir?",
+    "options": [
+      "Wealth",
+      "Knowledge",
+      "Strength",
+      "Patience"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "In his dialogue with the Yaksha, Yudhisthir emphasizes the importance of knowledge. The Bhagavad Gita supports this by stating, 'In this world, there is nothing so sublime and pure as transcendental knowledge.'",
+    "brotherIndex": 0
+  },
+  {
+    "question": "What is the path to happiness, according to the Yudhisthir?",
+    "options": [
+      "To be free from desire",
+      "To have a lot of money",
+      "To have a lot of friends",
+      "To be in a good marriage"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "Yudhisthir's answers often align with the core teachings of the Bhagavad Gita, which state that true peace and happiness come from giving up all desires for sense gratification and living without a sense of proprietorship.",
+    "brotherIndex": 0
+  },
+  {
+    "question": "What, according to the Bhagavad Gita, is the true nature of the self (Atma)?",
+    "options": [
+      "The physical body, which is subject to birth and death",
+      "A part of the material world that is temporary",
+      "Eternal, indestructible, and unchangeable",
+      "The mind and its thoughts, which constantly change"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "The Bhagavad Gita, specifically in Chapter 2, states that the soul (Atma) is unborn, eternal, ever-existing, and is not destroyed when the body is slain. This is a foundational concept of the text.",
+    "brotherIndex": 0
+  },
+  {
+    "question": "According to the Bhagavad Gita, what is the most important aspect of performing one's Dharma (duty)?",
+    "options": [
+      "Performing it for a good reputation",
+      "Performing it with attachment to the results",
+      "Performing it without attachment to the results",
+      "Performing it with the expectation of reward"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "Karma Yoga, or the yoga of action, is a central theme in the Bhagavad Gita. The text instructs that one has the right to perform their duty but not to the fruits of the action. This principle emphasizes selfless action.",
+    "brotherIndex": 0
+  },
+  {
+    "question": "What, according to the Bhagavad Gita, is the most powerful thing, which a person must master for self-realization?",
+    "options": [
+      "The mind",
+      "A strong army",
+      "Knowledge",
+      "Wealth"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "The Bhagavad Gita emphasizes that the mind can be either a person's best friend or worst enemy. Mastering the mind is crucial for spiritual elevation and self-realization.",
+    "brotherIndex": 0
+  },
+  {
+    "question": "The Bhagavad Gita states that the mind is restless and difficult to control. What is the method prescribed to control the mind?",
+    "options": [
+      "By forcing it to be still through sheer willpower",
+      "By satisfying all its desires",
+      "By constant practice and detachment",
+      "By isolating oneself from society"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "In response to Arjuna's query, Krishna confirms that the mind is indeed difficult to control but can be subdued through 'suitable practice' (abhyasa) and 'detachment' (vairagya).",
+    "brotherIndex": 0
+  },
+  {
+    "question": "Yudhistir states that the path of great men is the one to follow. The Bhagavad Gita explains why this is so. Why do common people follow the example of great personalities?",
+    "options": [
+      "Because great men are powerful and wealthy",
+      "Because great men are loved by everyone",
+      "Because whatever a great man does, common people follow",
+      "Because great men are often wise and knowledgeable"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "The Bhagavad Gita explains that whatever actions a great personality performs, common people will follow and adopt as a standard.",
+    "brotherIndex": 0
+  },
+  {
+    "question": "The conversation with Yaksha is about the nature of the world. What are the three Gunas (modes of material nature) that influence all living beings in this world, according to the Bhagavad Gita?",
+    "options": [
+      "Sattva (goodness), Rajas (passion), and Tamas (ignorance)",
+      "Karma (action), Dharma (duty), and Moksha (liberation)",
+      "Sat (truth), Chit (knowledge), and Ananda (bliss)",
+      "Brahma, Vishnu, and Shiva"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "The Bhagavad Gita explains that material nature consists of three modes—goodness, passion, and ignorance—which condition the eternal living entity. This is a fundamental concept in the text that explains human behavior and existence.",
+    "brotherIndex": 0
+  },
+ {
+    "question": "What, according to the Bhagavad Gita, is a true friend to oneself?",
+    "options": [
+      "A person who gives good advice",
+      "One's own mind, if it is controlled",
+      "Wealth, as it can solve problems",
+      "The body, as it helps in all activities"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The Bhagavad Gita states that a person must elevate themselves by their own mind. When the mind is controlled, it acts as a friend, but if left uncontrolled, it becomes the greatest enemy.",
+    "brotherIndex": 0
+  },
+  {
+    "question": "How, according to the Bhagavad Gita, can one achieve true peace and freedom from desire?",
+    "options": [
+      "By accumulating all the wealth one desires",
+      "By satisfying all one's sensual cravings",
+      "By giving up all desires for sense gratification and proprietorship",
+      "By living a life of extreme austerity"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "The Gita teaches that true peace can only be achieved by one who has given up all desires for sense objects and has no sense of proprietorship or false ego. This is a central tenet of detachment.",
+    "brotherIndex": 0
+  },
+  {
+    "question": "What is the main message of Karma Yoga?",
+    "options": [
+      "Complete surrender to God",
+      "Selfless action without attachment to results",
+      "Intellectual pursuit of knowledge",
+      "Control of the senses through meditation"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "Karma Yoga is the path of selfless action. Krishna instructs Arjuna to perform his duty without being attached to the outcome, whether success or failure.",
+    "brotherIndex": 0
+  },
+  {
+    "question": "What is the main difference between the body and the soul according to the Gita?",
+    "options": [
+      "The body is spiritual, the soul is material",
+      "The body is temporary, the soul is eternal",
+      "The body is invisible, the soul is visible",
+      "There is no difference between them"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The Bhagavad Gita distinguishes between the physical body, which is temporary and subject to destruction, and the soul (Atma), which is eternal, indestructible, and unchangeable.",
+    "brotherIndex": 0
+  },
+  {
+    "question": "What advice does Krishna give to Arjuna about his duties as a warrior?",
+    "options": [
+      "To renounce the battle and become an ascetic",
+      "To fight only for personal glory",
+      "To fight with a sense of duty, without attachment to the outcome",
+      "To surrender to his opponents"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "Krishna advises Arjuna to fulfill his duty as a warrior (Kshatriya) by fighting for righteousness, but to do so without attachment to the results of the battle. This is a prime example of Karma Yoga.",
+    "brotherIndex": 0
+  },
+  {
+    "question": "How does the Gita describe a truly wise person?",
+    "options": [
+      "One who possesses great wealth and power",
+      "One who can defeat all their enemies",
+      "One who sees the same soul in all living beings",
+      "One who performs elaborate rituals"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "The Bhagavad Gita teaches that a wise person, or a Mahātmā, is one who sees the same divine essence or soul in all living creatures, regardless of their external form or status.",
+    "brotherIndex": 0
+  },
+  {
+    "question": "What is the meaning of the word 'Yoga'?",
+    "options": [
+      "To struggle",
+      "To separate",
+      "To join or unite",
+      "To meditate"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "The Sanskrit word 'Yoga' literally means 'to join' or 'to unite'. In the context of the Gita, it refers to the spiritual practice of uniting the individual consciousness with the Supreme Consciousness.",
+    "brotherIndex": 0
+  },
+  {
+    "question": "Who is the author of the Bhagavad Gita?",
+    "options": [
+      "Lord Krishna",
+      "Arjuna",
+      "The sage Vyasa",
+      "Sanjaya"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "While the Bhagavad Gita contains the teachings of Lord Krishna, it is traditionally considered to have been compiled and narrated by the sage Vyasa as part of the epic Mahabharata.",
+    "brotherIndex": 0
+  },
+  {
+    "question": "What is the role of a Guru (spiritual teacher) in the Gita?",
+    "options": [
+      "To command their disciples",
+      "To guide the student and remove their ignorance",
+      "To perform all the spiritual duties for the student",
+      "To provide material wealth"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The Bhagavad Gita emphasizes the importance of approaching a spiritual teacher with reverence to gain knowledge and have doubts clarified. The Guru's role is to guide the disciple on the path of self-realization and dispel ignorance.",
+    "brotherIndex": 0
+  },
+ {
+    "question": "What is the relationship between the mind, senses, and intellect?",
+    "options": [
+      "The senses are superior to the mind, and the mind is superior to the intellect.",
+      "The intellect is superior to the senses, but the mind is superior to the intellect.",
+      "The mind controls the senses, but the intellect is superior to the mind, and the soul is superior to the intellect.",
+      "The senses, mind, and intellect are all equal."
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "Krishna describes a hierarchy where the mind is superior to the senses, the intellect is superior to the mind, and the soul is superior to the intellect. True wisdom comes from controlling the mind with the intellect to realize the true nature of the self.",
+    "brotherIndex": 0
+  },
+  {
+    "question": "What does the word \"Bhagavad Gita\" mean?",
+    "options": [
+      "The Battle of God",
+      "The Song of God",
+      "The Wisdom of God",
+      "The Story of God"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The name 'Bhagavad Gita' is a compound Sanskrit word. 'Bhagavad' means 'of God' or 'divine,' and 'Gita' means 'song.' Therefore, it translates to 'The Song of God,' referring to the divine discourse given by Lord Krishna.",
+    "brotherIndex": 0
+  },
+  {
+    "question": "In the Gita, what does Krishna say is the primary cause of anger?",
+    "options": [
+      "Greed",
+      "Jealousy",
+      "Unfulfilled desires",
+      "Fear"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "The Bhagavad Gita explains that unfulfilled desires are the root cause of anger. When desires are not met, they lead to frustration and rage, which in turn clouds judgment and leads to further suffering.",
+    "brotherIndex": 0
+  },
+  {
+    "question": "The Bhagavad Gita is part of a larger epic poem. What is its name?",
+    "options": [
+      "The Ramayana",
+      "The Puranas",
+      "The Mahabharata",
+      "The Upanishads"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "The Bhagavad Gita is a pivotal part of the ancient Indian epic, the Mahabharata, specifically located in the Bhishma Parva section.",
+    "brotherIndex": 0
+  },
+  {
+    "question": "Who is the narrator who reports the battlefield events to the blind king Dhritarashtra?",
+    "options": [
+      "Bhishma",
+      "Vyasa",
+      "Sanjaya",
+      "Yudhisthira"
+    ],
+    "correctAnswerIndex": 2,
+    "explanation": "Sanjaya, the minister and charioteer of King Dhritarashtra, was granted divine sight by the sage Vyasa to narrate the entire course of the Kurukshetra War to the blind king.",
+    "brotherIndex": 0
+  },
+  {
+    "question": "According to the Gita, who is the real doer of all actions?",
+    "options": [
+      "The individual ego",
+      "The three gunas of material nature",
+      "A divine force",
+      "Random chance"
+    ],
+    "correctAnswerIndex": 1,
+    "explanation": "The Gita explains that actions are ultimately performed by the interactions of the three modes of material nature (gunas). The individual ego falsely identifies as the doer, but it is a tool of these natural forces.",
+    "brotherIndex": 0
+  },
+  {
+    "question": "What is the primary cause of delusion (moha) according to the Gita?",
+    "options": [
+      "The desire for sense gratification",
+      "Lack of intelligence",
+      "Physical illness",
+      "Social pressure"
+    ],
+    "correctAnswerIndex": 0,
+    "explanation": "The desire for sense gratification creates a strong attachment that leads to delusion. This delusion obscures a person's judgment, causing them to act in ways that lead to suffering.",
+    "brotherIndex": 0
+  }
+]

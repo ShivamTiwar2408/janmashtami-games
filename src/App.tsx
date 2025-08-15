@@ -131,14 +131,14 @@ function HomePage() {
               >
               </div>
               <div className="game-content">
-                <h3 className="game-title">Krishna's Story Arrange</h3>
+                <h3 className="game-title">Divine Stories Arrange</h3>
                 <p className="game-description">
-                  Arrange the story tiles in chronological order to tell Krishna's divine birth story within 30 seconds.
+                  Choose from Krishna Lila, Mahabharat, or Gaur Lila and arrange story tiles in chronological order.
                 </p>
                 <div className="game-features">
-                  <span className="feature">🧩 Puzzle Game</span>
-                  <span className="feature">📖 Story Mode</span>
-                  <span className="feature">⏰ 30 Second Timer</span>
+                  <span className="feature">🧩 Multiple Stories</span>
+                  <span className="feature">📖 3 Epic Tales</span>
+                  <span className="feature">⏰ 60 Second Timer</span>
                 </div>
                 <div className="game-tags">
                   <span className="tag puzzle">PUZZLE</span>

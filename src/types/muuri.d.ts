@@ -2,10 +2,22 @@ declare module 'muuri' {
   interface MuuriOptions {
     items?: string;
     dragEnabled?: boolean;
+    dragContainer?: HTMLElement;
     dragSortHeuristics?: {
       sortInterval?: number;
       minDragDistance?: number;
       minBounceBackAngle?: number;
+    };
+    dragPlaceholder?: {
+      enabled?: boolean;
+      createElement?: () => HTMLElement;
+      onCreate?: (item: { getWidth(): number; getHeight(): number }, element: HTMLElement) => void;
+      onRemove?: (item: any, element: HTMLElement) => void;
+    };
+    dragRelease?: {
+      duration?: number;
+      easing?: string;
+      useDragContainer?: boolean;
     };
     layout?: {
       fillGaps?: boolean;
@@ -14,6 +26,7 @@ declare module 'muuri' {
       alignBottom?: boolean;
       rounding?: boolean;
     };
+    layoutOnResize?: boolean;
     layoutDuration?: number;
     layoutEasing?: string;
     [key: string]: any; // Allow additional properties

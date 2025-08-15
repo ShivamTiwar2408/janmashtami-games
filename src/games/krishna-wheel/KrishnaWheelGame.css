@@ -1,11 +1,17 @@
+/* Scoped reset for Krishna Wheel game */
+.krishna-wheel-container * {
+  box-sizing: border-box;
+}
+
 .krishna-wheel-container {
   display: flex;
   height: 100vh;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   position: relative;
+  font-family: Arial, sans-serif;
 }
 
-.back-btn-corner {
+.krishna-wheel-container .back-btn-corner {
   position: absolute;
   top: 20px;
   left: 20px;
@@ -22,7 +28,7 @@
   z-index: 10;
 }
 
-.back-btn-corner:hover {
+.krishna-wheel-container .back-btn-corner:hover {
   background: rgba(255, 255, 255, 0.3);
   border-color: rgba(255, 255, 255, 0.5);
   transform: translateY(-2px);

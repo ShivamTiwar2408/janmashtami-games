@@ -17,6 +17,7 @@ const KrishnaWheelGame: React.FC<KrishnaWheelGameProps> = ({ onBack }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [currentMessage, setCurrentMessage] = useState<Message | null>(null);
   const krishnaImageRef = useRef<HTMLImageElement | null>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
   const messages: Message[] = [
     {
@@ -372,6 +373,10 @@ const KrishnaWheelGame: React.FC<KrishnaWheelGameProps> = ({ onBack }) => {
           </p>
         </div>
 
+        {isSpinning && (<audio ref={audioRef} loop>
+                    <source src="/game_audio.mp3" type="audio/mpeg" />
+          </audio>)
+        }
         <button 
           className="spin-button" 
           onClick={spin} 

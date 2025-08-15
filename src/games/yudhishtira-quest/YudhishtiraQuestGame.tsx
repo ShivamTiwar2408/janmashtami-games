@@ -1,493 +1,399 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import './YudhishtiraQuestGame.css';
+import questionsData from './questions.json';
+
+const backgroundImage = '/yudhistir_quest_BG.png';
+const victoryBackgroundImage = '/Yudhishtir_quest_victory_BG.png';
+
+const backgroundStyle = {
+    backgroundImage: `linear-gradient(135deg, rgba(15, 20, 25, 0.8) 0%, rgba(26, 26, 46, 0.8) 50%, rgba(22, 33, 62, 0.8) 100%), url('${backgroundImage}')`,
+    backgroundSize: 'cover' as const,
+    backgroundPosition: 'center' as const,
+    backgroundRepeat: 'no-repeat' as const
+};
+
+const gameBackgroundStyle = {
+    backgroundImage: `url('${backgroundImage}')`,
+    backgroundSize: 'cover' as const,
+    backgroundPosition: 'center' as const,
+    backgroundRepeat: 'no-repeat' as const
+};
+
+const victoryBackgroundStyle = {
+    backgroundImage: `linear-gradient(135deg, rgba(15, 20, 25, 0.6) 0%, rgba(26, 26, 46, 0.6) 50%, rgba(22, 33, 62, 0.6) 100%), url('${victoryBackgroundImage}')`,
+    backgroundSize: 'cover' as const,
+    backgroundPosition: 'center' as const,
+    backgroundRepeat: 'no-repeat' as const
+};
 
 interface YudhishtiraQuestGameProps {
-  onBack: () => void;
-}
-
-interface Brother {
-  name: string;
-  status: 'unconscious' | 'saved' | 'dead';
-  emoji: string;
+    onBack: () => void;
 }
 
 interface Question {
-  question: string;
-  options: string[];
-  correctAnswerIndex: number;
-  explanation: string;
-  brotherIndex: number;
+    question: string;
+    options: string[];
+    correctAnswerIndex: number;
+    explanation: string;
 }
 
 const YudhishtiraQuestGame: React.FC<YudhishtiraQuestGameProps> = ({ onBack }) => {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [gameState, setGameState] = useState<'intro' | 'video' | 'game' | 'end'>('intro');
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [correctAnswers, setCorrectAnswers] = useState(0);
-  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
-  const [showExplanation, setShowExplanation] = useState(false);
-  const [videoPhase, setVideoPhase] = useState<'intro' | 'conclusion'>('intro');
-  const [questionTimer, setQuestionTimer] = useState(10); // 10 seconds per question
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+    const videoRef = useRef<HTMLVideoElement>(null);
+    const audioRef = useRef<HTMLAudioElement>(null);
+    const timerRef = useRef<NodeJS.Timeout | null>(null);
+    const [gameState, setGameState] = useState<'intro' | 'intro_video' | 'game' | 'win_video' | 'win_end' | 'lose_end'>('intro');
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+    const [correctAnswers, setCorrectAnswers] = useState(0);
+    const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+    const [showExplanation, setShowExplanation] = useState(false);
+    const [timeLeft, setTimeLeft] = useState(10);
+    const [isTimerActive, setIsTimerActive] = useState(false);
 
-  const [brothers, setBrothers] = useState<Brother[]>([
-    { name: 'Arjuna', status: 'unconscious', emoji: '🏹' },
-    { name: 'Bhima', status: 'unconscious', emoji: '💪' },
-    { name: 'Nakula', status: 'unconscious', emoji: '🗡️' },
-    { name: 'Sahadeva', status: 'unconscious', emoji: '📚' }
-  ]);
+    const questions = useMemo<Question[]>(() => {
+        // Shuffle the questions array and take only 8 questions
+        const shuffled = [...questionsData].sort(() => Math.random() - 0.5);
+        return shuffled.slice(0, 8);
+    }, []);
 
-  const questions: Question[] = [
-    {
-      question: 'What is the greatest enemy?',
-      options: ['Anger', 'Greed', 'Lust', 'Ignorance'],
-      correctAnswerIndex: 0,
-      explanation: 'Anger destroys wisdom, burns merit, and leads to the destruction of relationships and peace.',
-      brotherIndex: 0
-    },
-    {
-      question: 'What is the true path?',
-      options: ['The path of wealth', 'The path of power', 'The path trodden by the great ones', 'The path of solitude'],
-      correctAnswerIndex: 2,
-      explanation: 'The true path is that which has been walked by great souls and sages throughout history.',
-      brotherIndex: 0
-    },
-    {
-      question: 'What is the best of all gains?',
-      options: ['Health', 'Wealth', 'Knowledge', 'Friendship'],
-      correctAnswerIndex: 0,
-      explanation: 'Health is the foundation of all other achievements and the greatest gain one can have.',
-      brotherIndex: 1
-    },
-    {
-      question: 'What makes a person truly wealthy?',
-      options: ['Gold and jewels', 'Good character', 'Land and property', 'Knowledge'],
-      correctAnswerIndex: 1,
-      explanation: 'Good character is the true wealth that cannot be stolen and brings lasting prosperity.',
-      brotherIndex: 1
-    },
-    {
-      question: 'What is that which, if renounced, makes one agreeable?',
-      options: ['Anger', 'Greed', 'Pride', 'Lust'],
-      correctAnswerIndex: 2,
-      explanation: 'Renouncing pride makes one humble and agreeable to others, as pride creates barriers between people.',
-      brotherIndex: 2
-    },
-    {
-      question: 'What is true happiness?',
-      options: ['Contentment', 'Wealth', 'Fame', 'Power'],
-      correctAnswerIndex: 0,
-      explanation: 'True happiness comes from contentment, which is independent of external circumstances.',
-      brotherIndex: 2
-    },
-    {
-      question: 'What is the source of all dharma?',
-      options: ['The Vedas', 'The conduct of good people', 'Both the Vedas and the conduct of good people', 'Personal conscience'],
-      correctAnswerIndex: 2,
-      explanation: 'Dharma is established both by the Vedas and by the conduct of virtuous people who follow them.',
-      brotherIndex: 3
-    },
-    {
-      question: 'What is the greatest wonder in the world?',
-      options: ['The vastness of the ocean', 'The birth of a new star', 'Even though creatures die every moment, those who remain desire to live forever', 'The complexity of the human mind'],
-      correctAnswerIndex: 2,
-      explanation: 'Despite witnessing death constantly, living beings continue to believe they will live forever - this is indeed the greatest wonder.',
-      brotherIndex: 3
-    }
-  ];
+    const startGame = () => {
+        setGameState('intro_video');
+    };
 
-  const startGame = () => {
-    setGameState('video');
-    setVideoPhase('intro');
-  };
-
-  const skipVideo = () => {
-    if (videoRef.current) {
-      videoRef.current.pause();
-    }
-    if (videoPhase === 'intro') {
-      setGameState('game');
-      setQuestionTimer(10); // Reset timer for first question
-    } else {
-      setGameState('end');
-    }
-  };
-
-  const handleVideoEnd = useCallback(() => {
-    if (videoPhase === 'intro') {
-      setGameState('game');
-      setQuestionTimer(10); // Reset timer for first question
-    } else {
-      setGameState('end');
-    }
-  }, [videoPhase]);
-
-  const handleAnswerSelect = useCallback((answerIndex: number) => {
-    if (selectedAnswer !== null || showExplanation) return;
-    
-    setSelectedAnswer(answerIndex);
-    const isCorrect = answerIndex >= 0 && answerIndex === questions[currentQuestionIndex].correctAnswerIndex;
-    
-    if (isCorrect) {
-      setCorrectAnswers(prev => prev + 1);
-      // Save a brother - mark the specific brother for this question as saved
-      setBrothers(prev => {
-        const newBrothers = [...prev];
-        const unconsciousBrothers = newBrothers.filter(b => b.status === 'unconscious');
-        if (unconsciousBrothers.length > 0) {
-          unconsciousBrothers[0].status = 'saved';
+    const handleVideoEnd = useCallback(() => {
+        if (gameState === 'intro_video') {
+            setGameState('game');
+        } else if (gameState === 'win_video') {
+            setGameState('win_end');
         }
-        return newBrothers;
-      });
-    } else {
-      // Kill a brother - mark the specific brother for this question as dead (wrong answer or timeout)
-      setBrothers(prev => {
-        const newBrothers = [...prev];
-        const unconsciousBrothers = newBrothers.filter(b => b.status === 'unconscious');
-        if (unconsciousBrothers.length > 0) {
-          unconsciousBrothers[unconsciousBrothers.length - 1].status = 'dead';
+    }, [gameState]);
+
+    const skipVideo = () => {
+        if (videoRef.current) {
+            videoRef.current.pause();
         }
-        return newBrothers;
-      });
-    }
-    
-    setShowExplanation(true);
-    
-    // Auto-advance to next question after 3 seconds (like original)
-    setTimeout(() => {
-      if (currentQuestionIndex < questions.length - 1) {
-        setCurrentQuestionIndex(prev => prev + 1);
+        handleVideoEnd();
+    };
+
+    const stopTimer = useCallback(() => {
+        if (timerRef.current) {
+            clearInterval(timerRef.current);
+            timerRef.current = null;
+        }
+        setIsTimerActive(false);
+        if (audioRef.current) {
+            audioRef.current.pause();
+            audioRef.current.currentTime = 0;
+        }
+    }, []);
+
+    const startTimer = useCallback(() => {
+        setTimeLeft(10);
+        setIsTimerActive(true);
+
+        // Start audio
+        if (audioRef.current) {
+            audioRef.current.currentTime = 0;
+            audioRef.current.play().catch(() => {
+                // Audio play failed, continue without audio
+            });
+        }
+
+        timerRef.current = setInterval(() => {
+            setTimeLeft(prev => {
+                if (prev <= 1) {
+                    // Time's up - treat as wrong answer
+                    setSelectedAnswer(-1); // Use -1 to indicate timeout
+                    setShowExplanation(true);
+
+                    setTimeout(() => {
+                        if (currentQuestionIndex < questions.length - 1) {
+                            setCurrentQuestionIndex(prev => prev + 1);
+                            setSelectedAnswer(null);
+                            setShowExplanation(false);
+                        } else {
+                            // Game finished
+                            if (correctAnswers === questions.length) {
+                                setGameState('win_video');
+                            } else {
+                                setGameState('lose_end');
+                            }
+                        }
+                    }, 3000);
+
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+    }, [currentQuestionIndex, questions.length, correctAnswers]);
+
+    const handleAnswerSelect = useCallback((answerIndex: number) => {
+        if (selectedAnswer !== null || !isTimerActive) return;
+
+        stopTimer();
+
+        const isCorrect = answerIndex === questions[currentQuestionIndex].correctAnswerIndex;
+        setSelectedAnswer(answerIndex);
+        setShowExplanation(true);
+
+        if (isCorrect) {
+            setCorrectAnswers(prev => prev + 1);
+        }
+
+        setTimeout(() => {
+            if (currentQuestionIndex < questions.length - 1) {
+                setCurrentQuestionIndex(prev => prev + 1);
+                setSelectedAnswer(null);
+                setShowExplanation(false);
+            } else {
+                // Game finished - check results
+                const finalScore = correctAnswers + (isCorrect ? 1 : 0);
+                if (finalScore === questions.length) {
+                    // All questions must be correct to win
+                    setGameState('win_video');
+                } else {
+                    setGameState('lose_end');
+                }
+            }
+        }, 3000);
+    }, [questions, currentQuestionIndex, correctAnswers, selectedAnswer, isTimerActive, stopTimer]);
+
+    const restartGame = () => {
+        stopTimer();
+        setGameState('intro');
+        setCurrentQuestionIndex(0);
+        setCorrectAnswers(0);
         setSelectedAnswer(null);
         setShowExplanation(false);
-        setQuestionTimer(10); // Reset timer for next question
-      } else {
-        // Play conclusion video
-        setGameState('video');
-        setVideoPhase('conclusion');
-      }
-    }, 3000);
-  }, [selectedAnswer, showExplanation, questions, currentQuestionIndex]);
-
-
-
-  const restartGame = () => {
-    setGameState('intro');
-    setCurrentQuestionIndex(0);
-    setCorrectAnswers(0);
-    setSelectedAnswer(null);
-    setShowExplanation(false);
-    setQuestionTimer(10);
-    setVideoPhase('intro');
-    setBrothers([
-      { name: 'Arjuna', status: 'unconscious', emoji: '🏹' },
-      { name: 'Bhima', status: 'unconscious', emoji: '💪' },
-      { name: 'Nakula', status: 'unconscious', emoji: '🗡️' },
-      { name: 'Sahadeva', status: 'unconscious', emoji: '📚' }
-    ]);
-  };
-
-  const getEndMessage = () => {
-    const savedBrothers = brothers.filter(b => b.status === 'saved').length;
-    
-    if (savedBrothers === 4) {
-      return {
-        title: 'Victory!',
-        message: `Congratulations! Your wisdom has saved all your brothers. You answered ${correctAnswers} out of ${questions.length} questions correctly. The Pandavas are reunited and ready to continue their journey.`
-      };
-    } else if (savedBrothers >= 2) {
-      return {
-        title: 'Partial Success',
-        message: `You have saved ${savedBrothers} of your brothers through your wisdom. ${4 - savedBrothers} brothers could not be revived. Your journey continues with those who remain.`
-      };
-    } else if (savedBrothers === 1) {
-      return {
-        title: 'Difficult Victory',
-        message: `Only one brother could be saved through your answers. The path of dharma is challenging, but you have shown some wisdom. Learn from this experience.`
-      };
-    } else {
-      return {
-        title: 'Defeat',
-        message: `All your brothers remain unconscious. Your answers did not demonstrate sufficient wisdom to save them. Reflect on the teachings and try again.`
-      };
-    }
-  };
-
-  // Timer effect for questions
-  useEffect(() => {
-    if (gameState === 'game' && !showExplanation && questionTimer > 0) {
-      timerRef.current = setTimeout(() => {
-        setQuestionTimer(prev => prev - 1);
-      }, 1000);
-    } else if (questionTimer === 0 && !showExplanation) {
-      // Time's up - treat as wrong answer
-      handleAnswerSelect(-1); // -1 indicates timeout
-    }
-
-    return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
+        setTimeLeft(10);
     };
-  }, [gameState, questionTimer, showExplanation, handleAnswerSelect]);
 
-  // Video playback effect - handles starting video when state changes
-  useEffect(() => {
-    if (gameState === 'video' && videoRef.current) {
-      const video = videoRef.current;
-      
-      // Set up video for playback
-      const playVideo = async () => {
-        try {
-          // Unmute the video for sound
-          video.muted = false;
-          video.volume = 0.8; // Set volume to 80%
-          
-          if (videoPhase === 'intro') {
-            video.currentTime = 0; // Start from the beginning for intro
-          } else if (videoPhase === 'conclusion') {
-            video.currentTime = 347; // Start at 5:47 for conclusion
-          }
-          
-          // Add a small delay to ensure currentTime is set
-          await new Promise(resolve => setTimeout(resolve, 100));
-          
-          // Try to play the video with sound
-          await video.play();
-        } catch (error) {
-          console.error('Video play failed:', error);
-          // If autoplay fails, try playing muted first, then unmute after user interaction
-          try {
-            video.muted = true;
-            await video.play();
-            // Try to unmute after a short delay
-            setTimeout(() => {
-              video.muted = false;
-            }, 500);
-          } catch (mutedError) {
-            console.error('Even muted video play failed:', mutedError);
-          }
+    // Video handling
+    useEffect(() => {
+        if ((gameState === 'intro_video' || gameState === 'win_video') && videoRef.current) {
+            const video = videoRef.current;
+            video.currentTime = 0;
+
+            const handleEnded = () => {
+                handleVideoEnd();
+            };
+
+            video.addEventListener('ended', handleEnded);
+            video.play().catch(() => {
+                handleVideoEnd();
+            });
+
+            return () => {
+                video.removeEventListener('ended', handleEnded);
+            };
         }
-      };
+    }, [gameState, handleVideoEnd]);
 
-      playVideo();
-    }
-  }, [gameState, videoPhase]);
-
-  // Video handling effect for time updates and events
-  useEffect(() => {
-    if (videoRef.current) {
-      const video = videoRef.current;
-      
-      const handleTimeUpdate = () => {
-        if (videoPhase === 'intro' && video.currentTime >= 65) { // Video ends at 65 seconds
-          video.pause();
-          setGameState('game');
-          setQuestionTimer(10); // Reset timer for first question
-        } else if (videoPhase === 'conclusion' && video.currentTime >= 410) { // 6:50
-          video.pause();
-          setGameState('end');
+    // Timer and question handling
+    useEffect(() => {
+        if (gameState === 'game' && selectedAnswer === null && !showExplanation) {
+            startTimer();
         }
-      };
 
-      const handleCanPlay = () => {
-        // Video is ready to play
-        console.log('Video can play');
-      };
+        return () => {
+            stopTimer();
+        };
+    }, [gameState, currentQuestionIndex, selectedAnswer, showExplanation, startTimer, stopTimer]);
 
-      const handleLoadedData = () => {
-        // Video data is loaded
-        console.log('Video data loaded');
-      };
+    // Cleanup on unmount
+    useEffect(() => {
+        return () => {
+            stopTimer();
+        };
+    }, [stopTimer]);
 
-      video.addEventListener('timeupdate', handleTimeUpdate);
-      video.addEventListener('ended', handleVideoEnd);
-      video.addEventListener('canplay', handleCanPlay);
-      video.addEventListener('loadeddata', handleLoadedData);
+    const renderVideoScreen = (videoSrc: string, skipText: string) => (
+        <div className="yudhishtira-quest-game">
+            <button onClick={onBack} className="back-btn-corner">← Back</button>
+            <div className="video-screen">
+                <video
+                    ref={videoRef}
+                    className="intro-video"
+                    preload="auto"
+                    autoPlay
+                    playsInline
+                >
+                    <source src={videoSrc} type="video/mp4" />
+                    Your browser does not support the video tag.
+                </video>
+                <button onClick={skipVideo} className="skip-video-btn">
+                    {skipText}
+                </button>
+            </div>
+        </div>
+    );
 
-      return () => {
-        video.removeEventListener('timeupdate', handleTimeUpdate);
-        video.removeEventListener('ended', handleVideoEnd);
-        video.removeEventListener('canplay', handleCanPlay);
-        video.removeEventListener('loadeddata', handleLoadedData);
-      };
+    if (gameState === 'intro') {
+        return (
+            <div className="yudhishtira-quest-game yudhishtira-intro" style={backgroundStyle}>
+                <button onClick={onBack} className="back-btn-corner">← Back</button>
+                <div className="intro-screen">
+                    <h1 className="intro-title">Yudhishthira's Quest</h1>
+                    <p className="intro-text">
+                        The Pandava brothers lie unconscious by the tranquil lake, cursed by Dharmaraj.
+                        Help Yudhishthira Maharaj get his brothers back. Answer the questions truthfully and wisely,
+                        for the life of the Pandava brothers depends on it!
+                    </p>
+                    <button onClick={startGame} className="start-button">Begin Quest</button>
+                </div>
+            </div>
+        );
     }
-  }, [handleVideoEnd, videoPhase]);
 
-  if (gameState === 'intro') {
-    return (
-      <div className="yudhishtira-quest-game yudhishtira-intro" style={{
-        backgroundImage: `linear-gradient(135deg, rgba(15, 20, 25, 0.8) 0%, rgba(26, 26, 46, 0.8) 50%, rgba(22, 33, 62, 0.8) 100%), url('/yudhistir_quest_BG.png')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat'
-      }}>
-        <button onClick={onBack} className="back-btn-corner">← Back</button>
-        <div className="background-particles">
-          {Array.from({ length: 15 }, (_, i) => (
-            <div key={i} className="particle" style={{
-              left: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 8}s`,
-              animationDuration: `${8 + Math.random() * 4}s`
-            }} />
-          ))}
-        </div>
-        
-        <div className="intro-screen">
-          <h1 className="intro-title">Yudhishthira's Quest</h1>
-          <p className="intro-text">
-            The Pandava brothers lie unconscious by the tranquil lake, cursed by Dharmaraj.
-            Only Yudhishthira's wisdom can save them. Answer the questions truthfully and wisely,
-            for the life of your brothers depends on it!
-          </p>
-          <button onClick={startGame} className="start-button">Begin Quest</button>
-        </div>
-      </div>
-    );
-  }
+    if (gameState === 'intro_video') {
+        return renderVideoScreen('/yudhisthir_quest_start.mp4', 'Skip to Game');
+    }
 
-  if (gameState === 'video') {
-    return (
-      <div className="yudhishtira-quest-game">
-        <button onClick={onBack} className="back-btn-corner">← Back</button>
-        <div className="video-screen">
-          <video
-            ref={videoRef}
-            className="intro-video"
-            preload="auto"
-            playsInline
-          >
-            <source src="/yudhisthir_quest_start.mp4" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-          <button onClick={skipVideo} className="skip-video-btn">
-            Skip to {videoPhase === 'intro' ? 'Game' : 'Results'}
-          </button>
-        </div>
-      </div>
-    );
-  }
+    if (gameState === 'win_video') {
+        return renderVideoScreen('/YudhistirQuest_Won.mp4', 'Skip to Results');
+    }
 
-  if (gameState === 'game') {
-    const currentQuestion = questions[currentQuestionIndex];
-    
-    return (
-      <div className="yudhishtira-quest-game game-active">
-        <button onClick={onBack} className="back-btn-corner">← Back</button>
-        <div 
-          className="game-background" 
-          style={{
-            backgroundImage: `url('/yudhistir_quest_BG.png')`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center center',
-            backgroundRepeat: 'no-repeat'
-          }}
-        />
-        
-        <div className="game-header">
-          <div className="header-top">
-            <div className="timer-section">
-              <div className={`timer ${questionTimer <= 10 ? 'warning' : ''}`}>
-                ⏰ {questionTimer}s
-              </div>
+    if (gameState === 'game') {
+        const currentQuestion = questions[currentQuestionIndex];
+
+        return (
+            <div className="yudhishtira-quest-game game-active" style={gameBackgroundStyle}>
+                <button onClick={onBack} className="back-btn-corner">← Back</button>
+
+                {/* Audio element for timer */}
+                <audio ref={audioRef} loop>
+                    <source src="/game_audio.mp3" type="audio/mpeg" />
+                </audio>
+
+                <div className="yud-game-header">
+                    <div className="progress-text">Question {currentQuestionIndex + 1} of {questions.length}</div>
+                    <div className="progress-bar">
+                        <div
+                            className="progress-fill"
+                            style={{ width: `${((currentQuestionIndex + 1) / questions.length) * 100}%` }}
+                        />
+                    </div>
+                </div>
+
+                {/* Timer display */}
+                <div className="timer-container">
+                    <div className={`timer ${timeLeft <= 3 ? 'timer-warning' : ''}`}>
+                        {timeLeft}s
+                    </div>
+                </div>
+
+                <div className="dharmaraj-image">👑</div>
+
+                <div className="game-ui">
+                    <div className="question-box">
+                        {currentQuestion.question}
+                    </div>
+
+                    <div className="options-container">
+                        {currentQuestion.options.map((option, index) => (
+                            <button
+                                key={index}
+                                className={`option-button ${selectedAnswer !== null
+                                    ? index === currentQuestion.correctAnswerIndex
+                                        ? 'correct'
+                                        : index === selectedAnswer && selectedAnswer !== -1
+                                            ? 'incorrect'
+                                            : ''
+                                    : ''
+                                    }`}
+                                onClick={() => handleAnswerSelect(index)}
+                                disabled={selectedAnswer !== null || !isTimerActive}
+                            >
+                                {option}
+                            </button>
+                        ))}
+                    </div>
+
+                    {showExplanation && (
+                        <div className={`message-box ${selectedAnswer === currentQuestion.correctAnswerIndex ? 'success' : 'failure'}`}>
+                            {selectedAnswer === -1 ? 'Time\'s up! ' : ''}{currentQuestion.explanation}
+                        </div>
+                    )}
+                </div>
             </div>
-            <div className="question-badge-section">
-              <div className="progress-text">Question {currentQuestionIndex + 1} of {questions.length}</div>
+        );
+    }
+
+    if (gameState === 'win_end') {
+        return (
+            <div className="yudhishtira-quest-game yudhishtira-end yudhishtira-victory" style={victoryBackgroundStyle}>
+                <button onClick={onBack} className="back-btn-corner">← Back</button>
+
+                {/* Poppers Animation */}
+                <div className="poppers-container">
+                    {Array.from({ length: 20 }, (_, i) => (
+                        <div
+                            key={i}
+                            className="popper"
+                            style={{
+                                left: `${Math.random() * 100}%`,
+                                animationDelay: `${Math.random() * 3}s`,
+                                animationDuration: `${3 + Math.random() * 2}s`
+                            }}
+                        >
+                            🎉
+                        </div>
+                    ))}
+                    {Array.from({ length: 15 }, (_, i) => (
+                        <div
+                            key={`confetti-${i}`}
+                            className="popper"
+                            style={{
+                                left: `${Math.random() * 100}%`,
+                                animationDelay: `${Math.random() * 3}s`,
+                                animationDuration: `${3 + Math.random() * 2}s`
+                            }}
+                        >
+                            🎊
+                        </div>
+                    ))}
+                    {Array.from({ length: 10 }, (_, i) => (
+                        <div
+                            key={`star-${i}`}
+                            className="popper"
+                            style={{
+                                left: `${Math.random() * 100}%`,
+                                animationDelay: `${Math.random() * 3}s`,
+                                animationDuration: `${3 + Math.random() * 2}s`
+                            }}
+                        >
+                            ⭐
+                        </div>
+                    ))}
+                </div>
+
+                <div className="end-screen victory-popup">
+                    <h1 className="end-message victory-title">Victory!</h1>
+                    <p className="end-summary victory-text">Congratulations! You helped Yudhishthira Maharaj get his brothers back. You answered {correctAnswers} out of {questions.length} questions correctly.</p>
+                    <div className="end-actions">
+                        <button onClick={restartGame} className="restart-button victory-button">Play Again</button>
+                    </div>
+                </div>
             </div>
-          </div>
-          <div className="progress-container">
-            <div className="progress-bar">
-              <div 
-                className="progress-fill" 
-                style={{ width: `${((currentQuestionIndex + 1) / questions.length) * 100}%` }}
-              />
+        );
+    }
+
+    if (gameState === 'lose_end') {
+        return (
+            <div className="yudhishtira-quest-game yudhishtira-end" style={backgroundStyle}>
+                <button onClick={onBack} className="back-btn-corner">← Back</button>
+                <div className="end-screen">
+                    <h1 className="end-message">Defeat</h1>
+                    <p className="end-summary">Wisdom was not sufficient to save the Pandava brothers. You answered {correctAnswers} out of {questions.length} questions correctly.</p>
+                    <div className="end-actions">
+                        <button onClick={restartGame} className="restart-button">Try Again</button>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
+        );
+    }
 
-        <div className="dharmaraj-image">👑</div>
-
-        <div className="game-ui">
-          
-          <div className="question-box">
-            {currentQuestion.question}
-          </div>
-          
-          <div className="options-container">
-            {currentQuestion.options.map((option, index) => (
-              <button
-                key={index}
-                className={`option-button ${
-                  selectedAnswer !== null
-                    ? index === currentQuestion.correctAnswerIndex
-                      ? 'correct'
-                      : index === selectedAnswer
-                      ? 'incorrect'
-                      : ''
-                    : ''
-                }`}
-                onClick={() => handleAnswerSelect(index)}
-                disabled={selectedAnswer !== null}
-              >
-                {option}
-              </button>
-            ))}
-          </div>
-
-          {showExplanation && (
-            <div className={`message-box ${selectedAnswer === currentQuestion.correctAnswerIndex ? 'success' : 'failure'}`}>
-              {currentQuestion.explanation}
-            </div>
-          )}
-        </div>
-
-        <div className="brother-icons">
-          {brothers.map((brother, index) => (
-            <div
-              key={brother.name}
-              className={`brother-icon ${brother.status}`}
-              data-name={brother.name}
-            >
-              {brother.emoji}
-            </div>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  if (gameState === 'end') {
-    const endResult = getEndMessage();
-    
-    return (
-      <div className="yudhishtira-quest-game yudhishtira-end" style={{
-        backgroundImage: `linear-gradient(135deg, rgba(15, 20, 25, 0.8) 0%, rgba(26, 26, 46, 0.8) 50%, rgba(22, 33, 62, 0.8) 100%), url('/yudhistir_quest_BG.png')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat'
-      }}>
-        <button onClick={onBack} className="back-btn-corner">← Back</button>
-        <div className="background-particles">
-          {Array.from({ length: 15 }, (_, i) => (
-            <div key={i} className="particle" style={{
-              left: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 8}s`,
-              animationDuration: `${8 + Math.random() * 4}s`
-            }} />
-          ))}
-        </div>
-        
-        <div className="end-screen">
-          <h1 className="end-message">{endResult.title}</h1>
-          <p className="end-summary">{endResult.message}</p>
-          <div className="end-actions">
-            <button onClick={restartGame} className="restart-button">Play Again</button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  return null;
+    return null;
 };
 
 export default YudhishtiraQuestGame;
