@@ -40,6 +40,8 @@ interface Question {
 const YudhishtiraQuestGame: React.FC<YudhishtiraQuestGameProps> = ({ onBack }) => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const audioRef = useRef<HTMLAudioElement>(null);
+    const errorAudioRef = useRef<HTMLAudioElement>(null);
+    const successAudioRef = useRef<HTMLAudioElement>(null);
     const timerRef = useRef<NodeJS.Timeout | null>(null);
     const [gameState, setGameState] = useState<'intro' | 'intro_video' | 'game' | 'win_video' | 'win_end' | 'lose_end'>('intro');
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -105,6 +107,14 @@ const YudhishtiraQuestGame: React.FC<YudhishtiraQuestGameProps> = ({ onBack }) =
                     setSelectedAnswer(-1); // Use -1 to indicate timeout
                     setShowExplanation(true);
 
+                    // Play error sound for timeout
+                    if (errorAudioRef.current) {
+                        errorAudioRef.current.currentTime = 0;
+                        errorAudioRef.current.play().catch(() => {
+                            // Audio play failed, continue without audio
+                        });
+                    }
+
                     setTimeout(() => {
                         if (currentQuestionIndex < questions.length - 1) {
                             setCurrentQuestionIndex(prev => prev + 1);
@@ -138,6 +148,21 @@ const YudhishtiraQuestGame: React.FC<YudhishtiraQuestGameProps> = ({ onBack }) =
 
         if (isCorrect) {
             setCorrectAnswers(prev => prev + 1);
+            // Play success sound for correct answer starting from 1 second
+            if (successAudioRef.current) {
+                successAudioRef.current.currentTime = 0;
+                successAudioRef.current.play().catch(() => {
+                    // Audio play failed, continue without audio
+                });
+            }
+        } else {
+            // Play error sound for wrong answer
+            if (errorAudioRef.current) {
+                errorAudioRef.current.currentTime = 0;
+                errorAudioRef.current.play().catch(() => {
+                    // Audio play failed, continue without audio
+                });
+            }
         }
 
         setTimeout(() => {
@@ -263,6 +288,16 @@ const YudhishtiraQuestGame: React.FC<YudhishtiraQuestGameProps> = ({ onBack }) =
                 {/* Audio element for timer */}
                 <audio ref={audioRef} loop>
                     <source src="/game_audio.mp3" type="audio/mpeg" />
+                </audio>
+
+                {/* Audio element for error sound */}
+                <audio ref={errorAudioRef}>
+                    <source src="/error.mp3" type="audio/mpeg" />
+                </audio>
+
+                {/* Audio element for success sound */}
+                <audio ref={successAudioRef}>
+                    <source src="/ding.mp3" type="audio/mpeg" />
                 </audio>
 
                 <div className="yud-game-header">

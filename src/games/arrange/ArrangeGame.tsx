@@ -69,6 +69,7 @@ const ArrangeGame: React.FC<ArrangeGameProps> = ({ onBack }) => {
   const muuriGridRef = useRef<Muuri | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
   const celebrationAudioRef = useRef<HTMLAudioElement>(null);
+  const errorAudioRef = useRef<HTMLAudioElement>(null);
 
   // Shuffle array utility
   const shuffleArray = <T,>(array: T[]): T[] => {
@@ -200,6 +201,10 @@ const ArrangeGame: React.FC<ArrangeGameProps> = ({ onBack }) => {
       timerRef.current = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
     } else if (gameState === 'playing' && timeLeft === 0) {
       setGameState('lost');
+      // Play error sound when time runs out
+      if (errorAudioRef.current) {
+        errorAudioRef.current.play().catch(console.error);
+      }
     }
     return () => {
       if (timerRef.current) {
@@ -260,6 +265,10 @@ const ArrangeGame: React.FC<ArrangeGameProps> = ({ onBack }) => {
       }
     } else {
       setShowError(true);
+      // Play error sound when validation fails
+      if (errorAudioRef.current) {
+        errorAudioRef.current.play().catch(console.error);
+      }
       setTimeout(() => setShowError(false), 2000);
     }
   };
@@ -298,6 +307,9 @@ const ArrangeGame: React.FC<ArrangeGameProps> = ({ onBack }) => {
       </audio>
       <audio ref={celebrationAudioRef}>
         <source src="/celebration_effect.mp3" type="audio/mpeg" />
+      </audio>
+      <audio ref={errorAudioRef}>
+        <source src="/error.mp3" type="audio/mpeg" />
       </audio>
 
       {/* Game Screen */}

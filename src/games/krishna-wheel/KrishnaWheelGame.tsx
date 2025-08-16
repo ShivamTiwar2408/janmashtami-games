@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import './KrishnaWheelGame.css';
 
 interface KrishnaWheelGameProps {
@@ -19,6 +19,7 @@ const KrishnaWheelGame: React.FC<KrishnaWheelGameProps> = ({ onBack }) => {
   const [showKrishnaAnimation, setShowKrishnaAnimation] = useState(false);
   const krishnaImageRef = useRef<HTMLImageElement | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
+  const dingAudioRef = useRef<HTMLAudioElement>(null);
 
   const messages: Message[] = [
     {
@@ -72,7 +73,7 @@ const KrishnaWheelGame: React.FC<KrishnaWheelGameProps> = ({ onBack }) => {
   ];
 
   // Shorter versions for wheel display
-  const wheelTexts = [
+  const wheelTexts = useMemo(() => [
     "Right to duty, not fruits",
     "Soul is eternal",
     "Own dharma is better",
@@ -85,19 +86,19 @@ const KrishnaWheelGame: React.FC<KrishnaWheelGameProps> = ({ onBack }) => {
     "Steady mind in meditation",
     "Rise with own efforts",
     "I am Time itself"
-  ];
+  ], []);
 
-  const colors = [
+  const colors = useMemo(() => [
     '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4',
     '#FFEAA7', '#DDA0DD', '#98D8C8', '#F7DC6F',
     '#BB8FCE', '#85C1E9', '#F8C471', '#82E0AA'
-  ];
+  ], []);
 
-  const darkColors = [
+  const darkColors = useMemo(() => [
     '#E74C3C', '#16A085', '#2980B9', '#27AE60',
     '#F39C12', '#8E44AD', '#1ABC9C', '#E67E22',
     '#9B59B6', '#3498DB', '#D68910', '#58D68D'
-  ];
+  ], []);
 
   const drawTextOnArc = useCallback((
     ctx: CanvasRenderingContext2D,
@@ -272,12 +273,22 @@ const KrishnaWheelGame: React.FC<KrishnaWheelGameProps> = ({ onBack }) => {
       const container = canvas.parentElement;
       if (!container) return;
 
-      const containerRect = container.getBoundingClientRect();
-      // Make the wheel as large as possible - use the minimum of container width and height
-      // Leave minimal margin for visual breathing room
-      const size = Math.min(containerRect.width - 10, containerRect.height - 10);
+      // Get the full screen dimensions
+      const screenWidth = window.innerWidth;
+      const screenHeight = window.innerHeight;
 
-      console.log('Canvas setup - Container size:', containerRect, 'Canvas size:', size);
+      // Use the minimum of screen width or height for maximum wheel size
+      // Leave some margin for UI elements and visual breathing room
+      const maxSize = Math.min(screenWidth, screenHeight) - 5;
+
+      // Also consider container constraints to ensure it fits
+      const containerRect = container.getBoundingClientRect();
+      const containerMaxSize = Math.min(containerRect.width - 10, containerRect.height - 10);
+
+      // Use the smaller of the two to ensure it fits properly
+      const size = Math.min(maxSize, containerMaxSize);
+
+      console.log('Canvas setup - Screen size:', screenWidth, 'x', screenHeight, 'Container size:', containerRect, 'Final canvas size:', size);
 
       const dpr = window.devicePixelRatio || 1;
       canvas.width = size * dpr;
@@ -370,6 +381,15 @@ const KrishnaWheelGame: React.FC<KrishnaWheelGameProps> = ({ onBack }) => {
         // Reset animation state first, then set message and trigger animation
         setShowKrishnaAnimation(false);
         setCurrentMessage(messages[winningSegmentIndex]);
+
+        // Play ding sound when Krishna's message appears
+        if (dingAudioRef.current) {
+          dingAudioRef.current.currentTime = 0;
+          dingAudioRef.current.play().catch(() => {
+            // Audio play failed, continue without audio
+          });
+        }
+
         // Trigger animation after a small delay to ensure state reset
         setTimeout(() => {
           setShowKrishnaAnimation(true);
@@ -412,6 +432,10 @@ const KrishnaWheelGame: React.FC<KrishnaWheelGameProps> = ({ onBack }) => {
 
         <audio ref={audioRef} loop>
           <source src="/wheel.mp3" type="audio/mpeg" />
+        </audio>
+
+        <audio ref={dingAudioRef}>
+          <source src="/ding.mp3" type="audio/mpeg" />
         </audio>
         <button
           className="spin-button"
