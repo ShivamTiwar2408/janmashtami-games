@@ -57,7 +57,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 7rem;
+  gap: 2rem;
 }
 
 .game-intro h2 {
@@ -155,7 +155,7 @@
 }
 
 .message-text {
-  font-size: 4.4rem;
+  font-size: 2.4rem;
   font-style: italic;
   margin-bottom: 1rem;
   font-weight: 500;
