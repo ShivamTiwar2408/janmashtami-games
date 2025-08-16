@@ -52,9 +52,9 @@ const YudhishtiraQuestGame: React.FC<YudhishtiraQuestGameProps> = ({ onBack }) =
     const [isTimerActive, setIsTimerActive] = useState(false);
 
     const questions = useMemo<Question[]>(() => {
-        // Shuffle the questions array and take only 8 questions
+        // Shuffle the questions array and take only 6 questions
         const shuffled = [...questionsData].sort(() => Math.random() - 0.5);
-        return shuffled.slice(0, 8);
+        return shuffled.slice(0, 6);
     }, []);
 
     const startGame = () => {
@@ -128,7 +128,7 @@ const YudhishtiraQuestGame: React.FC<YudhishtiraQuestGameProps> = ({ onBack }) =
                                 setGameState('lose_end');
                             }
                         }
-                    }, 3000);
+                    }, 5000);
 
                     return 0;
                 }
@@ -180,7 +180,7 @@ const YudhishtiraQuestGame: React.FC<YudhishtiraQuestGameProps> = ({ onBack }) =
                     setGameState('lose_end');
                 }
             }
-        }, 3000);
+        }, 5000);
     }, [questions, currentQuestionIndex, correctAnswers, selectedAnswer, isTimerActive, stopTimer]);
 
     const restartGame = () => {
