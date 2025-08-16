@@ -1,0 +1,88 @@
+{
+    "wheelSegments": [
+        {
+            "text": "You have the right to perform your prescribed duty, but not to the fruits of action",
+            "reference": "BG 2.47",
+            "wheelText": "Right to duty, not fruits",
+            "color": "#FF6B6B",
+            "darkColor": "#E74C3C"
+        },
+        {
+            "text": "The soul is neither born, and nor does it die; it is unborn, eternal, permanent",
+            "reference": "BG 2.20",
+            "wheelText": "Soul is eternal",
+            "color": "#4ECDC4",
+            "darkColor": "#16A085"
+        },
+        {
+            "text": "Better is one's own dharma, though imperfectly performed, than the dharma of another",
+            "reference": "BG 3.35",
+            "wheelText": "Own dharma is better",
+            "color": "#45B7D1",
+            "darkColor": "#2980B9"
+        },
+        {
+            "text": "The mind is restless, but it can be controlled by practice and detachment",
+            "reference": "BG 6.35",
+            "wheelText": "Mind can be controlled",
+            "color": "#96CEB4",
+            "darkColor": "#27AE60"
+        },
+        {
+            "text": "One who sees inaction in action, and action in inaction, is wise among men",
+            "reference": "BG 4.18",
+            "wheelText": "Wise see true action",
+            "color": "#FFEAA7",
+            "darkColor": "#F39C12"
+        },
+        {
+            "text": "Whatever you do, whatever you eat, offer it all to the Divine",
+            "reference": "BG 9.27",
+            "wheelText": "Offer all to Divine",
+            "color": "#DDA0DD",
+            "darkColor": "#8E44AD"
+        },
+        {
+            "text": "I am the same to all beings; none are dear to Me, nor do I dislike anyone",
+            "reference": "BG 9.29",
+            "wheelText": "I am same to all",
+            "color": "#98D8C8",
+            "darkColor": "#1ABC9C"
+        },
+        {
+            "text": "Abandon all varieties of dharma and surrender unto Me alone",
+            "reference": "BG 18.66",
+            "wheelText": "Surrender unto Me",
+            "color": "#F7DC6F",
+            "darkColor": "#E67E22"
+        },
+        {
+            "text": "Those who worship Me with devotion, I reside in their hearts",
+            "reference": "BG 9.29",
+            "wheelText": "I reside in devotees",
+            "color": "#BB8FCE",
+            "darkColor": "#9B59B6"
+        },
+        {
+            "text": "When meditation is mastered, the mind is unwavering like a flame in a windless place",
+            "reference": "BG 6.19",
+            "wheelText": "Steady mind in meditation",
+            "color": "#85C1E9",
+            "darkColor": "#3498DB"
+        },
+        {
+            "text": "Rise up with your own efforts; do not degrade yourself",
+            "reference": "BG 6.5",
+            "wheelText": "Rise with own efforts",
+            "color": "#F8C471",
+            "darkColor": "#D68910"
+        },
+        {
+            "text": "I am Time, the destroyer and creator of worlds",
+            "reference": "BG 11.32",
+            "wheelText": "I am Time itself",
+            "color": "#82E0AA",
+            "darkColor": "#58D68D"
+        }
+    ]
+}

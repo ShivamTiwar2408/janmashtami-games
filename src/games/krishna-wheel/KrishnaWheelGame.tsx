@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import './KrishnaWheelGame.css';
+import krishnaWheelData from './krishna-wheel-data.json';
 
 interface KrishnaWheelGameProps {
   onBack: () => void;
@@ -21,84 +22,14 @@ const KrishnaWheelGame: React.FC<KrishnaWheelGameProps> = ({ onBack }) => {
   const audioRef = useRef<HTMLAudioElement>(null);
   const dingAudioRef = useRef<HTMLAudioElement>(null);
 
-  const messages: Message[] = [
-    {
-      text: "You have the right to perform your prescribed duty, but not to the fruits of action",
-      reference: "BG 2.47"
-    },
-    {
-      text: "The soul is neither born, and nor does it die; it is unborn, eternal, permanent",
-      reference: "BG 2.20"
-    },
-    {
-      text: "Better is one's own dharma, though imperfectly performed, than the dharma of another",
-      reference: "BG 3.35"
-    },
-    {
-      text: "The mind is restless, but it can be controlled by practice and detachment",
-      reference: "BG 6.35"
-    },
-    {
-      text: "One who sees inaction in action, and action in inaction, is wise among men",
-      reference: "BG 4.18"
-    },
-    {
-      text: "Whatever you do, whatever you eat, offer it all to the Divine",
-      reference: "BG 9.27"
-    },
-    {
-      text: "I am the same to all beings; none are dear to Me, nor do I dislike anyone",
-      reference: "BG 9.29"
-    },
-    {
-      text: "Abandon all varieties of dharma and surrender unto Me alone",
-      reference: "BG 18.66"
-    },
-    {
-      text: "Those who worship Me with devotion, I reside in their hearts",
-      reference: "BG 9.29"
-    },
-    {
-      text: "When meditation is mastered, the mind is unwavering like a flame in a windless place",
-      reference: "BG 6.19"
-    },
-    {
-      text: "Rise up with your own efforts; do not degrade yourself",
-      reference: "BG 6.5"
-    },
-    {
-      text: "I am Time, the destroyer and creator of worlds",
-      reference: "BG 11.32"
-    }
-  ];
-
-  // Shorter versions for wheel display
-  const wheelTexts = useMemo(() => [
-    "Right to duty, not fruits",
-    "Soul is eternal",
-    "Own dharma is better",
-    "Mind can be controlled",
-    "Wise see true action",
-    "Offer all to Divine",
-    "I am same to all",
-    "Surrender unto Me",
-    "I reside in devotees",
-    "Steady mind in meditation",
-    "Rise with own efforts",
-    "I am Time itself"
-  ], []);
-
-  const colors = useMemo(() => [
-    '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4',
-    '#FFEAA7', '#DDA0DD', '#98D8C8', '#F7DC6F',
-    '#BB8FCE', '#85C1E9', '#F8C471', '#82E0AA'
-  ], []);
-
-  const darkColors = useMemo(() => [
-    '#E74C3C', '#16A085', '#2980B9', '#27AE60',
-    '#F39C12', '#8E44AD', '#1ABC9C', '#E67E22',
-    '#9B59B6', '#3498DB', '#D68910', '#58D68D'
-  ], []);
+  const messages: Message[] = useMemo(() => 
+    krishnaWheelData.wheelSegments.map(segment => ({
+      text: segment.text,
+      reference: segment.reference
+    })), []);
+  const wheelTexts = useMemo(() => krishnaWheelData.wheelSegments.map(segment => segment.wheelText), []);
+  const colors = useMemo(() => krishnaWheelData.wheelSegments.map(segment => segment.color), []);
+  const darkColors = useMemo(() => krishnaWheelData.wheelSegments.map(segment => segment.darkColor), []);
 
   const drawTextOnArc = useCallback((
     ctx: CanvasRenderingContext2D,
@@ -448,13 +379,15 @@ const KrishnaWheelGame: React.FC<KrishnaWheelGameProps> = ({ onBack }) => {
         <div className="message-display">
           {currentMessage ? (
             <>
+              <div>
+                <div className="message-text">"{currentMessage.text}"</div>
+                <div className="message-reference">- {currentMessage.reference}</div>
+              </div>
               <img
                 src="/BG_Krishna.jpg"
                 alt="Lord Krishna"
                 className={`krishna-image ${showKrishnaAnimation ? 'animate' : ''}`}
               />
-              <div className="message-text">"{currentMessage.text}"</div>
-              <div className="message-reference">- {currentMessage.reference}</div>
             </>
           ) : (
             <div style={{ opacity: 0.7 }}>
