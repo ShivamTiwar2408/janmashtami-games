@@ -48,7 +48,7 @@ const YudhishtiraQuestGame: React.FC<YudhishtiraQuestGameProps> = ({ onBack }) =
     const [correctAnswers, setCorrectAnswers] = useState(0);
     const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
     const [showExplanation, setShowExplanation] = useState(false);
-    const [timeLeft, setTimeLeft] = useState(10);
+    const [timeLeft, setTimeLeft] = useState(15);
     const [isTimerActive, setIsTimerActive] = useState(false);
 
     const questions = useMemo<Question[]>(() => {
@@ -89,7 +89,7 @@ const YudhishtiraQuestGame: React.FC<YudhishtiraQuestGameProps> = ({ onBack }) =
     }, []);
 
     const startTimer = useCallback(() => {
-        setTimeLeft(10);
+        setTimeLeft(15);
         setIsTimerActive(true);
 
         // Start audio
@@ -190,7 +190,7 @@ const YudhishtiraQuestGame: React.FC<YudhishtiraQuestGameProps> = ({ onBack }) =
         setCorrectAnswers(0);
         setSelectedAnswer(null);
         setShowExplanation(false);
-        setTimeLeft(10);
+        setTimeLeft(15);
     };
 
     // Video handling
