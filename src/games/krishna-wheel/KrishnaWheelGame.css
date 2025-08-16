@@ -57,17 +57,17 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 2rem;
+  gap: 7rem;
 }
 
 .game-intro h2 {
-  font-size: 2rem;
+  font-size: 5rem;
   margin-bottom: 1rem;
   text-align: center;
 }
 
 .game-intro p {
-  font-size: 1.1rem;
+  font-size: 1.5rem;
   line-height: 1.6;
   text-align: center;
 }
