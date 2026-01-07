@@ -575,6 +575,157 @@
 .tag.easy { background: linear-gradient(135deg, #4caf50, #45a049); color: white; }
 .tag.wisdom { background: linear-gradient(135deg, #673ab7, #512da8); color: white; }
 .tag.challenging { background: linear-gradient(135deg, #f44336, #d32f2f); color: white; }
+.tag.puzzle { background: linear-gradient(135deg, #2196F3, #1976D2); color: white; }
+.tag.medium { background: linear-gradient(135deg, #FF9800, #F57C00); color: white; }
+.tag.math { background: linear-gradient(135deg, #00BCD4, #0097A7); color: white; }
+.tag.fun { background: linear-gradient(135deg, #E91E63, #C2185B); color: white; }
+
+/* Math Monsoon Card Preview */
+.math-monsoon-visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.math-monsoon-preview {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.math-monsoon-preview .preview-cloud {
+    position: absolute;
+    top: 15%;
+    left: 20%;
+    font-size: 3rem;
+    opacity: 0.9;
+    animation: floatCloud 4s ease-in-out infinite;
+}
+
+.math-monsoon-preview .preview-drop {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 4rem;
+    animation: fallDrop 2s ease-in-out infinite;
+}
+
+.math-monsoon-preview .preview-equation {
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.95);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: bold;
+    color: #1E5799;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes floatCloud {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(15px); }
+}
+
+@keyframes fallDrop {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(20px); }
+}
+
+/* Memory Matrix Preview */
+.memory-matrix-preview {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.memory-matrix-preview .preview-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    padding: 20px;
+}
+
+.memory-matrix-preview .preview-tile {
+    width: 30px;
+    height: 30px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.memory-matrix-preview .preview-tile.lit {
+    background: rgba(0, 255, 255, 0.6);
+    border-color: #00ffff;
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 10px rgba(0, 255, 255, 0.5); }
+    50% { opacity: 0.7; box-shadow: 0 0 20px rgba(0, 255, 255, 0.8); }
+}
+
+.game-card.memory-matrix-card .game-tags .tag.memory {
+    background: linear-gradient(135deg, #00ffff, #00ff88);
+    color: #0a0a0f;
+}
+
+/* Lexicon Ascent Preview */
+.lexicon-ascent-preview {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.lexicon-ascent-preview .preview-word {
+    font-size: 2.5rem;
+}
+
+.lexicon-ascent-preview .preview-ladder {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.lexicon-ascent-preview .preview-ladder span {
+    width: 40px;
+    height: 20px;
+    background: rgba(45, 55, 72, 0.15);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    color: #4a5568;
+    font-weight: 600;
+}
+
+.game-card.lexicon-ascent-card .game-tags .tag.vocab {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+
+.game-card.lexicon-ascent-card .game-tags .tag.knowledge {
+    background: linear-gradient(135deg, #f093fb, #f5576c);
+    color: white;
+}
 
 /* Removed play overlay to keep images visible */
 

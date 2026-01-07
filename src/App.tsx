@@ -5,6 +5,9 @@ import './App.css';
 import KrishnaWheelGame from './games/krishna-wheel';
 import YudhishtiraQuestGame from './games/yudhishtira-quest';
 import ArrangeGame from './games/arrange';
+import MathMonsoonGame from './games/math-monsoon';
+import MemoryMatrixGame from './games/memory-matrix';
+import LexiconAscentGame from './games/lexicon-ascent';
 
 function KrishnaWheelGamePage() {
   const navigate = useNavigate();
@@ -19,6 +22,21 @@ function YudhishtiraQuestGamePage() {
 function ArrangeGamePage() {
   const navigate = useNavigate();
   return <ArrangeGame onBack={() => navigate('/')} />;
+}
+
+function MathMonsoonGamePage() {
+  const navigate = useNavigate();
+  return <MathMonsoonGame onBack={() => navigate('/')} />;
+}
+
+function MemoryMatrixGamePage() {
+  const navigate = useNavigate();
+  return <MemoryMatrixGame onBack={() => navigate('/')} />;
+}
+
+function LexiconAscentGamePage() {
+  const navigate = useNavigate();
+  return <LexiconAscentGame onBack={() => navigate('/')} />;
 }
 
 function HomePage() {
@@ -146,6 +164,108 @@ function HomePage() {
                 </div>
               </div>
             </div>
+
+            <div className="game-card math-monsoon-card" onClick={() => navigate('/math-monsoon')}>
+              <div
+                className="game-visual math-monsoon-visual"
+                style={{
+                  background: 'linear-gradient(180deg, #87CEEB 0%, #4A90D9 60%, #1E90FF 100%)'
+                }}
+              >
+                <div className="math-monsoon-preview">
+                  <span className="preview-cloud">☁️</span>
+                  <span className="preview-drop">💧</span>
+                  <span className="preview-equation">3 + 4</span>
+                </div>
+              </div>
+              <div className="game-content">
+                <h3 className="game-title">Math Monsoon</h3>
+                <p className="game-description">
+                  Solve math problems before raindrops hit the water! Quick thinking earns more points.
+                </p>
+                <div className="game-features">
+                  <span className="feature">🧮 Math Challenge</span>
+                  <span className="feature">⚡ Speed Bonus</span>
+                  <span className="feature">🌧️ Increasing Difficulty</span>
+                </div>
+                <div className="game-tags">
+                  <span className="tag math">MATH</span>
+                  <span className="tag fun">FUN</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="game-card memory-matrix-card" onClick={() => navigate('/memory-matrix')}>
+              <div
+                className="game-visual memory-matrix-visual"
+                style={{
+                  background: 'linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #16213e 100%)'
+                }}
+              >
+                <div className="memory-matrix-preview">
+                  <div className="preview-grid">
+                    <span className="preview-tile"></span>
+                    <span className="preview-tile lit"></span>
+                    <span className="preview-tile"></span>
+                    <span className="preview-tile lit"></span>
+                    <span className="preview-tile"></span>
+                    <span className="preview-tile"></span>
+                    <span className="preview-tile"></span>
+                    <span className="preview-tile lit"></span>
+                    <span className="preview-tile"></span>
+                  </div>
+                </div>
+              </div>
+              <div className="game-content">
+                <h3 className="game-title">Memory Matrix</h3>
+                <p className="game-description">
+                  Test your visual memory! Memorize the pattern and select the correct tiles.
+                </p>
+                <div className="game-features">
+                  <span className="feature">🧠 Memory Test</span>
+                  <span className="feature">⚡ Time Bonus</span>
+                  <span className="feature">📈 Progressive Stages</span>
+                </div>
+                <div className="game-tags">
+                  <span className="tag memory">MEMORY</span>
+                  <span className="tag challenging">CHALLENGING</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="game-card lexicon-ascent-card" onClick={() => navigate('/lexicon-ascent')}>
+              <div
+                className="game-visual lexicon-ascent-visual"
+                style={{
+                  background: 'linear-gradient(135deg, #f5f7fa 0%, #e4e8ec 50%, #d1d5db 100%)'
+                }}
+              >
+                <div className="lexicon-ascent-preview">
+                  <span className="preview-word">📚</span>
+                  <div className="preview-ladder">
+                    <span>1</span>
+                    <span>2</span>
+                    <span>3</span>
+                    <span>4</span>
+                  </div>
+                </div>
+              </div>
+              <div className="game-content">
+                <h3 className="game-title">Lexicon Ascent</h3>
+                <p className="game-description">
+                  Arrange words by intensity! Tap to reveal meanings and order from least to most.
+                </p>
+                <div className="game-features">
+                  <span className="feature">📖 Vocabulary</span>
+                  <span className="feature">⏱️ Time-Based</span>
+                  <span className="feature">📈 4 Levels</span>
+                </div>
+                <div className="game-tags">
+                  <span className="tag vocab">VOCAB</span>
+                  <span className="tag knowledge">KNOWLEDGE</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -205,6 +325,9 @@ function App() {
         <Route path="/krishna-wheel" element={<KrishnaWheelGamePage />} />
         <Route path="/yudhishtira-quest" element={<YudhishtiraQuestGamePage />} />
         <Route path="/arrange" element={<ArrangeGamePage />} />
+        <Route path="/math-monsoon" element={<MathMonsoonGamePage />} />
+        <Route path="/memory-matrix" element={<MemoryMatrixGamePage />} />
+        <Route path="/lexicon-ascent" element={<LexiconAscentGamePage />} />
       </Routes>
       <Analytics />
     </Router>
