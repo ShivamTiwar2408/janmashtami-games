@@ -1,0 +1,180 @@
+{
+  "rounds": [
+    {
+      "situation": "I keep worrying about whether my hard work will pay off.",
+      "icon": "😟",
+      "options": [
+        {
+          "verse": "You have a right to your actions, but never to the fruits of your actions.",
+          "reference": "Bhagavad Gita 2.47",
+          "correct": true
+        },
+        {
+          "verse": "For the soul there is neither birth nor death at any time.",
+          "reference": "Bhagavad Gita 2.20",
+          "correct": false
+        },
+        {
+          "verse": "Whatever you do, do it as an offering to Me.",
+          "reference": "Bhagavad Gita 9.27",
+          "correct": false
+        }
+      ],
+      "teaching": "Do your duty sincerely and surrender the results. Anxiety about outcomes only disturbs the mind; steady effort offered to Krishna brings peace."
+    },
+    {
+      "situation": "I'm terrified of dying and losing the people I love.",
+      "icon": "😨",
+      "options": [
+        {
+          "verse": "For the soul there is neither birth nor death; it is unborn, eternal, and is not slain when the body is slain.",
+          "reference": "Bhagavad Gita 2.20",
+          "correct": true
+        },
+        {
+          "verse": "The mind is restless and difficult to restrain, but it is subdued by practice.",
+          "reference": "Bhagavad Gita 6.35",
+          "correct": false
+        },
+        {
+          "verse": "One who sees inaction in action, and action in inaction, is wise.",
+          "reference": "Bhagavad Gita 4.18",
+          "correct": false
+        }
+      ],
+      "teaching": "The body changes, but the soul is eternal. Understanding our true self as spirit dissolves the fear of death."
+    },
+    {
+      "situation": "My mind never sits still — it races all day and I can't focus.",
+      "icon": "🌀",
+      "options": [
+        {
+          "verse": "The mind is restless and difficult to restrain, but it is subdued by practice and detachment.",
+          "reference": "Bhagavad Gita 6.35",
+          "correct": true
+        },
+        {
+          "verse": "You have a right to your actions, but never to the fruits of your actions.",
+          "reference": "Bhagavad Gita 2.47",
+          "correct": false
+        },
+        {
+          "verse": "I am the source of all spiritual and material worlds.",
+          "reference": "Bhagavad Gita 10.8",
+          "correct": false
+        }
+      ],
+      "teaching": "Krishna agrees the mind is hard to control — but says it can be tamed through steady practice (abhyasa) and detachment (vairagya)."
+    },
+    {
+      "situation": "I feel guilty about my past mistakes and wonder if I can be forgiven.",
+      "icon": "😔",
+      "options": [
+        {
+          "verse": "Abandon all varieties of dharma and just surrender unto Me. I shall deliver you from all sinful reactions. Do not fear.",
+          "reference": "Bhagavad Gita 18.66",
+          "correct": true
+        },
+        {
+          "verse": "The soul is unbreakable, insoluble, and can be neither burned nor dried.",
+          "reference": "Bhagavad Gita 2.24",
+          "correct": false
+        },
+        {
+          "verse": "A person can rise through the efforts of his own mind.",
+          "reference": "Bhagavad Gita 6.5",
+          "correct": false
+        }
+      ],
+      "teaching": "Krishna's ultimate promise: complete surrender frees us from all past reactions. Sincere devotion opens the door to a fresh start."
+    },
+    {
+      "situation": "Someone insulted me and I'm burning with anger and want revenge.",
+      "icon": "😡",
+      "options": [
+        {
+          "verse": "From anger comes delusion; from delusion, loss of memory; from loss of memory, the ruin of intelligence.",
+          "reference": "Bhagavad Gita 2.63",
+          "correct": true
+        },
+        {
+          "verse": "Whatever you do, whatever you eat, do it as an offering to Me.",
+          "reference": "Bhagavad Gita 9.27",
+          "correct": false
+        },
+        {
+          "verse": "There was never a time when I did not exist, nor you.",
+          "reference": "Bhagavad Gita 2.12",
+          "correct": false
+        }
+      ],
+      "teaching": "Anger clouds judgment and destroys our discrimination. Recognising this chain reaction helps us pause before it ruins us."
+    },
+    {
+      "situation": "I don't know if I should follow my duty or take the easier path.",
+      "icon": "🤔",
+      "options": [
+        {
+          "verse": "It is far better to perform one's own duty imperfectly than to master another's. Better to fail in your own dharma.",
+          "reference": "Bhagavad Gita 3.35",
+          "correct": true
+        },
+        {
+          "verse": "The mind is restless and difficult to restrain.",
+          "reference": "Bhagavad Gita 6.35",
+          "correct": false
+        },
+        {
+          "verse": "For the soul there is neither birth nor death.",
+          "reference": "Bhagavad Gita 2.20",
+          "correct": false
+        }
+      ],
+      "teaching": "Living your own authentic duty — even imperfectly — is better than imitating someone else's path. Be true to your dharma."
+    },
+    {
+      "situation": "I feel alone, like no one is really with me in life.",
+      "icon": "😞",
+      "options": [
+        {
+          "verse": "To those who are constantly devoted and worship Me with love, I give the understanding by which they can come to Me.",
+          "reference": "Bhagavad Gita 10.10",
+          "correct": true
+        },
+        {
+          "verse": "One who sees inaction in action is wise among men.",
+          "reference": "Bhagavad Gita 4.18",
+          "correct": false
+        },
+        {
+          "verse": "The three gunas born of nature bind the soul to the body.",
+          "reference": "Bhagavad Gita 14.5",
+          "correct": false
+        }
+      ],
+      "teaching": "Krishna is the ever-present friend within every heart. Turning to Him with love, we are never truly alone — He guides us from within."
+    },
+    {
+      "situation": "I want to grow spiritually but I keep sabotaging myself.",
+      "icon": "🪷",
+      "options": [
+        {
+          "verse": "Elevate yourself through the power of your own mind, and do not degrade yourself. The mind can be a friend or an enemy.",
+          "reference": "Bhagavad Gita 6.5",
+          "correct": true
+        },
+        {
+          "verse": "You have a right to your actions, but never to their fruits.",
+          "reference": "Bhagavad Gita 2.47",
+          "correct": false
+        },
+        {
+          "verse": "Abandon all varieties of dharma and surrender unto Me.",
+          "reference": "Bhagavad Gita 18.66",
+          "correct": false
+        }
+      ],
+      "teaching": "The same mind that drags us down can lift us up. We are our own best friend when we train the mind, and our own enemy when we let it run wild."
+    }
+  ]
+}

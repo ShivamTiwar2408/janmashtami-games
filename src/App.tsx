@@ -8,6 +8,8 @@ import ArrangeGame from './games/arrange';
 import MathMonsoonGame from './games/math-monsoon';
 import MemoryMatrixGame from './games/memory-matrix';
 import LexiconAscentGame from './games/lexicon-ascent';
+import MatchWisdomGame from './games/match-wisdom';
+import GovardhanLiftGame from './games/govardhan-lift';
 
 function KrishnaWheelGamePage() {
   const navigate = useNavigate();
@@ -37,6 +39,16 @@ function MemoryMatrixGamePage() {
 function LexiconAscentGamePage() {
   const navigate = useNavigate();
   return <LexiconAscentGame onBack={() => navigate('/')} />;
+}
+
+function MatchWisdomGamePage() {
+  const navigate = useNavigate();
+  return <MatchWisdomGame onBack={() => navigate('/')} />;
+}
+
+function GovardhanLiftGamePage() {
+  const navigate = useNavigate();
+  return <GovardhanLiftGame onBack={() => navigate('/')} />;
 }
 
 function HomePage() {
@@ -266,6 +278,62 @@ function HomePage() {
                 </div>
               </div>
             </div>
+
+            <div className="game-card match-wisdom-card" onClick={() => navigate('/match-wisdom')}>
+              <div className="game-badge">New</div>
+              <div
+                className="game-visual match-wisdom-visual"
+                style={{
+                  backgroundImage: `linear-gradient(135deg, rgba(43,16,85,0.55), rgba(117,151,222,0.55)), url('/krishna_with_flute.jpg')`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center'
+                }}
+              >
+              </div>
+              <div className="game-content">
+                <h3 className="game-title">Match the Wisdom</h3>
+                <p className="game-description">
+                  A real-life feeling appears on screen — pick the Bhagavad Gita verse that answers it. See how Krishna's words apply to daily life.
+                </p>
+                <div className="game-features">
+                  <span className="feature">💬 Real Situations</span>
+                  <span className="feature">📜 Gita Verses</span>
+                  <span className="feature">⏱️ Timed Rounds</span>
+                </div>
+                <div className="game-tags">
+                  <span className="tag spiritual">SPIRITUAL</span>
+                  <span className="tag easy">EASY</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="game-card govardhan-lift-card" onClick={() => navigate('/govardhan-lift')}>
+              <div className="game-badge">New</div>
+              <div
+                className="game-visual govardhan-lift-visual"
+                style={{
+                  backgroundImage: `linear-gradient(135deg, rgba(26,42,108,0.45), rgba(106,155,63,0.45)), url('/krishna_lila/krishna_lifts_govardhan.png')`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center'
+                }}
+              >
+              </div>
+              <div className="game-content">
+                <h3 className="game-title">Lift Govardhan Together</h3>
+                <p className="game-description">
+                  A team game for the whole crowd! Everyone taps together to raise Govardhan Hill before time runs out — Krishna's lesson in unity and surrender.
+                </p>
+                <div className="game-features">
+                  <span className="feature">👨‍👩‍👧‍👦 Crowd Co-op</span>
+                  <span className="feature">⚡ Tap Together</span>
+                  <span className="feature">⏱️ Beat the Clock</span>
+                </div>
+                <div className="game-tags">
+                  <span className="tag spiritual">TEAMWORK</span>
+                  <span className="tag fun">FUN</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -328,6 +396,8 @@ function App() {
         <Route path="/math-monsoon" element={<MathMonsoonGamePage />} />
         <Route path="/memory-matrix" element={<MemoryMatrixGamePage />} />
         <Route path="/lexicon-ascent" element={<LexiconAscentGamePage />} />
+        <Route path="/match-wisdom" element={<MatchWisdomGamePage />} />
+        <Route path="/govardhan-lift" element={<GovardhanLiftGamePage />} />
       </Routes>
       <Analytics />
     </Router>
