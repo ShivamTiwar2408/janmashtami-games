@@ -21,6 +21,10 @@ jobs:
     env:
       VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
       VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      # CRA (react-scripts) treats lint warnings as errors when CI=true, which
+      # GitHub Actions sets automatically. The repo has pre-existing warnings,
+      # so disable that here (same effect as vercel.json for the remote build).
+      CI: "false"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
