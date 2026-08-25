@@ -640,6 +640,54 @@
     50% { transform: translateX(-50%) translateY(20px); }
 }
 
+/* Dahi Handi Preview */
+.dahi-handi-preview {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.dahi-handi-preview .preview-rope {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 3px;
+    height: 38%;
+    background: linear-gradient(180deg, #e8d6ae, #b99e6d);
+    transform-origin: top center;
+    animation: handiSwing 3.4s ease-in-out infinite;
+}
+
+.dahi-handi-preview .preview-pot {
+    position: absolute;
+    top: 34%;
+    left: 50%;
+    font-size: 2.6rem;
+    transform-origin: 50% -70%;
+    transform: translateX(-50%);
+    animation: handiSwing 3.4s ease-in-out infinite;
+    filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.45));
+}
+
+.dahi-handi-preview .preview-sling {
+    position: absolute;
+    bottom: 12%;
+    left: 22%;
+    font-size: 1.3rem;
+    animation: handiThrow 3.4s ease-in-out infinite;
+}
+
+@keyframes handiSwing {
+    0%, 100% { rotate: -13deg; }
+    50% { rotate: 13deg; }
+}
+
+@keyframes handiThrow {
+    0%, 60% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+    85% { transform: translate(90px, -70px) rotate(320deg); opacity: 1; }
+    86%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 0.3; }
+}
+
 /* Memory Matrix Preview */
 .memory-matrix-preview {
     position: relative;

@@ -10,6 +10,7 @@ import MemoryMatrixGame from './games/memory-matrix';
 import LexiconAscentGame from './games/lexicon-ascent';
 import MatchWisdomGame from './games/match-wisdom';
 import GovardhanLiftGame from './games/govardhan-lift';
+import DahiHandiGame from './games/dahi-handi';
 
 function KrishnaWheelGamePage() {
   const navigate = useNavigate();
@@ -49,6 +50,11 @@ function MatchWisdomGamePage() {
 function GovardhanLiftGamePage() {
   const navigate = useNavigate();
   return <GovardhanLiftGame onBack={() => navigate('/')} />;
+}
+
+function DahiHandiGamePage() {
+  const navigate = useNavigate();
+  return <DahiHandiGame onBack={() => navigate('/')} />;
 }
 
 function HomePage() {
@@ -101,6 +107,38 @@ function HomePage() {
           <p className="section-subtitle">Experience Krishna's wisdom through interactive gameplay</p>
 
           <div className="games-grid">
+            <div className="game-card featured dahi-handi-card" onClick={() => navigate('/dahi-handi')}>
+              <div className="game-badge">3D · New</div>
+              <div
+                className="game-visual dahi-handi-visual"
+                style={{
+                  background: 'linear-gradient(180deg, #10163a 0%, #3c2a63 38%, #9c4f4a 65%, #e3893f 88%, #f7c874 100%)'
+                }}
+              >
+                <div className="dahi-handi-preview">
+                  <span className="preview-rope" />
+                  <span className="preview-pot">🫙</span>
+                  <span className="preview-sling">🪨</span>
+                </div>
+              </div>
+              <div className="game-content">
+                <h3 className="game-title">Dahi Handi 3D</h3>
+                <p className="game-description">
+                  A clay pot full of makhan swings from a rope high above. Draw the slingshot, judge the
+                  arc, and shatter the handi — real projectile physics in full 3D.
+                </p>
+                <div className="game-features">
+                  <span className="feature">🧊 True 3D Scene</span>
+                  <span className="feature">🎯 Projectile Physics</span>
+                  <span className="feature">💥 Shatter &amp; Spill</span>
+                </div>
+                <div className="game-tags">
+                  <span className="tag puzzle">SKILL</span>
+                  <span className="tag challenging">CHALLENGING</span>
+                </div>
+              </div>
+            </div>
+
             <div className="game-card featured krishna-card" onClick={() => navigate('/krishna-wheel')}>
               <div className="game-badge">Most Popular</div>
               <div
@@ -398,6 +436,7 @@ function App() {
         <Route path="/lexicon-ascent" element={<LexiconAscentGamePage />} />
         <Route path="/match-wisdom" element={<MatchWisdomGamePage />} />
         <Route path="/govardhan-lift" element={<GovardhanLiftGamePage />} />
+        <Route path="/dahi-handi" element={<DahiHandiGamePage />} />
       </Routes>
       <Analytics />
     </Router>
