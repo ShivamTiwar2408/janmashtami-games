@@ -57,6 +57,14 @@ function DahiHandiGamePage() {
   return <DahiHandiGame onBack={() => navigate('/')} />;
 }
 
+/*
+ * The four games on the home screen are the ones being shown this year. The
+ * rest still work — their routes below are untouched, so a direct link or a
+ * kiosk bookmark keeps playing them — they're just off the menu. Flip this to
+ * true to bring the whole catalogue back.
+ */
+const SHOW_ARCHIVED_GAMES = false;
+
 function HomePage() {
   const navigate = useNavigate();
 
@@ -215,6 +223,9 @@ function HomePage() {
               </div>
             </div>
 
+            {/* Kept in place rather than deleted, and left at this indent so
+                the diff stays readable when they come back. */}
+            {SHOW_ARCHIVED_GAMES && (<>
             <div className="game-card math-monsoon-card" onClick={() => navigate('/math-monsoon')}>
               <div
                 className="game-visual math-monsoon-visual"
@@ -372,6 +383,7 @@ function HomePage() {
                 </div>
               </div>
             </div>
+            </>)}
           </div>
         </div>
       </div>
