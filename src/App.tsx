@@ -199,7 +199,7 @@ function HomePage() {
               >
               </div>
               <div className="game-content">
-                <h3 className="game-title">Divine Stories Arrange</h3>
+                <h3 className="game-title">Krishna Lila Puzzle</h3>
                 <p className="game-description">
                   Choose from Krishna Lila, Mahabharat, or Gaur Lila and arrange story tiles in chronological order.
                 </p>

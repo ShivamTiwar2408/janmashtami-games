@@ -19,7 +19,7 @@ const page = await context.newPage();
 const beat = (ms) => page.waitForTimeout(ms);
 
 await page.goto(BASE);
-await page.getByRole('heading', { name: 'Divine Stories Arrange', exact: true }).click();
+await page.getByRole('heading', { name: 'Krishna Lila Puzzle', exact: true }).click();
 await page.waitForSelector('.gi-bar');
 await beat(2600);
 await page.screenshot({ path: `${OUT}/1-attract.png` });

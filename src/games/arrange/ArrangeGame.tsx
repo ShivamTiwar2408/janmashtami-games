@@ -543,7 +543,7 @@ const ArrangeGame: React.FC<ArrangeGameProps> = ({ onBack }) => {
         <GameIntro
           gameId="arrange"
           emoji="🪈"
-          title="Krishna Lila Stories"
+          title="Krishna Lila Puzzle"
           tagline="Put the divine pastimes back in the order they happened — before the clock runs out."
           hints={[
             "🖼️ Nine scenes from Krishna's life, shuffled",
@@ -611,7 +611,7 @@ const ArrangeGame: React.FC<ArrangeGameProps> = ({ onBack }) => {
               {onBack ? "← Back" : "🔄 New Game"}
             </button>
             <div className="game-title-section">
-              <h1>Krishna Lila Stories</h1>
+              <h1>Krishna Lila Puzzle</h1>
               <p>Drag the tiles into the order the pastimes happened</p>
             </div>
             <div className={`timer ${timeLeft <= 10 ? "warning" : ""}`}>
@@ -668,7 +668,7 @@ const ArrangeGame: React.FC<ArrangeGameProps> = ({ onBack }) => {
       {(gameState === "victory-celebration" || gameState === "lost") && (
         <GameResultPanel
           gameId="arrange"
-          gameTitle="Krishna Lila Stories"
+          gameTitle="Krishna Lila Puzzle"
           headline={
             gameState === "victory-celebration" ? "Victory!" : "Time's Up!"
           }

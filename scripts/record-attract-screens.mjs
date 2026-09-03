@@ -90,7 +90,7 @@ await beat(3000);
 await shot('math-monsoon-playing');
 
 // ------------------------------------------- Arrange (face-down tiles)
-await openGame('Divine Stories Arrange');
+await openGame('Krishna Lila Puzzle');
 await beat(4200); // backs only — no pastime and no hint of the order
 await shot('arrange-attract');
 await page.getByRole('button', { name: /Start Playing/ }).first().click();
