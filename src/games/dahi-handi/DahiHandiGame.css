@@ -194,90 +194,17 @@
     animation: dh-fade 0.45s ease-out 1.9s both;
 }
 
-/* title screen: the scene plays itself behind, so the card sits low and see-through */
-.dh-overlay-attract {
-    background: linear-gradient(to top, rgba(8, 6, 20, 0.9) 0%, rgba(8, 6, 20, 0.4) 42%, rgba(8, 6, 20, 0) 72%);
-    align-items: flex-end;
-    padding-bottom: 26px;
-    pointer-events: none;
-}
+@keyframes dh-fade {
+    from {
+        opacity: 0;
+    }
 
-/* one low bar, so the showreel keeps the whole frame above it */
-.dh-attract-bar {
-    pointer-events: auto;
-    width: min(1000px, 96vw);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 22px;
-    padding: 14px 22px;
-    border-radius: 20px;
-    background: linear-gradient(160deg, rgba(38, 22, 64, 0.72), rgba(20, 12, 36, 0.8));
-    border: 1px solid rgba(255, 200, 120, 0.3);
-    backdrop-filter: blur(7px);
-    box-shadow: 0 18px 50px rgba(0, 0, 0, 0.5);
-}
-
-.dh-title-sm {
-    margin: 0 0 4px;
-    font-size: clamp(1.1rem, 2.4vw, 1.5rem);
-}
-
-.dh-attract-line {
-    margin: 0;
-    font-size: 0.88rem;
-    line-height: 1.5;
-    color: rgba(255, 255, 255, 0.78);
-}
-
-.dh-attract-cta {
-    text-align: center;
-    flex: none;
-}
-
-.dh-attract-cta .dh-best {
-    margin-top: 8px;
-}
-
-@media (max-width: 620px) {
-    .dh-attract-bar {
-        flex-direction: column;
-        text-align: center;
-        gap: 12px;
+    to {
+        opacity: 1;
     }
 }
 
-.dh-demo-tag {
-    position: absolute;
-    top: 18px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 7px 16px;
-    border-radius: 999px;
-    font-size: 0.82rem;
-    letter-spacing: 0.04em;
-    color: rgba(255, 255, 255, 0.85);
-    background: rgba(10, 6, 22, 0.55);
-    border: 1px solid rgba(255, 200, 120, 0.3);
-    backdrop-filter: blur(6px);
-}
-
-.dh-demo-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: #ff6b6b;
-    animation: dh-pulse 1.4s ease-in-out infinite;
-}
-
-/* the one thing to click, so it breathes */
-.dh-cta {
-    animation: dh-cta-pulse 2.2s ease-in-out infinite;
-}
-
+/* the shot clock, once it goes low */
 @keyframes dh-pulse {
 
     0%,
@@ -289,28 +216,6 @@
     50% {
         opacity: 0.35;
         transform: scale(0.8);
-    }
-}
-
-@keyframes dh-cta-pulse {
-
-    0%,
-    100% {
-        box-shadow: 0 10px 26px rgba(255, 107, 107, 0.35);
-    }
-
-    50% {
-        box-shadow: 0 10px 34px rgba(255, 159, 67, 0.75);
-    }
-}
-
-@keyframes dh-fade {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
     }
 }
 
@@ -371,11 +276,6 @@
     transform: translateY(-2px);
 }
 
-.dh-best {
-    margin: 14px 0 0;
-    font-size: 0.88rem;
-    color: rgba(255, 255, 255, 0.6);
-}
 
 .dh-points {
     margin: 0 0 18px;

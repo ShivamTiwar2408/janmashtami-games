@@ -1,858 +1,615 @@
-/* ========================================
-   SIZING CONSTANTS - Change these values to control the entire grid
-   ======================================== */
-:root {
-  /* Main tile size - Change this single value to resize everything */
-  --tile-size: 280px;
-  
-  /* Calculated values based on tile size */
-  --tile-margin: calc(var(--tile-size) * 0.018);
-  --tile-padding: calc(var(--tile-size) * 0.025);
-  --tile-border-radius: calc(var(--tile-size) * 0.067);
-  
-  /* Grid calculations (3x3 grid) */
+/* ============================================================
+   Krishna Lila Stories — arrange the pastimes in order.
+
+   Sizing is driven by --tile-size, which is derived from the viewport so the
+   whole 3x3 grid *and* the validate button fit on one screen without scrolling
+   (it used to run off the bottom of a 1080p display).
+
+   Deliberately few animations: the old version kept ~25 elements animating
+   box-shadow and filter forever (title glow, tile glow, nine position glows,
+   a shimmer sweep, a floating emoji layer). All of those repaint every frame,
+   which is exactly what you don't want while dragging tiles with Muuri.
+   What's left is transform/opacity only, and mostly on interaction.
+   ============================================================ */
+
+.arrange-game-app {
+  /* --tile-size is the *slot*: the card sits inside it, inset by --tile-gap.
+     Gutters as item margins made Muuri's first slot flush and the last one a
+     margin short, so the frame never looked centred. */
+
+  /* The board takes whatever the screen has left after the chrome, instead of a
+     flat 24vh guess that left a band of empty purple on every 1080p display.
+     --arrange-chrome is the measured cost of header + button + gaps + padding
+     (~220px at 1080p with the type sizes below); the vh term lets it grow with
+     the type, the rem floor keeps it honest on short screens. Keep it in step
+     with the header/button font sizes — under-reserve and .game-screen grows
+     past 100vh, which the app's overflow:hidden silently clips. */
+  --arrange-chrome: clamp(10rem, 21vh, 15.5rem);
+  --tile-vh: 100vh;
+  --tile-size: min(
+    calc((var(--tile-vh) - var(--arrange-chrome)) / 3),
+    calc((100vw - 2.5rem) / 3),
+    380px);
+  --tile-gap: calc(var(--tile-size) * 0.03);
+  --tile-radius: 18px;
   --grid-columns: 3;
-  --grid-width: calc((var(--tile-size) + (var(--tile-margin) * 2)) * var(--grid-columns) + (var(--tile-padding) * 2));
-  --grid-padding: calc(var(--tile-padding) * 0.7);
-  
-  /* Tile proportional sizes */
-  --tile-image-size: calc(var(--tile-size) * 0.90);
-  --tile-emoji-size: calc(var(--tile-size) * 0.111);
-  --tile-title-size: calc(var(--tile-size) * 0.065);
-  
-  /* Mobile breakpoint calculations */
-  --mobile-tile-size: calc(var(--tile-size) * 0.778);
-  --mobile-tile-margin: calc(var(--mobile-tile-size) * 0.014);
-  --mobile-tile-padding: calc(var(--mobile-tile-size) * 0.025);
-  --mobile-tile-image-size: calc(var(--mobile-tile-size) * 0.75);
-  --mobile-grid-columns: 2;
-  
-  /* Common gradients */
-  --gold-gradient: linear-gradient(135deg, #FFD700 0%, #FF8C00 50%, #FFA500 100%);
-  --glass-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.3) 0%, rgba(255, 215, 0, 0.1) 50%, rgba(255, 165, 0, 0.15) 100%);
+  /* No container padding: Muuri lays items out from the border box and ignores
+     it, so padding would only ever show up on the right and bottom. The frame's
+     breathing room comes from each card's own --tile-gap inset instead. */
+  --grid-width: calc(var(--tile-size) * var(--grid-columns));
+
+  --ink: #f7f2ff;
+  --ink-soft: rgba(247, 242, 255, 0.72);
+  --gold: #ffc53d;
+  --gold-deep: #ff9e2c;
+  --gold-gradient: linear-gradient(135deg, #ffc53d 0%, #ff8f2b 100%);
+  --card: rgba(255, 255, 255, 0.94);
+  --hairline: rgba(255, 255, 255, 0.16);
+
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  color: var(--ink);
+  background-color: #2b1055;
+  background-image:
+    radial-gradient(circle at 12% 8%, rgba(255, 197, 61, 0.16), transparent 46%),
+    radial-gradient(circle at 88% 12%, rgba(16, 190, 190, 0.16), transparent 44%),
+    radial-gradient(circle at 72% 96%, rgba(255, 110, 165, 0.2), transparent 52%),
+    linear-gradient(160deg, #3a1663 0%, #5c1f57 52%, #7d3340 100%);
 }
 
-/* Scoped reset only for arrange game */
-.arrange-game-app * {
-  margin: 0;
-  padding: 0;
+.arrange-game-app *,
+.arrange-game-app *::before,
+.arrange-game-app *::after {
   box-sizing: border-box;
 }
 
-/* Scoped body styles only when arrange game is active */
-.arrange-game-app {
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  min-height: 100vh;
-  overflow-x: hidden;
-  position: relative;
+/* Mobile browsers report 100vh as the *largest* viewport (toolbars retracted),
+   so a board sized off vh hides its validate button behind the address bar.
+   Guarded rather than used directly: an unsupported dvh would make --tile-size
+   invalid at computed-value time and collapse the whole grid. */
+@supports (height: 100dvh) {
+  .arrange-game-app {
+    --tile-vh: 100dvh;
+  }
 }
 
-.arrange-game-app::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: 
-    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="50" font-size="24">🎉</text></svg>') 10% 10%,
-    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="50" font-size="20">✨</text></svg>') 80% 20%,
-    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="50" font-size="22">🌟</text></svg>') 20% 80%,
-    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="50" font-size="18">🪔</text></svg>') 90% 70%,
-    url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><text y="50" font-size="16">🕉️</text></svg>') 15% 60%;
-  background-size: 70px 70px;
-  background-repeat: no-repeat;
-  pointer-events: none;
-  z-index: -1;
-  opacity: 0.6;
-  animation: floatingDecorations 12s ease-in-out infinite;
-}
+/* ---------------- screen + header ---------------- */
 
-@keyframes floatingDecorations {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  25% { transform: translateY(-10px) rotate(5deg); }
-  50% { transform: translateY(-5px) rotate(-3deg); }
-  75% { transform: translateY(-15px) rotate(8deg); }
-}
-
-/* Divine Glass morphism utility */
-.glass {
-  background: var(--glass-gradient);
-  backdrop-filter: blur(15px);
-  border: 2px solid;
-  border-image: linear-gradient(45deg, rgba(255, 215, 0, 0.8), rgba(255, 165, 0, 0.6), rgba(255, 255, 255, 0.4), rgba(255, 140, 0, 0.7)) 1;
-  border-radius: 20px;
-  box-shadow: 0 8px 32px rgba(255, 215, 0, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.4);
-  position: relative;
-  overflow: hidden;
-}
-
-.glass::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, 
-    transparent, 
-    rgba(255, 255, 255, 0.4), 
-    transparent);
-  animation: shimmer 3s infinite;
-}
-
-@keyframes shimmer {
-  0% { left: -100%; }
-  100% { left: 100%; }
-}
-
-/* Category Selection Screen */
-.category-selection {
+.game-screen {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  gap: clamp(0.75rem, 1.8vh, 1.6rem);
   min-height: 100vh;
-  padding: 20px;
-  text-align: center;
-}
-
-.hero-title {
-  color: white;
-  font-size: 3rem;
-  font-weight: bold;
-  margin-bottom: 2rem;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-}
-
-.categories-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 2rem;
-  max-width: 800px;
-  width: 100%;
-}
-
-.category-card {
-  padding: 2rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  color: white;
-  text-align: center;
-}
-
-.category-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-}
-
-.category-title {
-  font-size: 1.8rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
-}
-
-.category-description {
-  font-size: 1rem;
-  margin-bottom: 1rem;
-  opacity: 0.9;
-}
-
-.event-count {
-  font-size: 0.9rem;
-  opacity: 0.8;
-}
-
-/* Game Screen */
-.game-screen {
-  min-height: 100vh;
-  padding: 20px;
-  position: relative;
+  padding: clamp(0.9rem, 2vh, 1.5rem) 1.25rem clamp(1rem, 2.4vh, 1.75rem);
 }
 
 .arrange-game-app .arrange-game-header {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  margin-bottom: 2rem;
-  color: white;
-  position: relative;
+  gap: clamp(0.75rem, 2vw, 2rem);
+  width: 100%;
+  max-width: min(1720px, 96vw);
 }
 
 .arrange-game-app .back-button {
-  background: var(--gold-gradient);
-  border: none;
-  color: white;
-  padding: 12px 24px;
-  border-radius: 25px;
+  justify-self: start;
+  padding: 0.55rem clamp(1.1rem, 1.6vw, 1.7rem);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.24);
+  color: #fff;
+  font: inherit;
+  font-size: clamp(0.9rem, 1.8vh, 1.15rem);
   cursor: pointer;
-  font-size: 1.1rem;
-  font-weight: bold;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.5);
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  animation: arrangeButtonPulse 2s ease-in-out infinite;
+  backdrop-filter: blur(6px);
+  transition: background 0.18s ease;
 }
 
-@keyframes buttonGlow {
-  0% { box-shadow: 0 4px 15px rgba(255, 215, 0, 0.5), 0 0 10px rgba(255, 215, 0, 0.3); }
-  100% { box-shadow: 0 6px 20px rgba(255, 140, 0, 0.7), 0 0 20px rgba(255, 165, 0, 0.5); }
+.arrange-game-app .back-button:hover {
+  background: rgba(0, 0, 0, 0.4);
 }
-
-
 
 .game-title-section {
   text-align: center;
-  position: relative;
 }
 
+/* Type scales off vh, not vw: the vertical budget is what limits this screen,
+   so the title grows exactly as fast as --arrange-chrome assumes. The vw term
+   only stops it shouting on a tall, narrow window. */
 .game-title-section h1 {
-  font-size: 2.8rem;
-  margin-bottom: 0.5rem;
-  background: linear-gradient(45deg, #FFD700, #FF8C00, #FFFFE0, #FFA500);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  background-size: 300% 300%;
-  animation: titleGlow 2s ease-in-out infinite alternate, gradientShift 4s ease-in-out infinite;
-  position: relative;
-}
-
-@keyframes titleGlow {
-  0% { filter: drop-shadow(0 0 8px rgba(255, 215, 0, 1)) drop-shadow(0 0 15px rgba(255, 140, 0, 0.8)); }
-  100% { filter: drop-shadow(0 0 20px rgba(255, 165, 0, 1)) drop-shadow(0 0 30px rgba(255, 215, 0, 0.9)); }
-}
-
-@keyframes gradientShift {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-}
-
-.game-title-section h1::before, .game-title-section h1::after {
-  content: '✨';
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  animation: sparkle 1.5s ease-in-out infinite;
-}
-
-.game-title-section h1::before { left: -40px; }
-.game-title-section h1::after { right: -40px; animation-delay: 0.75s; }
-
-@keyframes sparkle {
-  0%, 100% { opacity: 0.3; transform: translateY(-50%) scale(0.8); }
-  50% { opacity: 1; transform: translateY(-50%) scale(1.2); }
+  margin: 0;
+  font-size: clamp(1.25rem, min(3.2vh, 4.4vw), 2.6rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #fff;
 }
 
 .game-title-section p {
-  font-size: 1.1rem;
-  opacity: 0.95;
-  color: #fff;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
-  font-weight: 500;
+  margin: 0.2rem 0 0;
+  font-size: clamp(0.8rem, min(1.8vh, 2.4vw), 1.2rem);
+  color: var(--ink-soft);
 }
 
+/* Timer: a chip that only draws attention once it matters. */
 .arrange-game-app .timer {
-  font-size: 1.5rem;
-  font-weight: bold;
-  padding: 12px 24px;
-  border-radius: 20px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 215, 0, 0.2));
-  border: 2px solid rgba(255, 215, 0, 0.5);
-  color: white;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
-  animation: arrangeTimerPulse 2s ease-in-out infinite;
-}
-
-@keyframes arrangeTimerPulse {
-  0%, 100% { transform: scale(1); box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3); }
-  50% { transform: scale(1.02); box-shadow: 0 6px 20px rgba(255, 165, 0, 0.5); }
+  justify-self: end;
+  min-width: 5rem;
+  padding: 0.5rem clamp(0.95rem, 1.3vw, 1.4rem);
+  border: 1px solid var(--hairline);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.26);
+  font-size: clamp(1rem, 2.4vh, 1.6rem);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  backdrop-filter: blur(6px);
 }
 
 .arrange-game-app .timer.warning {
-  animation: arrangeWarningPulse 0.5s infinite;
-  background: linear-gradient(135deg, rgba(255, 69, 0, 0.8), rgba(255, 140, 0, 0.6));
-  border-color: #FF4500;
-  box-shadow: 0 0 20px rgba(255, 69, 0, 0.8);
+  border-color: rgba(255, 120, 120, 0.7);
+  background: rgba(160, 24, 40, 0.42);
+  color: #ffd9d9;
+  animation: arrangeTimerPulse 1s ease-in-out infinite;
 }
 
-@keyframes arrangeWarningPulse {
-  0%, 100% { transform: scale(1) translateX(0); }
-  25% { transform: scale(1.05) translateX(-2px); }
-  50% { transform: scale(1.1); }
-  75% { transform: scale(1.05) translateX(2px); }
+@keyframes arrangeTimerPulse {
+  50% { transform: scale(1.06); }
 }
 
-.instructions {
-  text-align: center;
-  padding: 2rem;
-  margin-bottom: 2rem;
-  color: white;
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
-  font-size: 1.1rem;
-  font-weight: 600;
-  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
-  position: relative;
-  background: linear-gradient(135deg, 
-    rgba(255, 215, 0, 0.3) 0%, 
-    rgba(255, 165, 0, 0.25) 50%, 
-    rgba(255, 255, 255, 0.2) 100%);
-  backdrop-filter: blur(12px);
-  border: 2px solid rgba(255, 215, 0, 0.6);
-  box-shadow: 
-    0 8px 32px rgba(255, 215, 0, 0.4),
-    inset 0 2px 4px rgba(255, 255, 255, 0.4);
-}
-
-.instructions::before, .instructions::after {
-  content: '🎯';
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 1.5rem;
-  animation: floatingDecorations 2s ease-in-out infinite;
-}
-
-.instructions::before { left: 20px; }
-.instructions::after { right: 20px; animation-delay: 1s; }
+/* ---------------- grid ---------------- */
 
 .game-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2rem;
+  gap: clamp(0.75rem, 2vh, 1.5rem);
 }
 
-
-
-/* Muuri Grid Styles */
 .muuri-grid {
-  max-width: var(--grid-width);
-  width: 100%;
-  padding: var(--grid-padding);
-  border-radius: 16px;
-  transition: all 0.3s ease;
-  min-height: var(--grid-width);
   position: relative;
+  width: var(--grid-width);
+  height: calc(var(--tile-size) * 3);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.06);
+  /* A ring, not a border: a 1px border shrinks the content box below three
+     tile widths and Muuri wraps to two columns. */
+  box-shadow: 0 0 0 1px var(--hairline);
+  transition: box-shadow 0.2s ease;
 }
 
 .muuri-grid.error {
-  border: 3px solid #ff4444;
-  box-shadow: 0 0 20px rgba(255, 68, 68, 0.5);
+  box-shadow: 0 0 0 2px rgba(255, 90, 90, 0.9), 0 0 0 6px rgba(255, 68, 68, 0.2);
 }
 
 .muuri-grid.vibrating {
-  animation: vibrate 0.6s ease-in-out;
+  animation: arrangeVibrate 0.5s ease-in-out;
 }
 
-@keyframes vibrate {
+@keyframes arrangeVibrate {
   0%, 100% { transform: translateX(0); }
-  10% { transform: translateX(-8px) rotate(-1deg); }
-  20% { transform: translateX(8px) rotate(1deg); }
-  30% { transform: translateX(-6px) rotate(-1deg); }
-  40% { transform: translateX(6px) rotate(1deg); }
-  50% { transform: translateX(-4px) rotate(-0.5deg); }
-  60% { transform: translateX(4px) rotate(0.5deg); }
-  70% { transform: translateX(-2px) rotate(-0.5deg); }
-  80% { transform: translateX(2px) rotate(0.5deg); }
-  90% { transform: translateX(-1px); }
+  20% { transform: translateX(-7px); }
+  40% { transform: translateX(7px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(3px); }
 }
 
-@keyframes tileShake {
-  0%, 100% { transform: translateZ(0); }
-  10% { transform: translateX(-3px) translateY(-2px) rotate(-0.5deg) translateZ(0); }
-  20% { transform: translateX(3px) translateY(2px) rotate(0.5deg) translateZ(0); }
-  30% { transform: translateX(-2px) translateY(-1px) rotate(-0.3deg) translateZ(0); }
-  40% { transform: translateX(2px) translateY(1px) rotate(0.3deg) translateZ(0); }
-  50% { transform: translateX(-1px) translateY(-1px) rotate(-0.2deg) translateZ(0); }
-  60% { transform: translateX(1px) translateY(1px) rotate(0.2deg) translateZ(0); }
-  70% { transform: translateX(-1px) translateY(0px) rotate(-0.1deg) translateZ(0); }
-  80% { transform: translateX(1px) translateY(0px) rotate(0.1deg) translateZ(0); }
-  90% { transform: translateX(0px) translateY(0px) translateZ(0); }
+/* Slot numbers: which position in the sequence this square is. Sits above the
+   tiles (they fill every slot, so underneath it would never be seen) but stays
+   quiet — a chip, not a badge with a glow. */
+.position-indicator {
+  position: absolute;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(1.5rem, calc(var(--tile-size) * 0.13), 2.2rem);
+  height: clamp(1.5rem, calc(var(--tile-size) * 0.13), 2.2rem);
+  margin: calc(var(--tile-gap) + 0.35rem);
+  border-radius: 50%;
+  background: rgba(24, 8, 34, 0.66);
+  color: rgba(255, 255, 255, 0.92);
+  font-size: clamp(0.78rem, calc(var(--tile-size) * 0.07), 1.1rem);
+  font-weight: 700;
+  pointer-events: none;
+  backdrop-filter: blur(2px);
 }
+
+.position-indicator[data-position='1'],
+.position-indicator[data-position='4'],
+.position-indicator[data-position='7'] { left: 0; }
+
+.position-indicator[data-position='2'],
+.position-indicator[data-position='5'],
+.position-indicator[data-position='8'] { left: var(--tile-size); }
+
+.position-indicator[data-position='3'],
+.position-indicator[data-position='6'],
+.position-indicator[data-position='9'] { left: calc(var(--tile-size) * 2); }
+
+.position-indicator[data-position='1'],
+.position-indicator[data-position='2'],
+.position-indicator[data-position='3'] { top: 0; }
+
+.position-indicator[data-position='4'],
+.position-indicator[data-position='5'],
+.position-indicator[data-position='6'] { top: var(--tile-size); }
+
+.position-indicator[data-position='7'],
+.position-indicator[data-position='8'],
+.position-indicator[data-position='9'] { top: calc(var(--tile-size) * 2); }
+
+/* ---------------- tiles ---------------- */
 
 .muuri-item {
-  display: block;
   position: absolute;
+  z-index: 1;
+  display: block;
   width: var(--tile-size);
   height: var(--tile-size);
-  margin: var(--tile-margin);
-  z-index: 1;
   cursor: grab;
 }
 
-.muuri-item.muuri-item-dragging {
-  z-index: 3;
-  cursor: grabbing;
-}
-
-.muuri-item.muuri-item-releasing {
-  z-index: 2;
-}
-
-.muuri-item.muuri-item-hidden {
-  z-index: 0;
-}
+.muuri-item.muuri-item-dragging { z-index: 3; cursor: grabbing; }
+.muuri-item.muuri-item-releasing { z-index: 2; }
+.muuri-item.muuri-item-hidden { z-index: 0; }
 
 .muuri-item-content {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: var(--tile-border-radius);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: var(--tile-padding);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-  transform: translateZ(0);
-}
-
-/* Position indicators that stay fixed in grid positions */
-.position-indicator {
-  position: absolute;
-  background: linear-gradient(135deg, #FFD700 0%, #FF8C00 100%);
-  color: white;
-  width: calc(var(--tile-size) * 0.1);
-  height: calc(var(--tile-size) * 0.1);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(var(--tile-size) * 0.04);
-  font-weight: bold;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
-  box-shadow: 0 3px 10px rgba(255, 215, 0, 0.5);
-  z-index: 10;
-  pointer-events: none;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  animation: positionGlow 3s ease-in-out infinite alternate;
-}
-
-/* Position indicators in grid slots */
-.position-indicator[data-position="1"], .position-indicator[data-position="4"], .position-indicator[data-position="7"] { left: var(--tile-margin); }
-.position-indicator[data-position="2"], .position-indicator[data-position="5"], .position-indicator[data-position="8"] { left: calc(var(--tile-size) + var(--tile-margin) * 3); }
-.position-indicator[data-position="3"], .position-indicator[data-position="6"], .position-indicator[data-position="9"] { left: calc((var(--tile-size) + var(--tile-margin) * 2) * 2 + var(--tile-margin)); }
-.position-indicator[data-position="1"], .position-indicator[data-position="2"], .position-indicator[data-position="3"] { top: var(--tile-margin); }
-.position-indicator[data-position="4"], .position-indicator[data-position="5"], .position-indicator[data-position="6"] { top: calc(var(--tile-size) + var(--tile-margin) * 3); }
-.position-indicator[data-position="7"], .position-indicator[data-position="8"], .position-indicator[data-position="9"] { top: calc((var(--tile-size) + var(--tile-margin) * 2) * 2 + var(--tile-margin)); }
-
-@keyframes positionGlow {
-  0% { box-shadow: 0 3px 10px rgba(255, 215, 0, 0.5); transform: scale(1); }
-  100% { box-shadow: 0 4px 15px rgba(255, 140, 0, 0.7); transform: scale(1.05); }
-}
-
-.muuri-grid.vibrating .muuri-item-content {
-  animation: tileShake 0.6s ease-in-out;
+  /* Inset inside the slot — this is the gutter. */
+  width: calc(100% - var(--tile-gap) * 2);
+  height: calc(100% - var(--tile-gap) * 2);
+  margin: var(--tile-gap);
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  border-radius: var(--tile-radius);
+  background: var(--card);
+  box-shadow: 0 0.5rem 1.4rem rgba(20, 6, 30, 0.35);
+  /* transform + shadow only: no layout work while dragging */
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  will-change: transform;
 }
 
 .muuri-item:hover .muuri-item-content {
-  transform: scale(1.05) translateZ(0);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  transform: translateY(-3px);
+  box-shadow: 0 0.9rem 2rem rgba(20, 6, 30, 0.45);
 }
 
 .muuri-item.muuri-item-dragging .muuri-item-content {
-  transform: scale(1.1) rotate(5deg) translateZ(0);
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-  background: rgba(255, 255, 255, 0.95);
+  transform: scale(1.04) rotate(2deg);
+  box-shadow: 0 1.4rem 2.6rem rgba(20, 6, 30, 0.55);
 }
 
-/* Placeholder/Shadow Styles */
-.muuri-item-placeholder {
-  display: block;
-  position: absolute;
-  width: var(--tile-size);
-  height: var(--tile-size);
-  margin: var(--tile-margin);
-  z-index: 0;
-  opacity: 0.8;
-  animation: placeholderPulse 1.5s ease-in-out infinite;
+.muuri-grid.vibrating .muuri-item-content {
+  animation: arrangeTileShake 0.5s ease-in-out;
 }
 
-.muuri-item-placeholder-content {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  background: rgba(255, 215, 0, 0.2);
-  border: 3px dashed rgba(255, 165, 0, 0.8);
-  border-radius: var(--tile-border-radius);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: var(--tile-padding);
-  backdrop-filter: blur(5px);
-  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
-  animation: placeholderFestive 1.5s ease-in-out infinite;
-}
-
-@keyframes placeholderFestive {
-  0%, 100% { 
-    border-color: rgba(255, 165, 0, 0.8);
-    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
-  }
-  50% { 
-    border-color: rgba(255, 215, 0, 1);
-    box-shadow: 0 6px 20px rgba(255, 140, 0, 0.5);
-  }
-}
-
-.placeholder-shadow {
-  color: rgba(255, 140, 0, 1);
-  font-size: calc(var(--tile-title-size) * 1.8);
-  font-weight: bold;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.6), rgba(255, 215, 0, 0.3));
-  padding: calc(var(--tile-padding) * 0.4) calc(var(--tile-padding) * 0.8);
-  border-radius: calc(var(--tile-border-radius) * 1.33);
-  border: 2px solid rgba(255, 165, 0, 0.6);
-  margin-top: calc(var(--tile-padding) * 0.67);
-  animation: dropTextGlow 1s ease-in-out infinite alternate;
-}
-
-@keyframes dropTextGlow {
-  0% { text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); }
-  100% { text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3), 0 0 10px rgba(255, 215, 0, 0.8); }
-}
-
-@keyframes placeholderPulse {
-  0%, 100% { transform: scale(1); opacity: 0.7; }
-  50% { transform: scale(1.02); opacity: 0.9; }
-}
-
-.story-tile {
-  width: var(--tile-size);
-  height: var(--tile-size);
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: var(--tile-border-radius);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: var(--tile-padding);
-  cursor: grab;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  position: absolute;
-}
-
-.story-tile:active {
-  cursor: grabbing;
-}
-
-.story-tile:hover {
-  transform: scale(1.05);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+@keyframes arrangeTileShake {
+  0%, 100% { transform: none; }
+  25% { transform: translateX(-3px) rotate(-0.6deg); }
+  75% { transform: translateX(3px) rotate(0.6deg); }
 }
 
 .tile-image {
-  width: var(--tile-image-size);
-  height: var(--tile-image-size);
-  background: var(--gold-gradient);
-  border-radius: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: var(--tile-emoji-size);
-  color: white;
-  margin-bottom: calc(var(--tile-padding) * 0.3);
-  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.3);
-  animation: tileGlow 3s ease-in-out infinite alternate;
-  position: relative;
+  flex: 1;
+  min-height: 0;
   overflow: hidden;
-  padding: 4px;
+  background: #eee6f5;
 }
 
 .story-image {
+  display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 12px;
-  transition: all 0.3s ease;
-}
-
-.muuri-item:hover .story-image {
-  transform: scale(1.05);
-}
-
-.muuri-item.muuri-item-dragging .story-image {
-  transform: scale(1.1);
-  filter: brightness(1.1);
-}
-
-@keyframes tileGlow {
-  0% { box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.3); }
-  100% { box-shadow: 0 6px 20px rgba(255, 140, 0, 0.6), inset 0 2px 4px rgba(255, 255, 255, 0.5); }
 }
 
 .tile-title {
-  font-size: var(--tile-title-size);
-  font-weight: bold;
-  color: #333;
-  line-height: 1.2;
-}
-
-.validate-button::before, .play-again-button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-  animation: shimmer 3s infinite;
-}
-
-.validate-button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-  animation: shimmer 3s infinite;
-}
-
-
-
-
-
-/* Victory Screen */
-.victory-screen {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(8px);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  color: white;
+  padding: 0.42rem 0.5rem;
+  font-size: clamp(0.68rem, calc(var(--tile-size) * 0.062), 1.2rem);
+  font-weight: 700;
+  line-height: 1.25;
+  color: #3f1d4d;
   text-align: center;
+  background: linear-gradient(180deg, #fff, #fdf3e2);
 }
 
-.victory-content {
-  padding: 3rem;
-  border-radius: 20px;
-  max-width: 500px;
-  background: linear-gradient(135deg, 
-    rgba(255, 215, 0, 0.2) 0%, 
-    rgba(255, 165, 0, 0.15) 50%, 
-    rgba(255, 255, 255, 0.1) 100%);
-  backdrop-filter: blur(15px);
-  border: 2px solid rgba(255, 215, 0, 0.4);
-  box-shadow: 
-    0 20px 40px rgba(255, 215, 0, 0.3),
-    inset 0 2px 4px rgba(255, 255, 255, 0.3);
+/* Drop target while dragging. */
+.muuri-item-placeholder {
+  position: absolute;
+  z-index: 0;
+  width: var(--tile-size);
+  height: var(--tile-size);
 }
 
-.victory-title {
-  font-size: 3.5rem;
-  margin-bottom: 1rem;
-  background: linear-gradient(45deg, #FFD700, #FF8C00, #FFFFE0, #FFA500);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: victoryBounce 1s infinite, victoryGlow 2s ease-in-out infinite alternate;
-  text-shadow: 0 4px 8px rgba(255, 215, 0, 0.5);
+.muuri-item-placeholder-content {
+  width: calc(100% - var(--tile-gap) * 2);
+  height: calc(100% - var(--tile-gap) * 2);
+  margin: var(--tile-gap);
+  border: 2px dashed rgba(255, 197, 61, 0.75);
+  border-radius: var(--tile-radius);
+  background: rgba(255, 197, 61, 0.12);
 }
 
-@keyframes victoryBounce {
-  0%, 20%, 50%, 80%, 100% { transform: translateY(0) scale(1); }
-  40% { transform: translateY(-15px) scale(1.1); }
-  60% { transform: translateY(-8px) scale(1.05); }
-}
+/* ---------------- validate ---------------- */
 
-@keyframes victoryGlow {
-  0% { filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.8)); }
-  100% { filter: drop-shadow(0 0 25px rgba(255, 140, 0, 1)); }
-}
-
-.victory-message {
-  font-size: 1.3rem;
-  margin-bottom: 2rem;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  animation: messageGlow 3s ease-in-out infinite;
-}
-
-@keyframes messageGlow {
-  0%, 100% { opacity: 0.9; }
-  50% { opacity: 1; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 215, 0, 0.6); }
-}
-
-.arrange-game-app .play-again-button, 
 .arrange-game-app .validate-button {
-  background: var(--gold-gradient);
+  padding: clamp(0.75rem, 1.5vh, 1.05rem) clamp(2.4rem, 4vw, 3.6rem);
   border: none;
-  color: white;
-  padding: 18px 36px;
-  border-radius: 25px;
+  border-radius: 999px;
+  background: var(--gold-gradient);
+  color: #47210a;
+  font: inherit;
+  font-size: clamp(0.95rem, 2.2vh, 1.35rem);
+  font-weight: 700;
   cursor: pointer;
-  font-size: 1.2rem;
-  font-weight: bold;
-  transition: all 0.3s ease;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
-  animation: arrangeButtonPulse 2s ease-in-out infinite;
+  box-shadow: 0 0.7rem 1.6rem rgba(255, 158, 44, 0.4);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
+}
+
+.arrange-game-app .validate-button:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+  box-shadow: 0 0.9rem 2rem rgba(255, 158, 44, 0.55);
+}
+
+/* ---------------- attract screen: face-down tiles ---------------- */
+/* Teases the mechanic without showing a single pastime or any hint of the
+   order — the cards are backs only, and they drift out of line on purpose. */
+
+.ag-reel {
+  --ag-gap: clamp(0.6rem, 1.4vh, 1.1rem);
   position: relative;
-  overflow: hidden;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--ag-gap);
+  width: min(31rem, 62vh, 82vw);
+  margin: 0 auto;
+  /* A shallow card-table tilt — enough to read as a deck, not a mockup. */
+  perspective: 1100px;
+  transform: rotateX(7deg);
 }
 
-/* Consolidated button animations and hover effects */
-@keyframes arrangeButtonPulse {
-  0%, 100% { transform: scale(1); box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4); }
-  50% { transform: scale(1.05); box-shadow: 0 8px 25px rgba(255, 140, 0, 0.6); }
+.ag-card {
+  position: relative;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 16px;
+  background:
+    repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.07) 0 8px, transparent 8px 16px),
+    linear-gradient(150deg, rgba(96, 36, 128, 0.92), rgba(166, 58, 74, 0.92));
+  box-shadow: 0 0.6rem 1.6rem rgba(12, 4, 20, 0.45);
+  animation: agCardFloat 5.5s ease-in-out infinite;
 }
 
-.arrange-game-app .play-again-button:hover, 
-.arrange-game-app .validate-button:hover, 
-.arrange-game-app .back-button:hover {
-  transform: translateY(-3px) scale(1.05);
-  box-shadow: 0 10px 30px rgba(255, 140, 0, 0.8);
-  background: linear-gradient(135deg, #FFA500 0%, #FF6347 50%, #FFD700 100%);
+.ag-card::after {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 1px solid rgba(255, 197, 61, 0.3);
+  border-radius: 11px;
 }
 
-/* Lost Screen */
-.lost-screen {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(8px);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  color: white;
-  text-align: center;
+/* A gold sheen crossing each card in turn, like a hand passing over the deck. */
+.ag-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(105deg, transparent 38%, rgba(255, 216, 130, 0.34) 50%, transparent 62%);
+  background-size: 260% 100%;
+  animation: agSheen 3.4s ease-in-out infinite;
 }
 
-.lost-content {
-  padding: 3rem;
-  border-radius: 20px;
-  max-width: 500px;
-  background: linear-gradient(135deg, 
-    rgba(255, 69, 0, 0.2) 0%, 
-    rgba(255, 140, 0, 0.15) 50%, 
-    rgba(255, 255, 255, 0.1) 100%);
-  backdrop-filter: blur(15px);
-  border: 2px solid rgba(255, 69, 0, 0.4);
-  box-shadow: 
-    0 20px 40px rgba(255, 69, 0, 0.3),
-    inset 0 2px 4px rgba(255, 255, 255, 0.3);
+.ag-card-glyph {
+  font-size: clamp(1.3rem, 3.4vh, 2.1rem);
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.45));
 }
 
-.lost-title {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-  color: #ff6b6b;
+/* Deliberately out of sequence. */
+.ag-card-slot {
+  position: absolute;
+  top: 0.45rem;
+  left: 0.55rem;
+  font-size: clamp(0.65rem, 1.5vh, 0.85rem);
+  font-weight: 700;
+  color: rgba(255, 197, 61, 0.85);
 }
 
-.lost-message {
-  font-size: 1.2rem;
-  margin-bottom: 2rem;
+@keyframes agCardFloat {
+  0%, 100% { transform: translateY(0) rotate(-1.5deg); }
+  50% { transform: translateY(-9px) rotate(1.5deg); }
 }
 
-/* Celebration Animation */
+@keyframes agSheen {
+  0%, 100% { background-position: 150% 0; }
+  55% { background-position: -50% 0; }
+}
+
+/* Two pairs trade places on a loop: the board is arranging itself, badly.
+   Both halves of a pair share a swap delay, or one leaves before the other
+   arrives and the grid shows a hole. */
+.ag-swap-a,
+.ag-swap-b { animation: agCardFloat 5.5s ease-in-out infinite, agSwapRight 6s ease-in-out infinite; }
+.ag-swap-b { animation-name: agCardFloat, agSwapLeft; }
+.ag-swap-a { animation-delay: -0.6s, 0s; }
+.ag-swap-b { animation-delay: -1.8s, 0s; }
+
+.ag-swap-c,
+.ag-swap-d { animation: agCardFloat 5.5s ease-in-out infinite, agSwapDown 7.5s ease-in-out infinite; }
+.ag-swap-d { animation-name: agCardFloat, agSwapUp; }
+.ag-swap-c { animation-delay: -2.4s, -3s; }
+.ag-swap-d { animation-delay: -4.2s, -3s; }
+
+/* Nudged on the second axis so a swapping pair passes rather than collides. */
+@keyframes agSwapRight {
+  0%, 22% { translate: 0 0; }
+  38%, 62% { translate: calc(200% + var(--ag-gap) * 2) -6%; }
+  78%, 100% { translate: 0 0; }
+}
+
+@keyframes agSwapLeft {
+  0%, 22% { translate: 0 0; }
+  38%, 62% { translate: calc(-200% - var(--ag-gap) * 2) 6%; }
+  78%, 100% { translate: 0 0; }
+}
+
+@keyframes agSwapDown {
+  0%, 30% { translate: 0 0; }
+  46%, 70% { translate: 6% calc(100% + var(--ag-gap)); }
+  86%, 100% { translate: 0 0; }
+}
+
+@keyframes agSwapUp {
+  0%, 30% { translate: 0 0; }
+  46%, 70% { translate: -6% calc(-100% - var(--ag-gap)); }
+  86%, 100% { translate: 0 0; }
+}
+
+/* ---------------- victory confetti (finite, fires once) ---------------- */
+
 .celebration {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 999;
+  inset: 0;
+  z-index: 1000;
   overflow: hidden;
+  pointer-events: none;
 }
 
 .emoji {
   position: absolute;
-  font-size: 2rem;
-  user-select: none;
+  bottom: -2rem;
+  animation-fill-mode: forwards;
+  animation-iteration-count: 1;
 }
 
-/* Main celebration poppers shooting up from bottom */
-.celebration-popper {
-  bottom: -50px;
-  animation: popperShoot 4s ease-out forwards;
+.celebration-popper { animation-name: arrangePopper; }
+.celebration-wave { animation-name: arrangeWave; }
+
+@keyframes arrangePopper {
+  from { transform: translateY(0) rotate(0); opacity: 1; }
+  to { transform: translateY(-95vh) rotate(540deg); opacity: 0; }
 }
 
-@keyframes popperShoot {
-  0% { transform: translateY(0) translateX(0) rotate(0deg) scale(0.5); opacity: 1; }
-  15% { transform: translateY(-200px) translateX(calc(var(--random-x, 0) * 100px)) rotate(180deg) scale(1.2); opacity: 1; }
-  50% { transform: translateY(-60vh) translateX(calc(var(--random-x, 0) * 150px)) rotate(360deg) scale(1); opacity: 1; }
-  100% { transform: translateY(-120vh) translateX(calc(var(--random-x, 0) * 200px)) rotate(720deg) scale(0.3); opacity: 0; }
+@keyframes arrangeWave {
+  from { transform: translateY(0) translateX(0); opacity: 1; }
+  to { transform: translateY(-70vh) translateX(6vw) rotate(180deg); opacity: 0; }
 }
 
-.celebration-wave {
-  bottom: -30px;
-  animation: waveFloat 3.5s ease-out forwards;
-}
+/* ---------------- landscape: chrome beside the board ---------------- */
 
-@keyframes waveFloat {
-  0% { transform: translateY(0) translateX(0) rotate(0deg) scale(0.8); opacity: 0.8; }
-  20% { transform: translateY(-150px) translateX(calc(var(--random-x, 0) * 80px)) rotate(90deg) scale(1.1); opacity: 1; }
-  60% { transform: translateY(-50vh) translateX(calc(var(--random-x, 0) * 120px)) rotate(270deg) scale(0.9); opacity: 0.8; }
-  100% { transform: translateY(-100vh) translateX(calc(var(--random-x, 0) * 160px)) rotate(450deg) scale(0.2); opacity: 0; }
-}
+/* A 3x3 board is square, so on a 16:9 screen stacking the header above it wastes
+   the height twice over: the board can only be as tall as what's left, and the
+   space either side of it stays empty purple. Here the header and Validate move
+   into that side band, which lets the board take almost the full height — about
+   30% bigger than the original 24vh tiles — and gives the title room to grow. */
+@media (min-aspect-ratio: 7/5) and (min-width: 1100px) {
+  .arrange-game-app {
+    /* Nothing above or below the board now but the screen's own padding. */
+    --arrange-chrome: clamp(3.5rem, 7vh, 5rem);
+    --tile-size: min(
+      calc((var(--tile-vh) - var(--arrange-chrome)) / 3),
+      /* Leave the text column its 22rem before the board takes the rest. */
+      calc((100vw - 22rem) / 3),
+      420px);
+  }
 
-/* Random horizontal movement patterns */
-.celebration-popper:nth-child(odd), .celebration-wave:nth-child(even) { --random-x: -1; }
-.celebration-popper:nth-child(even), .celebration-wave:nth-child(odd) { --random-x: 1; }
-.celebration-popper:nth-child(3n), .celebration-wave:nth-child(3n) { --random-x: -0.5; }
-.celebration-popper:nth-child(4n) { --random-x: 0.7; }
-.celebration-popper:nth-child(5n) { --random-x: -0.8; }
+  .game-screen {
+    display: grid;
+    /* Board column sized by its own content; the text takes what's left. */
+    grid-template-columns: minmax(16rem, 1fr) auto;
+    /* The board spans every row, so the two 1fr bands split whatever it leaves
+       and the title-and-Validate pair between them sits on the vertical centre
+       rather than at the bottom of the column. */
+    grid-template-rows: 1fr auto auto 1fr;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(1.25rem, 3vw, 3.5rem);
+    padding: clamp(1rem, 3.5vh, 2.5rem) clamp(1.5rem, 3vw, 3rem);
+  }
 
-/* Enhanced celebration for victory screen */
-.victory-screen .celebration {
-  z-index: 1001;
-}
+  /* Lets the grid and the button be placed independently in the screen's grid
+     without moving either of them in the markup. */
+  .game-container {
+    display: contents;
+  }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  :root {
-    --tile-size: var(--mobile-tile-size);
-    --tile-margin: var(--mobile-tile-margin);
-    --tile-padding: var(--mobile-tile-padding);
-    --tile-image-size: var(--mobile-tile-image-size);
-    --tile-emoji-size: calc(var(--mobile-tile-size) * 0.107);
-    --tile-title-size: calc(var(--mobile-tile-size) * 0.057);
-    --grid-columns: var(--mobile-grid-columns);
-    --grid-width: calc((var(--tile-size) + (var(--tile-margin) * 2)) * var(--grid-columns) + (var(--tile-padding) * 2));
+  .arrange-game-app .arrange-game-header {
+    grid-area: 2 / 1;
+    grid-template-columns: 1fr;
+    justify-items: start;
+    gap: clamp(0.75rem, 2vh, 1.5rem);
+    max-width: none;
+  }
+
+  .game-title-section {
+    text-align: left;
+  }
+
+  .game-title-section h1 {
+    font-size: clamp(2rem, min(5.6vh, 4.4vw), 4.4rem);
+  }
+
+  .game-title-section p {
+    font-size: clamp(1rem, min(2.4vh, 1.9vw), 1.6rem);
+  }
+
+  .arrange-game-app .timer,
+  .arrange-game-app .back-button {
+    justify-self: start;
+  }
+
+  .arrange-game-app .timer {
+    font-size: clamp(1.4rem, 3.6vh, 2.6rem);
   }
 
   .muuri-grid {
-    max-width: 100%;
-    padding: var(--tile-padding);
-    min-height: auto;
+    grid-area: 1 / 2 / -1 / auto;
   }
 
-  .placeholder-shadow {
-    font-size: calc(var(--tile-title-size) * 1.4);
-    padding: calc(var(--tile-padding) * 0.4) calc(var(--tile-padding) * 0.8);
-    margin-top: calc(var(--tile-padding) * 0.5);
+  .arrange-game-app .validate-button {
+    grid-area: 3 / 1;
+    justify-self: start;
   }
-  
-  .arrange-game-header {
-    flex-direction: column;
-    gap: 1rem;
-    text-align: center;
+}
+
+/* ---------------- narrow screens ---------------- */
+
+@media (max-width: 780px) {
+  .arrange-game-app {
+    /* 2 columns, so the tiles stay big enough to read on a phone — which means
+       five rows to place, and the divisor has to say so. The old flat 20vh made
+       the board 100vh tall on its own and pushed Validate off the screen. */
+    --grid-columns: 2;
+    /* Measured, not guessed: 22vh left Validate 5px under the fold on a 844px
+       phone. Raise this if the header or button grows. */
+    --arrange-chrome: clamp(8.5rem, 23.5vh, 13rem);
+    --tile-size: min(
+      calc((var(--tile-vh) - var(--arrange-chrome)) / 5),
+      calc((100vw - 1.75rem) / 2));
+  }
+
+  .muuri-grid {
+    height: calc(var(--tile-size) * 5);
+  }
+
+  /* The 3x3 slot numbers don't map onto a 2-wide grid. */
+  .position-indicator { display: none; }
+
+  .arrange-game-app .arrange-game-header {
+    grid-template-columns: auto 1fr auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arrange-game-app *,
+  .ag-card {
+    animation: none !important;
   }
 }

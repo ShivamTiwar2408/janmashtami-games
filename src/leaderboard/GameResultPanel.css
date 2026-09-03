@@ -1,0 +1,770 @@
+/* Shared end-of-game result screen: score reveal on the left, leaderboard
+   sliding in from the right. Scoped under .gr- so it can drop into any game.
+   Colours come from palette.css. */
+
+@import './palette.css';
+
+.gr-root {
+    position: fixed;
+    inset: 0;
+    z-index: 900;
+    display: flex;
+    overflow: hidden;
+    font-family: inherit;
+    background-color: #7f2464;
+    background-image: var(--fest-sky);
+    animation: gr-fade 0.4s ease both;
+}
+
+/* Over a game still drawing its own closing scene: no backdrop of ours, just
+   enough scrim behind the panes to keep the text readable over moving film. */
+.gr-root-overlay {
+    background-color: transparent;
+    background-image: linear-gradient(90deg,
+            rgba(20, 6, 30, 0.88) 0%,
+            rgba(20, 6, 30, 0.72) 55%,
+            rgba(20, 6, 30, 0.6) 100%);
+    /* A touch of blur as well as the scrim: the film keeps its motion and
+       colour, but stops competing with the score for attention. */
+    backdrop-filter: blur(3px);
+}
+
+@keyframes gr-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* ---------------------------------------------------------------- confetti */
+
+/* Behind both panes, so it never rains over the white leaderboard.
+   The two bands skip the middle of the screen, where the text lives. */
+.gr-confetti {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+
+    /* Kept inside the stage: the board is opaque and sits above the confetti,
+       so bits placed under it are simply wasted. */
+    --gr-band-l: 13%;
+    --gr-band-r-start: 46%;
+    --gr-band-r-width: 13%;
+}
+
+.gr-confetti-bit {
+    position: absolute;
+    top: -8%;
+    animation-name: gr-fall;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.35));
+}
+
+.gr-bit-l {
+    left: calc(var(--p) * var(--gr-band-l));
+}
+
+.gr-bit-r {
+    left: calc(var(--gr-band-r-start) + var(--p) * var(--gr-band-r-width));
+}
+
+@keyframes gr-fall {
+    0% { transform: translateY(-10vh) rotate(0deg); opacity: 0; }
+    12% { opacity: 1; }
+    100% { transform: translateY(112vh) rotate(540deg); opacity: 0.85; }
+}
+
+/* ------------------------------------------------------------- left stage */
+
+.gr-stage {
+    position: relative;
+    z-index: 1;
+    flex: 1 1 auto;
+    min-width: 0;
+    display: grid;
+    place-items: center;
+    padding: 2.5rem 1.75rem;
+    overflow-y: auto;
+    transition: padding 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.gr-stage-shrunk {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+}
+
+.gr-stage-inner {
+    width: min(560px, 100%);
+    text-align: center;
+    color: #fff;
+    animation: gr-rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes gr-rise {
+    from { opacity: 0; transform: translateY(26px); }
+    to { opacity: 1; transform: none; }
+}
+
+.gr-game-label {
+    margin: 0 0 0.4rem;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--fest-gold-pale);
+    text-shadow: 0 1px 3px rgba(72, 20, 60, 0.45);
+}
+
+.gr-headline {
+    margin: 0 0 0.5rem;
+    font-size: clamp(2.1rem, 5.4vw, 3.4rem);
+    font-weight: 800;
+    line-height: 1.05;
+    color: #fff;
+    text-shadow: 0 3px 14px rgba(74, 18, 58, 0.45);
+    animation: gr-pop 0.72s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.gr-headline-soft {
+    color: var(--fest-cream);
+}
+
+@keyframes gr-pop {
+    0% { opacity: 0; transform: scale(0.72); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+.gr-subline {
+    margin: 0 auto 1.5rem;
+    max-width: 44ch;
+    font-size: 0.98rem;
+    line-height: 1.55;
+    color: #fff;
+    text-shadow: 0 1px 4px rgba(72, 20, 60, 0.5);
+}
+
+/* -------------------------------------------------------------- score card */
+
+.gr-score-card {
+    position: relative;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+    padding: 1.6rem 3rem;
+    border-radius: 26px;
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    background-color: var(--fest-cream);
+    background-image: linear-gradient(165deg, var(--fest-cream), var(--fest-cream-deep));
+    box-shadow:
+        0 20px 46px rgba(84, 22, 66, 0.32),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    animation: gr-glow 2.8s ease-in-out infinite;
+}
+
+@keyframes gr-glow {
+    0%, 100% { box-shadow: 0 20px 46px rgba(84, 22, 66, 0.32), 0 0 0 rgba(255, 214, 120, 0); }
+    50% { box-shadow: 0 20px 46px rgba(84, 22, 66, 0.32), 0 0 40px rgba(255, 224, 150, 0.75); }
+}
+
+.gr-score-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--fest-ink-soft);
+}
+
+.gr-score-value {
+    font-size: clamp(3.4rem, 9vw, 5.4rem);
+    font-weight: 800;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    background: linear-gradient(120deg, var(--fest-rose), var(--fest-marigold-deep) 55%, var(--fest-marigold));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gr-punch 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 0.12s both;
+}
+
+@keyframes gr-punch {
+    0% { opacity: 0; transform: scale(0.5); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+.gr-score-unit {
+    font-size: 0.85rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--fest-marigold-deep);
+    font-weight: 700;
+}
+
+.gr-badges {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    margin-top: 1.2rem;
+}
+
+.gr-badge {
+    padding: 0.4rem 1rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    animation: gr-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+.gr-badge-best {
+    color: #4a2a00;
+    background-color: #ffd76d;
+    background-image: linear-gradient(100deg, var(--fest-gold-pale), var(--fest-gold));
+    box-shadow: 0 4px 14px rgba(120, 60, 0, 0.28);
+}
+
+.gr-badge-rank {
+    color: #063c3c;
+    background-color: #82e5da;
+    background-image: linear-gradient(100deg, #a9f0e4, #5fd9cd);
+    box-shadow: 0 4px 14px rgba(0, 80, 78, 0.22);
+}
+
+.gr-badge-podium {
+    color: #063c3c;
+    background-color: #82e5da;
+    background-image: linear-gradient(100deg, #b6f5e6, #4fd3c8);
+}
+
+/* ------------------------------------------------------------- side stats */
+
+.gr-stats {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1.4rem;
+}
+
+.gr-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 92px;
+    padding: 0.7rem 1rem;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    background: rgba(255, 253, 247, 0.94);
+    box-shadow: 0 8px 20px rgba(84, 22, 66, 0.18);
+}
+
+.gr-stat-value {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--fest-ink);
+}
+
+.gr-stat-label {
+    margin-top: 0.15rem;
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--fest-ink-soft);
+}
+
+/* ---------------------------------------------------------------- actions */
+
+.gr-actions {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    margin-top: 1.8rem;
+}
+
+.gr-btn {
+    padding: 0.85rem 1.9rem;
+    border: 0;
+    border-radius: 999px;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+}
+
+.gr-btn:hover {
+    transform: translateY(-2px);
+}
+
+.gr-btn:active {
+    transform: translateY(0);
+}
+
+.gr-btn:focus-visible {
+    outline: 3px solid #ffd479;
+    outline-offset: 3px;
+}
+
+.gr-btn-primary {
+    color: #4a2a00;
+    background-color: #ffbe57;
+    background-image: linear-gradient(100deg, var(--fest-gold-pale), var(--fest-marigold));
+    box-shadow: 0 10px 26px rgba(120, 55, 0, 0.34);
+}
+
+.gr-btn-primary:hover {
+    box-shadow: 0 16px 34px rgba(120, 55, 0, 0.42);
+}
+
+/* Solid cream rather than a translucent white wash: over a saturated gradient
+   the wash's effective contrast depends on whatever is behind it. */
+.gr-btn-ghost {
+    color: var(--fest-ink);
+    background: rgba(255, 253, 247, 0.94);
+    border: 1.5px solid #fff;
+    box-shadow: 0 8px 20px rgba(84, 22, 66, 0.2);
+}
+
+.gr-btn-ghost:hover {
+    background: #fff;
+}
+
+.gr-playing-as {
+    margin: 0.95rem 0 0;
+    font-size: 0.84rem;
+    color: rgba(255, 255, 255, 0.88);
+}
+
+.gr-playing-as strong {
+    color: var(--fest-gold-pale);
+}
+
+.gr-swap {
+    margin-left: 0.5rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.gr-swap:hover {
+    color: #fff;
+}
+
+.gr-extra {
+    margin-top: 1.4rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.35);
+    font-size: 0.9rem;
+    color: #fff;
+}
+
+/* Games hand in their own markup here (Match the Wisdom passes a 200px QR
+   block sized for a full-page end screen). Rein it in so the slot can't push
+   the buttons off screen — descendant selectors, so no !important needed. */
+.gr-root .gr-extra img {
+    width: 108px;
+    height: 108px;
+    border-width: 4px;
+    border-radius: 12px;
+}
+
+.gr-root .gr-extra span,
+.gr-root .gr-extra p {
+    font-size: 0.84rem;
+    font-weight: 500;
+    line-height: 1.45;
+}
+
+.gr-root .gr-extra > * {
+    gap: 0.55rem;
+    margin-bottom: 0;
+}
+
+/* --------------------------------------------------------- identity form */
+
+.gr-identity {
+    margin: 1.7rem auto 0;
+    width: min(370px, 100%);
+    padding: 1.4rem;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(43, 30, 68, 0.88);
+    backdrop-filter: blur(10px);
+    text-align: left;
+}
+
+.gr-identity-title {
+    margin: 0 0 0.9rem;
+    text-align: center;
+    font-size: 0.98rem;
+    font-weight: 700;
+    color: #ffe0a3;
+}
+
+.gr-field {
+    margin-bottom: 0.8rem;
+}
+
+.gr-field label {
+    display: block;
+    margin-bottom: 0.3rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.gr-field input {
+    width: 100%;
+    padding: 0.75rem 0.95rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(10, 6, 20, 0.5);
+    font-family: inherit;
+    font-size: 1rem;
+    color: #fff;
+    transition: border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.gr-field input::placeholder {
+    color: rgba(255, 255, 255, 0.38);
+}
+
+.gr-field input:focus {
+    outline: none;
+    border-color: #ffc45e;
+    box-shadow: 0 0 0 3px rgba(255, 196, 94, 0.22);
+}
+
+.gr-identity .gr-btn {
+    width: 100%;
+    margin-top: 0.35rem;
+}
+
+.gr-form-error {
+    margin: 0 0 0.7rem;
+    font-size: 0.84rem;
+    color: #ffb3b3;
+}
+
+.gr-privacy {
+    margin: 0.8rem 0 0;
+    text-align: center;
+    font-size: 0.74rem;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* -------------------------------------------------------- right: the board */
+
+.gr-board {
+    /* One width in a variable — flex-basis, width and the closed-state offset
+       must agree or the slide-in animation lands off by the difference. */
+    --gr-board-w: clamp(360px, 40vw, 620px);
+
+    position: relative;
+    z-index: 2;
+    flex: 0 0 var(--gr-board-w);
+    width: var(--gr-board-w);
+    margin-right: calc(-1 * var(--gr-board-w));
+    display: flex;
+    flex-direction: column;
+    background: #fdfcfa;
+    box-shadow: -26px 0 60px rgba(0, 0, 0, 0.45);
+    transform: translateX(100%);
+    transition:
+        transform 0.62s cubic-bezier(0.22, 1, 0.36, 1),
+        margin-right 0.62s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.gr-board-open {
+    margin-right: 0;
+    transform: none;
+}
+
+.gr-board-head {
+    padding: 1.6rem 1.8rem 1.2rem;
+    background-color: #ffe3ab;
+    background-image: linear-gradient(140deg, #fff0c9, #ffd79b);
+    border-bottom: 1px solid rgba(140, 80, 20, 0.14);
+}
+
+.gr-board-head h2 {
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--fest-ink);
+    letter-spacing: -0.01em;
+}
+
+.gr-board-head p {
+    margin: 0.2rem 0 0;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--fest-ink-soft);
+}
+
+/* Left padding lines "Player" up with the names, not with the rank column. */
+.gr-board-cols {
+    display: flex;
+    justify-content: space-between;
+    /* 1rem list + 0.8rem row padding + 2.5rem rank + 0.75rem gap */
+    padding: 0.8rem 1.8rem 0.55rem 5.05rem;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--fest-ink-faint);
+    border-bottom: 1px solid rgba(63, 29, 77, 0.1);
+}
+
+.gr-board-list {
+    flex: 1;
+    margin: 0;
+    padding: 0.6rem 1rem 1rem;
+    list-style: none;
+    overflow-y: auto;
+    /* keeps an auto-scrolled row clear of the sticky edges */
+    scroll-padding-block: 0.6rem;
+}
+
+.gr-board-empty {
+    padding: 2.4rem 1rem;
+    text-align: center;
+    font-size: 0.92rem;
+    color: var(--fest-ink-soft);
+}
+
+.gr-row {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr auto;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 0.8rem;
+    border-radius: 14px;
+    animation: gr-row-in 0.44s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.gr-row:hover {
+    background-color: rgba(63, 29, 77, 0.045);
+}
+
+@keyframes gr-row-in {
+    from { opacity: 0; transform: translateX(22px); }
+    to { opacity: 1; transform: none; }
+}
+
+.gr-row + .gr-row {
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.gr-row-podium {
+    background: linear-gradient(100deg, rgba(255, 205, 110, 0.26), rgba(255, 224, 160, 0.05));
+}
+
+/* Gold / silver / bronze, so the top three read apart at a glance. The list has
+   no other <li> children once entries exist (the empty and saving rows only
+   render when the board is empty), so nth-child tracks rank. */
+.gr-row-podium:nth-child(2) {
+    background: linear-gradient(100deg, rgba(208, 214, 224, 0.34), rgba(226, 232, 240, 0.06));
+}
+
+.gr-row-podium:nth-child(3) {
+    background: linear-gradient(100deg, rgba(214, 154, 100, 0.28), rgba(232, 190, 150, 0.06));
+}
+
+.gr-row-me {
+    background: linear-gradient(100deg, #ffe9ad, #ffd07a);
+    border-top-color: transparent;
+    box-shadow: 0 4px 16px rgba(214, 152, 38, 0.28);
+    animation:
+        gr-row-in 0.44s cubic-bezier(0.22, 1, 0.36, 1) both,
+        gr-me-pulse 1.9s ease-in-out 0.6s 3;
+}
+
+@keyframes gr-me-pulse {
+    0%, 100% { box-shadow: 0 4px 16px rgba(214, 152, 38, 0.28); }
+    50% { box-shadow: 0 4px 26px rgba(214, 152, 38, 0.6); }
+}
+
+.gr-rank {
+    font-size: 1.05rem;
+    font-weight: 700;
+    text-align: center;
+    color: var(--fest-ink-faint);
+    font-variant-numeric: tabular-nums;
+}
+
+.gr-name {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--fest-ink);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.gr-you {
+    flex: none;
+    padding: 0.1rem 0.42rem;
+    border-radius: 999px;
+    background: var(--fest-rose);
+    font-size: 0.6rem;
+    font-style: normal;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #fff;
+}
+
+.gr-score {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--fest-marigold-deep);
+    font-variant-numeric: tabular-nums;
+}
+
+.gr-board-foot {
+    padding: 0.85rem 1.8rem;
+    border-top: 1px solid rgba(63, 29, 77, 0.1);
+    font-size: 0.72rem;
+    text-align: center;
+    color: var(--fest-ink-faint);
+    background: #fff8ec;
+}
+
+/* ------------------------------------------------------------- responsive */
+
+/* Narrow screens can't afford a side-by-side split: the board becomes a
+   bottom sheet instead, sliding up rather than in. */
+@media (max-width: 760px) {
+    .gr-root {
+        flex-direction: column;
+    }
+
+    /* Both bands hug the screen edges — there is no side panel to hide behind. */
+    .gr-confetti {
+        --gr-band-l: 13%;
+        --gr-band-r-start: 87%;
+        --gr-band-r-width: 13%;
+    }
+
+    /* Everything below is squeezed so Play Again still clears the sheet.
+       The stage also scrolls, but a button you have to scroll to find may as
+       well not be there. */
+    .gr-stage {
+        padding: 1.1rem 1rem;
+        align-content: center;
+    }
+
+    .gr-stage-shrunk {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .gr-headline {
+        font-size: clamp(1.7rem, 8vw, 2.3rem);
+    }
+
+    .gr-subline {
+        margin-bottom: 0.9rem;
+        font-size: 0.88rem;
+        line-height: 1.4;
+    }
+
+    .gr-score-card {
+        padding: 0.9rem 2.2rem;
+        border-radius: 20px;
+    }
+
+    .gr-score-value {
+        font-size: clamp(2.6rem, 13vw, 3.6rem);
+    }
+
+    .gr-badges {
+        margin-top: 0.75rem;
+    }
+
+    .gr-stats {
+        gap: 0.45rem;
+        margin-top: 0.75rem;
+    }
+
+    .gr-stat {
+        min-width: 78px;
+        padding: 0.45rem 0.75rem;
+    }
+
+    .gr-stat-value {
+        font-size: 1.1rem;
+    }
+
+    .gr-actions {
+        margin-top: 1rem;
+    }
+
+    .gr-playing-as {
+        margin-top: 0.6rem;
+    }
+
+    .gr-board {
+        flex: 0 0 auto;
+        width: 100%;
+        max-height: 50vh;
+        margin-right: 0;
+        margin-bottom: -50vh;
+        box-shadow: 0 -20px 50px rgba(0, 0, 0, 0.4);
+        border-radius: 22px 22px 0 0;
+        transform: translateY(100%);
+        transition:
+            transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+            margin-bottom 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .gr-board-open {
+        margin-bottom: 0;
+        transform: none;
+    }
+
+    .gr-board-head {
+        padding: 0.9rem 1.1rem 0.7rem;
+    }
+
+    .gr-board-head h2 {
+        font-size: 1.15rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .gr-root,
+    .gr-stage,
+    .gr-stage-inner,
+    .gr-headline,
+    .gr-score-card,
+    .gr-score-value,
+    .gr-badge,
+    .gr-board,
+    .gr-row,
+    .gr-row-me {
+        animation: none !important;
+        transition-duration: 0.01ms !important;
+    }
+
+    .gr-confetti {
+        display: none;
+    }
+}

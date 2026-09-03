@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import './MathMonsoon.css';
+import { GameIntro, GameResultPanel } from '../../leaderboard';
 
 interface MathMonsoonProps {
   onBack: () => void;
@@ -221,49 +222,38 @@ const MathMonsoon: React.FC<MathMonsoonProps> = ({ onBack }) => {
   };
 
   const renderStartScreen = () => (
-    <div className="mm-start-screen">
-      <div className="mm-start-content">
-        <h1 className="mm-title">🌧️ Math Monsoon</h1>
-        <p className="mm-subtitle">Solve math problems before raindrops hit the water!</p>
-        
-        <div className="mm-instructions">
-          <h3>How to Play</h3>
-          <ul>
-            <li>🌧️ Raindrops fall from the sky with math problems</li>
-            <li>⌨️ Type the answer and press Enter</li>
-            <li>⚡ Faster answers = More points!</li>
-            <li>💔 You lose a life when a drop hits the water</li>
-            <li>❤️ You have 3 lives - don't let them run out!</li>
-          </ul>
-        </div>
-
-        <button className="mm-start-btn" onClick={startGame}>
-          Start Game
-        </button>
-        <button className="mm-back-btn" onClick={onBack}>
-          ← Back to Home
-        </button>
-      </div>
-    </div>
+    <GameIntro
+      gameId="math-monsoon"
+      emoji="🌧️"
+      title="Math Monsoon"
+      tagline="Solve the falling sums before the raindrops hit the water."
+      hints={[
+        '🌧️ Raindrops fall from the sky carrying math problems',
+        '⌨️ Type the answer and press Enter to burst a drop',
+        '⚡ The higher you catch it, the more points you score',
+        '❤️ Three lives — every drop that lands costs you one',
+      ]}
+      ctaLabel="Start Game"
+      onStart={startGame}
+      onBack={onBack}
+    />
   );
 
   const renderGameOver = () => (
-    <div className="mm-gameover-screen">
-      <div className="mm-gameover-content">
-        <h1>Game Over!</h1>
-        <div className="mm-final-score">
-          <span className="mm-score-label">Final Score</span>
-          <span className="mm-score-value">{score}</span>
-        </div>
-        <p className="mm-time-survived">You survived for {Math.floor(gameTime)} seconds!</p>
-        <button className="mm-start-btn" onClick={startGame}>
-          Play Again
-        </button>
-        <button className="mm-back-btn" onClick={onBack}>
-          ← Back to Home
-        </button>
-      </div>
-    </div>
+    <GameResultPanel
+      gameId="math-monsoon"
+      gameTitle="Math Monsoon"
+      headline="Game Over!"
+      subline={`You held back the monsoon for ${Math.floor(gameTime)} seconds.`}
+      score={score}
+      won={false}
+      stats={[
+        { label: 'Survived', value: `${Math.floor(gameTime)}s` },
+        { label: 'Solved', value: correctAnswers },
+      ]}
+      onPlayAgain={startGame}
+      onBack={onBack}
+    />
   );
 
   const renderGame = () => (

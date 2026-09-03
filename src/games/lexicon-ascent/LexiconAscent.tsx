@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import Muuri from 'muuri';
 import './LexiconAscent.css';
+import { GameIntro, GameResultPanel } from '../../leaderboard';
 
 interface LexiconAscentProps {
   onBack: () => void;
@@ -357,41 +358,21 @@ const LexiconAscent: React.FC<LexiconAscentProps> = ({ onBack }) => {
   };
 
   const renderStartScreen = () => (
-    <div className="la-start-screen">
-      <div className="la-start-content">
-        <div className="la-logo">
-          <span className="la-logo-icon">📚</span>
-          <h1 className="la-title">Lexicon Ascent</h1>
-        </div>
-        <p className="la-subtitle">Master the spectrum of meaning</p>
-        
-        <div className="la-instructions">
-          <div className="la-instruction-item">
-            <span className="la-instruction-num">1</span>
-            <span>Tap words to reveal their meanings</span>
-          </div>
-          <div className="la-instruction-item">
-            <span className="la-instruction-num">2</span>
-            <span>Drag & drop to arrange by intensity</span>
-          </div>
-          <div className="la-instruction-item">
-            <span className="la-instruction-num">3</span>
-            <span>Order from least → most intense</span>
-          </div>
-          <div className="la-instruction-item">
-            <span className="la-instruction-num">4</span>
-            <span>Faster completion = Higher score</span>
-          </div>
-        </div>
-
-        <button className="la-start-btn" onClick={startGame}>
-          Begin Ascent
-        </button>
-        <button className="la-back-btn" onClick={onBack}>
-          ← Back to Home
-        </button>
-      </div>
-    </div>
+    <GameIntro
+      gameId="lexicon-ascent"
+      emoji="📚"
+      title="Lexicon Ascent"
+      tagline="Master the spectrum of meaning — climb from the mildest word to the fiercest."
+      hints={[
+        '👆 Tap a word to reveal what it means',
+        '🔀 Drag and drop to arrange them by intensity',
+        '📈 Order from least intense → most intense',
+        '⚡ Finish faster and the score climbs with you',
+      ]}
+      ctaLabel="Begin Ascent"
+      onStart={startGame}
+      onBack={onBack}
+    />
   );
 
   const renderGame = () => (
@@ -504,23 +485,19 @@ const LexiconAscent: React.FC<LexiconAscentProps> = ({ onBack }) => {
   );
 
   const renderVictory = () => (
-    <div className="la-victory-screen">
-      <div className="la-victory-content">
-        <div className="la-victory-icon">🏆</div>
-        <h1>Lexicon Master!</h1>
-        <p>You've conquered all 4 levels!</p>
-        <div className="la-final-score">
-          <span className="la-final-label">Final Score</span>
-          <span className="la-final-value">{score}</span>
-        </div>
-        <button className="la-start-btn" onClick={startGame}>
-          Play Again
-        </button>
-        <button className="la-back-btn" onClick={onBack}>
-          ← Back to Home
-        </button>
-      </div>
-    </div>
+    <GameResultPanel
+      gameId="lexicon-ascent"
+      gameTitle="Lexicon Ascent"
+      headline="Lexicon Master!"
+      subline="You've conquered all 4 levels — every shade of intensity in its place."
+      score={score}
+      stats={[
+        { label: 'Levels', value: 4 },
+        { label: 'Rounds', value: TOTAL_ROUNDS * 4 },
+      ]}
+      onPlayAgain={startGame}
+      onBack={onBack}
+    />
   );
 
   return (

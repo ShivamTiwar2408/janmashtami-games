@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import './MemoryMatrix.css';
+import { GameIntro, GameResultPanel } from '../../leaderboard';
 
 interface MemoryMatrixProps {
   onBack: () => void;
@@ -23,6 +24,9 @@ const MemoryMatrix: React.FC<MemoryMatrixProps> = ({ onBack }) => {
   const [selectionTimeLeft, setSelectionTimeLeft] = useState(0);
   const [lives, setLives] = useState(3);
   const [combo, setCombo] = useState(0);
+  // A wrong tile zeroes `combo`, so the run's high-water mark is tracked
+  // separately — otherwise the game-over screen always reports 0.
+  const [bestCombo, setBestCombo] = useState(0);
   const [showingCountdown, setShowingCountdown] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const selectionTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -105,6 +109,7 @@ const MemoryMatrix: React.FC<MemoryMatrixProps> = ({ onBack }) => {
     setScore(0);
     setLives(3);
     setCombo(0);
+    setBestCombo(0);
     startStage(1);
   };
 
@@ -136,7 +141,11 @@ const MemoryMatrix: React.FC<MemoryMatrixProps> = ({ onBack }) => {
         const totalScore = baseScore + timeBonus + comboBonus + stageBonus;
         
         setScore(prev => prev + totalScore);
-        setCombo(prev => prev + 1);
+        setCombo(prev => {
+          const next = prev + 1;
+          setBestCombo(b => Math.max(b, next));
+          return next;
+        });
         setGameState('success');
       }
     } else {
@@ -207,41 +216,21 @@ const MemoryMatrix: React.FC<MemoryMatrixProps> = ({ onBack }) => {
 
 
   const renderStartScreen = () => (
-    <div className="mmx-start-screen">
-      <div className="mmx-start-content">
-        <div className="mmx-logo">
-          <span className="mmx-logo-icon">🧠</span>
-          <h1 className="mmx-title">Memory Matrix</h1>
-        </div>
-        <p className="mmx-subtitle">Test your visual memory</p>
-        
-        <div className="mmx-instructions">
-          <div className="mmx-instruction-item">
-            <span className="mmx-instruction-icon">👁️</span>
-            <span>Memorize the highlighted tiles</span>
-          </div>
-          <div className="mmx-instruction-item">
-            <span className="mmx-instruction-icon">🎯</span>
-            <span>Select all the tiles you saw</span>
-          </div>
-          <div className="mmx-instruction-item">
-            <span className="mmx-instruction-icon">⚡</span>
-            <span>Faster = More bonus points</span>
-          </div>
-          <div className="mmx-instruction-item">
-            <span className="mmx-instruction-icon">❤️</span>
-            <span>3 lives - don't make mistakes!</span>
-          </div>
-        </div>
-
-        <button className="mmx-start-btn" onClick={startGame}>
-          <span>START GAME</span>
-        </button>
-        <button className="mmx-back-btn" onClick={onBack}>
-          ← Back to Home
-        </button>
-      </div>
-    </div>
+    <GameIntro
+      gameId="memory-matrix"
+      emoji="🧠"
+      title="Memory Matrix"
+      tagline="Hold the pattern in your mind's eye, then place it back tile by tile."
+      hints={[
+        '👁️ Memorise the highlighted tiles before they vanish',
+        '🎯 Tap every tile you saw — no second guesses',
+        '⚡ The faster you finish, the bigger the time bonus',
+        "❤️ Three lives, and the grid grows every stage",
+      ]}
+      ctaLabel="Start Game"
+      onStart={startGame}
+      onBack={onBack}
+    />
   );
 
   const renderSuccessOverlay = () => (
@@ -288,31 +277,20 @@ const MemoryMatrix: React.FC<MemoryMatrixProps> = ({ onBack }) => {
   );
 
   const renderGameOver = () => (
-    <div className="mmx-gameover-screen">
-      <div className="mmx-gameover-content">
-        <h1>GAME OVER</h1>
-        <div className="mmx-final-stats">
-          <div className="mmx-stat">
-            <span className="mmx-stat-label">Final Score</span>
-            <span className="mmx-stat-value">{score}</span>
-          </div>
-          <div className="mmx-stat">
-            <span className="mmx-stat-label">Stage Reached</span>
-            <span className="mmx-stat-value">{stage}</span>
-          </div>
-          <div className="mmx-stat">
-            <span className="mmx-stat-label">Best Combo</span>
-            <span className="mmx-stat-value">{combo}x</span>
-          </div>
-        </div>
-        <button className="mmx-start-btn" onClick={startGame}>
-          Play Again
-        </button>
-        <button className="mmx-back-btn" onClick={onBack}>
-          ← Back to Home
-        </button>
-      </div>
-    </div>
+    <GameResultPanel
+      gameId="memory-matrix"
+      gameTitle="Memory Matrix"
+      headline="Game Over"
+      subline={`You held ${bestCombo === 0 ? 'the pattern' : `a ${bestCombo}× streak`} and reached stage ${stage}.`}
+      score={score}
+      won={false}
+      stats={[
+        { label: 'Stage', value: stage },
+        { label: 'Best Combo', value: `${bestCombo}×` },
+      ]}
+      onPlayAgain={startGame}
+      onBack={onBack}
+    />
   );
 
   const renderGame = () => (

@@ -1,0 +1,507 @@
+/* Shared name + phone capture. One look everywhere: the pre-game modal in
+   Arrange / Yudhishthira / Krishna's Wheel, and the inline form in the
+   end-of-game result panel. All scoped under .pf-. Colours from palette.css. */
+
+@import './palette.css';
+
+.pf-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 950;
+    display: grid;
+    place-items: center;
+    padding: 1.25rem;
+    overflow-y: auto;
+    background:
+        radial-gradient(circle at 50% 0%, rgba(255, 168, 74, 0.4), transparent 55%),
+        radial-gradient(circle at 50% 100%, rgba(239, 74, 134, 0.34), transparent 60%),
+        rgba(74, 26, 74, 0.76);
+    backdrop-filter: blur(8px);
+    animation: pf-veil 0.32s ease both;
+}
+
+@keyframes pf-veil {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* ------------------------------------------------------------------- card */
+
+.pf-card {
+    position: relative;
+    width: min(420px, 100%);
+    box-sizing: border-box;
+    padding: 1.6rem 1.6rem 1.3rem;
+    border-radius: 26px;
+    text-align: center;
+    color: var(--fest-ink);
+    font-family: inherit;
+    line-height: 1.45;
+}
+
+.pf-card-modal {
+    border: 1px solid #fff;
+    background-color: var(--fest-cream);
+    background-image:
+        radial-gradient(circle at 50% -12%, rgba(255, 214, 130, 0.55), transparent 58%),
+        linear-gradient(168deg, var(--fest-cream) 0%, #fff6e6 55%, var(--fest-cream-deep) 100%);
+    box-shadow:
+        0 28px 70px rgba(60, 12, 50, 0.42),
+        inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    animation: pf-rise 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Inline lives inside the result panel, which already supplies the backdrop,
+   a headline and the score — so it drops the hero and runs tighter, otherwise
+   the combined column overflows the viewport. */
+.pf-card-inline {
+    width: min(400px, 100%);
+    margin: 1.2rem auto 0;
+    padding: 1.1rem 1.35rem 0.9rem;
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    background-color: #fff9ee;
+    background-image: linear-gradient(168deg, rgba(255, 253, 247, 0.97), rgba(255, 241, 219, 0.97));
+    backdrop-filter: blur(10px);
+    box-shadow: 0 16px 40px rgba(60, 12, 50, 0.28);
+}
+
+@keyframes pf-rise {
+    from { opacity: 0; transform: translateY(24px) scale(0.97); }
+    to { opacity: 1; transform: none; }
+}
+
+.pf-close {
+    position: absolute;
+    top: 0.85rem;
+    right: 0.85rem;
+    width: 34px;
+    height: 34px;
+    display: grid;
+    place-items: center;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(63, 29, 77, 0.09);
+    color: var(--fest-ink-soft);
+    font-family: inherit;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.16s ease, color 0.16s ease, transform 0.16s ease;
+}
+
+.pf-close:hover {
+    background: var(--fest-rose);
+    color: #fff;
+    transform: rotate(90deg);
+}
+
+/* ------------------------------------------------------------------- hero */
+
+.pf-hero {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 66px;
+    height: 66px;
+    margin: 0 auto 0.7rem;
+}
+
+.pf-hero-emoji {
+    font-size: 2.5rem;
+    line-height: 1;
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.4));
+    animation: pf-bob 3.2s ease-in-out infinite;
+}
+
+.pf-hero-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 186, 60, 0.5), transparent 66%);
+    animation: pf-pulse 3.2s ease-in-out infinite;
+}
+
+@keyframes pf-bob {
+    0%, 100% { transform: translateY(0) rotate(-4deg); }
+    50% { transform: translateY(-5px) rotate(4deg); }
+}
+
+@keyframes pf-pulse {
+    0%, 100% { transform: scale(0.9); opacity: 0.65; }
+    50% { transform: scale(1.15); opacity: 1; }
+}
+
+.pf-title {
+    margin: 0 0 0.35rem;
+    font-size: 1.35rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    background: linear-gradient(105deg, var(--fest-rose), var(--fest-marigold-deep) 60%, var(--fest-marigold));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.pf-card-inline .pf-title {
+    font-size: 1.05rem;
+}
+
+.pf-card-inline .pf-hero {
+    display: none;
+}
+
+.pf-card-inline .pf-subtitle {
+    margin-bottom: 0.8rem;
+    font-size: 0.84rem;
+}
+
+.pf-card-inline .pf-recent-label,
+.pf-card-inline .pf-or {
+    margin-top: 0.6rem;
+}
+
+.pf-card-inline .pf-form {
+    margin-top: 0.7rem;
+}
+
+.pf-card-inline .pf-privacy {
+    margin-top: 0.6rem;
+}
+
+.pf-subtitle {
+    margin: 0 auto 1.1rem;
+    max-width: 34ch;
+    font-size: 0.9rem;
+    color: var(--fest-ink-soft);
+}
+
+/* ------------------------------------------------- returning-player chips */
+
+.pf-recent {
+    margin-bottom: 0.4rem;
+}
+
+.pf-recent-label {
+    display: block;
+    margin-bottom: 0.55rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--fest-teal);
+}
+
+.pf-chips {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.45rem;
+}
+
+.pf-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    max-width: 100%;
+    padding: 0.35rem 0.8rem 0.35rem 0.35rem;
+    border: 1.5px solid rgba(63, 29, 77, 0.14);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--fest-ink);
+    font-family: inherit;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.16s ease, border-color 0.16s ease, transform 0.16s ease;
+}
+
+.pf-chip:hover {
+    background: #fff6e0;
+    border-color: var(--fest-marigold);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(120, 55, 0, 0.18);
+}
+
+.pf-chip-avatar {
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    flex: none;
+    border-radius: 50%;
+    background: linear-gradient(140deg, #ffd98a, #ff9f45);
+    color: #fff;
+    font-size: 0.68rem;
+    font-weight: 800;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+}
+
+/* A row of shortcuts reads like bunting rather than a list. */
+.pf-chip:nth-child(2) .pf-chip-avatar {
+    background: linear-gradient(140deg, #6fe3d2, var(--fest-teal));
+}
+
+.pf-chip:nth-child(3) .pf-chip-avatar {
+    background: linear-gradient(140deg, #ff9ac0, var(--fest-rose));
+}
+
+.pf-chip:nth-child(4) .pf-chip-avatar {
+    background: linear-gradient(140deg, #8ee6a8, var(--fest-green));
+}
+
+.pf-chip-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.pf-or {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin: 0.95rem 0 0.2rem;
+}
+
+.pf-or span {
+    flex: 1;
+    height: 1px;
+    background: rgba(63, 29, 77, 0.14);
+}
+
+.pf-or em {
+    font-size: 0.72rem;
+    font-style: normal;
+    letter-spacing: 0.06em;
+    color: var(--fest-ink-faint);
+}
+
+/* ------------------------------------------------------------------ fields */
+
+.pf-form {
+    margin-top: 0.9rem;
+    text-align: left;
+}
+
+/* Floating label: the placeholder is a single space, so :placeholder-shown
+   tells us whether the field is empty without any extra state. */
+.pf-field {
+    position: relative;
+    margin-bottom: 0.7rem;
+}
+
+.pf-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 1.4rem 3.2rem 0.55rem 1rem;
+    border: 1.5px solid rgba(63, 29, 77, 0.16);
+    border-radius: 15px;
+    background: #fff;
+    color: var(--fest-ink);
+    font-family: inherit;
+    font-size: 1.02rem;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+.pf-input-phone {
+    letter-spacing: 0.08em;
+    font-variant-numeric: tabular-nums;
+}
+
+.pf-input:focus {
+    outline: none;
+    border-color: var(--fest-marigold);
+    background: #fff;
+    box-shadow: 0 0 0 4px rgba(255, 158, 44, 0.22);
+}
+
+.pf-label {
+    position: absolute;
+    left: 1rem;
+    top: 0.95rem;
+    font-size: 1.02rem;
+    color: var(--fest-ink-faint);
+    pointer-events: none;
+    transition: transform 0.16s ease, font-size 0.16s ease, color 0.16s ease;
+    transform-origin: left top;
+}
+
+.pf-input:focus + .pf-label,
+.pf-input:not(:placeholder-shown) + .pf-label {
+    transform: translateY(-0.62rem);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--fest-marigold-deep);
+}
+
+.pf-field-bad .pf-input {
+    border-color: var(--fest-red);
+    box-shadow: 0 0 0 4px rgba(211, 58, 82, 0.16);
+    animation: pf-shake 0.34s ease both;
+}
+
+@keyframes pf-shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+.pf-tick,
+.pf-count {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.pf-tick {
+    display: grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: linear-gradient(140deg, #6fdf9f, var(--fest-green));
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 800;
+    animation: pf-tick-in 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes pf-tick-in {
+    from { opacity: 0; transform: translateY(-50%) scale(0.4); }
+    to { opacity: 1; transform: translateY(-50%) scale(1); }
+}
+
+.pf-count {
+    font-size: 0.72rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--fest-ink-faint);
+}
+
+/* Reserves its line so the card doesn't jump when a message appears. */
+.pf-error {
+    min-height: 1.15rem;
+    margin: 0 0 0.35rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--fest-red);
+}
+
+/* ------------------------------------------------------------------ submit */
+
+.pf-submit {
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.95rem 1.5rem;
+    border: 0;
+    border-radius: 999px;
+    background-color: #f4653f;
+    background-image: linear-gradient(100deg, var(--fest-marigold), #ff7a45 55%, var(--fest-rose));
+    color: #fff;
+    font-family: inherit;
+    font-size: 1.02rem;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 12px 28px rgba(214, 60, 110, 0.38);
+    transition: transform 0.16s ease, box-shadow 0.16s ease, opacity 0.16s ease;
+}
+
+.pf-submit:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 36px rgba(214, 60, 110, 0.48);
+}
+
+.pf-submit:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.pf-submit:focus-visible {
+    outline: 3px solid #ffd479;
+    outline-offset: 3px;
+}
+
+.pf-submit:disabled {
+    /* warm tint, not a cool grey — it sits on a cream card */
+    background: rgba(163, 77, 5, 0.13);
+    color: rgba(97, 52, 10, 0.62);
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+.pf-submit-arrow {
+    transition: transform 0.16s ease;
+}
+
+.pf-submit:hover .pf-submit-arrow {
+    transform: translateX(4px);
+}
+
+.pf-privacy {
+    margin: 0.85rem 0 0;
+    font-size: 0.73rem;
+    color: var(--fest-ink-faint);
+}
+
+/* -------------------------------------------------------------- responsive */
+
+@media (max-width: 480px) {
+    .pf-card {
+        padding: 1.3rem 1.15rem 1.1rem;
+        border-radius: 22px;
+    }
+
+    .pf-hero {
+        width: 54px;
+        height: 54px;
+        margin-bottom: 0.5rem;
+    }
+
+    .pf-hero-emoji {
+        font-size: 1.75rem;
+    }
+
+    .pf-title {
+        font-size: 1.18rem;
+    }
+
+    .pf-subtitle {
+        margin-bottom: 0.9rem;
+        font-size: 0.85rem;
+    }
+}
+
+/* Short landscape screens (a laptop with the keyboard up, a projector feed). */
+@media (max-height: 620px) {
+    .pf-hero {
+        display: none;
+    }
+
+    .pf-subtitle {
+        margin-bottom: 0.7rem;
+    }
+
+    .pf-form {
+        margin-top: 0.7rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pf-overlay,
+    .pf-card-modal,
+    .pf-hero-emoji,
+    .pf-hero-ring,
+    .pf-tick,
+    .pf-field-bad .pf-input {
+        animation: none !important;
+    }
+
+    .pf-close:hover,
+    .pf-chip:hover,
+    .pf-submit:hover:not(:disabled) {
+        transform: none;
+    }
+}

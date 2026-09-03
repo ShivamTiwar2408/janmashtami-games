@@ -32,44 +32,6 @@
 }
 .mw-back-btn:hover { background: rgba(255, 255, 255, 0.28); }
 
-/* ---------- INTRO ---------- */
-.mw-intro, .mw-end {
-    text-align: center;
-    max-width: 60vw;
-    animation: mwFade 0.5s ease;
-}
-.mw-intro-icon, .mw-end-icon { font-size: 6rem; margin-bottom: 1rem; filter: drop-shadow(0 0 20px rgba(255,215,0,0.6)); }
-
-.mw-title {
-    font-size: 4.5rem;
-    font-weight: 800;
-    background: linear-gradient(90deg, #ffd700, #ff8a3d);
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin-bottom: 1rem;
-}
-.mw-subtitle {
-    font-size: 1.8rem;
-    line-height: 1.5;
-    color: rgba(255, 255, 255, 0.9);
-    margin-bottom: 2rem;
-}
-.mw-controls-hint {
-    display: flex;
-    gap: 1.5rem;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin-bottom: 2.5rem;
-}
-.mw-controls-hint span {
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    padding: 0.6rem 1.2rem;
-    border-radius: 12px;
-    font-size: 1.2rem;
-}
-
 .mw-primary-btn {
     background: linear-gradient(90deg, #ff6b35, #ffd700);
     color: #2b1055;
@@ -211,25 +173,19 @@
 }
 
 /* ---------- END ---------- */
-.mw-end-stats { display: flex; gap: 3rem; justify-content: center; margin: 1.5rem 0 2rem; }
-.mw-stat { display: flex; flex-direction: column; }
-.mw-stat-num { font-size: 4rem; font-weight: 800; color: #ffd700; }
-.mw-stat-label { font-size: 1.3rem; color: rgba(255, 255, 255, 0.8); text-transform: uppercase; letter-spacing: 0.1em; }
-.mw-cta { font-size: 1.7rem; line-height: 1.5; max-width: 50vw; margin: 0 auto 2rem; }
-.mw-cta em { color: #ffd700; font-style: normal; font-weight: 700; }
-.mw-qr-row { display: flex; flex-direction: column; align-items: center; gap: 0.8rem; margin-bottom: 2rem; }
-.mw-qr { width: 200px; height: 200px; border-radius: 16px; border: 6px solid #fff; background: #fff; }
-.mw-qr-label { font-size: 1.4rem; font-weight: 600; }
-.mw-end-actions { display: flex; gap: 1.5rem; justify-content: center; }
+/* The result screen is the shared GameResultPanel; only this QR block, which
+   it renders below its buttons, is ours. */
+.mw-qr-row { display: flex; flex-direction: column; align-items: center; gap: 0.7rem; }
+.mw-qr { width: 150px; height: 150px; border-radius: 16px; border: 6px solid #fff; background: #fff; }
+.mw-qr-label { font-size: 0.95rem; line-height: 1.4; max-width: 20rem; }
 
 @keyframes mwFade { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes mwPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
 
 /* Smaller screens (preview / dev) */
 @media (max-width: 900px) {
-    .mw-title { font-size: 3rem; }
-    .mw-subtitle, .mw-cta, .mw-teaching { font-size: 1.3rem; max-width: 90vw; }
-    .mw-intro, .mw-end, .mw-reveal { max-width: 92vw; }
+    .mw-teaching { font-size: 1.3rem; max-width: 90vw; }
+    .mw-reveal { max-width: 92vw; }
     .mw-situation-text { font-size: 1.8rem; }
     .mw-option { font-size: 1.3rem; }
     .mw-answer-verse { font-size: 1.7rem; }

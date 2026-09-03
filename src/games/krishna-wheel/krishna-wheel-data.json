@@ -1,88 +1,484 @@
 {
     "wheelSegments": [
         {
-            "text": "You have the right to perform your prescribed duty, but not to the fruits of action",
-            "reference": "BG 2.47",
-            "wheelText": "Right to duty, not fruits",
+            "problem": "Anger",
+            "wheelText": "Anger",
             "color": "#FF6B6B",
-            "darkColor": "#E74C3C"
+            "darkColor": "#E74C3C",
+            "verses": [
+                {
+                    "text": "One whose mind is undisturbed in sorrow and unelated in joy, free from attachment, fear and anger, is truly steady in wisdom",
+                    "reference": "BG 2.56"
+                },
+                {
+                    "text": "Dwelling on the objects of the senses breeds attachment; from attachment desire is born, and from desire arises anger",
+                    "reference": "BG 2.62"
+                },
+                {
+                    "text": "From anger comes delusion, from delusion the loss of memory; when memory fails, discrimination is lost, and one falls",
+                    "reference": "BG 2.63"
+                },
+                {
+                    "text": "For those freed from desire and anger, with minds subdued and the Self realised, liberation is ever at hand",
+                    "reference": "BG 5.26"
+                },
+                {
+                    "text": "Fearlessness, purity of heart, self-restraint, truthfulness, freedom from anger, compassion and forgiveness are the marks of the divine nature",
+                    "reference": "BG 16.1-3"
+                },
+                {
+                    "text": "Lust, anger and greed are the three gates to ruin, destroyers of the self; therefore give up these three",
+                    "reference": "BG 16.21"
+                }
+            ]
         },
         {
-            "text": "The soul is neither born, and nor does it die; it is unborn, eternal, permanent",
-            "reference": "BG 2.20",
-            "wheelText": "Soul is eternal",
+            "problem": "Depression",
+            "wheelText": "Depression",
             "color": "#4ECDC4",
-            "darkColor": "#16A085"
+            "darkColor": "#16A085",
+            "verses": [
+                {
+                    "text": "Yield not to faint-heartedness, it does not befit you; shake off this weakness of heart and arise, O Arjuna",
+                    "reference": "BG 2.3"
+                },
+                {
+                    "text": "The contacts of the senses bring heat and cold, pleasure and pain; they come and go, so learn to bear them bravely",
+                    "reference": "BG 2.14"
+                },
+                {
+                    "text": "One unattached to outer pleasures, who finds joy within the Self, attains a happiness beyond measure",
+                    "reference": "BG 5.21"
+                }
+            ]
         },
         {
-            "text": "Better is one's own dharma, though imperfectly performed, than the dharma of another",
-            "reference": "BG 3.35",
-            "wheelText": "Own dharma is better",
+            "problem": "Greed",
+            "wheelText": "Greed",
             "color": "#45B7D1",
-            "darkColor": "#2980B9"
+            "darkColor": "#2980B9",
+            "verses": [
+                {
+                    "text": "From goodness knowledge arises; from passion, greed; and from ignorance come negligence and delusion",
+                    "reference": "BG 14.17"
+                },
+                {
+                    "text": "Lust, anger and greed are the three gates to ruin, destroyers of the self; therefore give up these three",
+                    "reference": "BG 16.21"
+                },
+                {
+                    "text": "Those who seek liberation give, serve and sacrifice without any craving for reward",
+                    "reference": "BG 17.25"
+                }
+            ]
         },
         {
-            "text": "The mind is restless, but it can be controlled by practice and detachment",
-            "reference": "BG 6.35",
-            "wheelText": "Mind can be controlled",
+            "problem": "Practicing Forgiveness",
+            "wheelText": "Forgiveness",
             "color": "#96CEB4",
-            "darkColor": "#27AE60"
+            "darkColor": "#27AE60",
+            "verses": [
+                {
+                    "text": "As a father forgives his son, a friend his friend, a lover the beloved, so please forgive me, O Lord",
+                    "reference": "BG 11.44"
+                },
+                {
+                    "text": "One who bears no ill will to any being, who is friendly, compassionate, free of ego and forgiving, is dear to Me",
+                    "reference": "BG 12.13-14"
+                },
+                {
+                    "text": "Fearlessness, purity of heart, self-restraint, truthfulness, freedom from anger, compassion and forgiveness are the marks of the divine nature",
+                    "reference": "BG 16.1-3"
+                }
+            ]
         },
         {
-            "text": "One who sees inaction in action, and action in inaction, is wise among men",
-            "reference": "BG 4.18",
-            "wheelText": "Wise see true action",
+            "problem": "Confusion",
+            "wheelText": "Confusion",
             "color": "#FFEAA7",
-            "darkColor": "#F39C12"
+            "darkColor": "#F39C12",
+            "verses": [
+                {
+                    "text": "My mind is clouded about my duty; I am your student, take refuge in you, please instruct me",
+                    "reference": "BG 2.7"
+                },
+                {
+                    "text": "Your words bewilder me; tell me decisively the one path by which I may reach the highest good",
+                    "reference": "BG 3.2"
+                },
+                {
+                    "text": "The Lord dwells in the heart of every being, guiding all as they journey through this world",
+                    "reference": "BG 18.61"
+                }
+            ]
         },
         {
-            "text": "Whatever you do, whatever you eat, offer it all to the Divine",
-            "reference": "BG 9.27",
-            "wheelText": "Offer all to Divine",
+            "problem": "Discriminated",
+            "wheelText": "Discriminated",
             "color": "#DDA0DD",
-            "darkColor": "#8E44AD"
+            "darkColor": "#8E44AD",
+            "verses": [
+                {
+                    "text": "The wise look with equal vision upon the learned and the outcast, upon a cow, an elephant and a dog alike",
+                    "reference": "BG 5.18"
+                },
+                {
+                    "text": "Those whose minds rest in equanimity rise above all fault; they are already seated in the Supreme",
+                    "reference": "BG 5.19"
+                },
+                {
+                    "text": "One who sees all beings as equal to oneself, feeling their joy and sorrow as one's own, is the highest yogi",
+                    "reference": "BG 6.32"
+                },
+                {
+                    "text": "I am the same to all beings; none is hated or favoured by Me. Yet those who worship Me with love dwell in Me, and I in them",
+                    "reference": "BG 9.29"
+                }
+            ]
         },
         {
-            "text": "I am the same to all beings; none are dear to Me, nor do I dislike anyone",
-            "reference": "BG 9.29",
-            "wheelText": "I am same to all",
+            "problem": "Laziness",
+            "wheelText": "Laziness",
             "color": "#98D8C8",
-            "darkColor": "#1ABC9C"
+            "darkColor": "#1ABC9C",
+            "verses": [
+                {
+                    "text": "Do your appointed work, for action is better than inaction; even the body cannot be sustained without it",
+                    "reference": "BG 3.8"
+                },
+                {
+                    "text": "By performing their duties the ancients attained perfection; therefore you too should act",
+                    "reference": "BG 3.20"
+                },
+                {
+                    "text": "Yoga is not for one who eats too much or too little, nor for one who sleeps too much or too little",
+                    "reference": "BG 6.16"
+                },
+                {
+                    "text": "The happiness born of sleep, indolence and negligence, deluding from beginning to end, belongs to ignorance",
+                    "reference": "BG 18.39"
+                }
+            ]
         },
         {
-            "text": "Abandon all varieties of dharma and surrender unto Me alone",
-            "reference": "BG 18.66",
-            "wheelText": "Surrender unto Me",
+            "problem": "Pride",
+            "wheelText": "Pride",
             "color": "#F7DC6F",
-            "darkColor": "#E67E22"
+            "darkColor": "#E67E22",
+            "verses": [
+                {
+                    "text": "Hypocrisy, arrogance, conceit, anger, harshness and ignorance belong to those of a demonic nature",
+                    "reference": "BG 16.4"
+                },
+                {
+                    "text": "'This I have gained, that I shall gain; I am the lord, I am the enjoyer, who is equal to me?' Thus the arrogant are deluded",
+                    "reference": "BG 16.13-15"
+                },
+                {
+                    "text": "One who acts free from ego and attachment, unshaken by success or failure, acts in purity",
+                    "reference": "BG 18.26"
+                },
+                {
+                    "text": "Fixing your mind on Me you will cross every difficulty by My grace; but if from pride you will not listen, you will be lost",
+                    "reference": "BG 18.58"
+                }
+            ]
         },
         {
-            "text": "Those who worship Me with devotion, I reside in their hearts",
-            "reference": "BG 9.29",
-            "wheelText": "I reside in devotees",
+            "problem": "Dealing with Envy",
+            "wheelText": "Envy",
             "color": "#BB8FCE",
-            "darkColor": "#9B59B6"
+            "darkColor": "#9B59B6",
+            "verses": [
+                {
+                    "text": "One who bears no ill will to any being, who is friendly, compassionate, free of ego and forgiving, is dear to Me",
+                    "reference": "BG 12.13-14"
+                },
+                {
+                    "text": "Those who are hateful and cruel, lowest among humankind, are cast again and again into lower births",
+                    "reference": "BG 16.19"
+                },
+                {
+                    "text": "One who listens to this teaching with faith and without envy is freed and attains the blessed realms",
+                    "reference": "BG 18.71"
+                }
+            ]
         },
         {
-            "text": "When meditation is mastered, the mind is unwavering like a flame in a windless place",
-            "reference": "BG 6.19",
-            "wheelText": "Steady mind in meditation",
+            "problem": "Fear",
+            "wheelText": "Fear",
             "color": "#85C1E9",
-            "darkColor": "#3498DB"
+            "darkColor": "#3498DB",
+            "verses": [
+                {
+                    "text": "Freed from attachment, fear and anger, absorbed in Me and purified by knowledge, many have attained My own being",
+                    "reference": "BG 4.10"
+                },
+                {
+                    "text": "Having shown His awesome form, Krishna returned to His gentle shape and consoled the frightened Arjuna",
+                    "reference": "BG 11.50"
+                },
+                {
+                    "text": "That understanding is pure which knows what to do and what to shun, what is to be feared and what is not, what binds and what frees",
+                    "reference": "BG 18.30"
+                }
+            ]
         },
         {
-            "text": "Rise up with your own efforts; do not degrade yourself",
-            "reference": "BG 6.5",
-            "wheelText": "Rise with own efforts",
+            "problem": "Loneliness",
+            "wheelText": "Loneliness",
             "color": "#F8C471",
-            "darkColor": "#D68910"
+            "darkColor": "#D68910",
+            "verses": [
+                {
+                    "text": "One who sees Me everywhere and sees all things in Me is never lost to Me, nor am I ever lost to them",
+                    "reference": "BG 6.30"
+                },
+                {
+                    "text": "I am the same to all beings; none is hated or favoured by Me. Yet those who worship Me with love dwell in Me, and I in them",
+                    "reference": "BG 9.29"
+                },
+                {
+                    "text": "Undivided yet appearing divided among beings, He stands outside and within all, sustaining everything",
+                    "reference": "BG 13.16"
+                },
+                {
+                    "text": "He is the light of all lights, beyond all darkness, seated in the heart of every being",
+                    "reference": "BG 13.18"
+                }
+            ]
         },
         {
-            "text": "I am Time, the destroyer and creator of worlds",
-            "reference": "BG 11.32",
-            "wheelText": "I am Time itself",
+            "problem": "Seeking Peace",
+            "wheelText": "Seeking Peace",
             "color": "#82E0AA",
-            "darkColor": "#58D68D"
+            "darkColor": "#58D68D",
+            "verses": [
+                {
+                    "text": "For the unsteady there is no wisdom and no meditation; without meditation there is no peace, and without peace, where is happiness?",
+                    "reference": "BG 2.66"
+                },
+                {
+                    "text": "One who gives up all cravings, free from longing, ego and possessiveness, attains peace",
+                    "reference": "BG 2.71"
+                },
+                {
+                    "text": "One with faith and devotion, mastering the senses, gains wisdom, and through wisdom swiftly finds supreme peace",
+                    "reference": "BG 4.39"
+                },
+                {
+                    "text": "Knowing Me as the enjoyer of all offerings, the Lord of all worlds and the friend of every being, one attains peace",
+                    "reference": "BG 5.29"
+                },
+                {
+                    "text": "The yogi who knows this truth rises above all rituals and study, and reaches the supreme abode",
+                    "reference": "BG 8.28"
+                }
+            ]
+        },
+        {
+            "problem": "Death of a Loved One",
+            "wheelText": "Grief",
+            "color": "#E59866",
+            "darkColor": "#BA4A00",
+            "verses": [
+                {
+                    "text": "As the soul passes through childhood, youth and old age, so it passes into another body; the wise do not grieve at this",
+                    "reference": "BG 2.13"
+                },
+                {
+                    "text": "The soul is never born and never dies; it is unborn, eternal and everlasting",
+                    "reference": "BG 2.20"
+                },
+                {
+                    "text": "As one casts off worn-out clothes and puts on new ones, so the soul lays aside a worn body and takes another",
+                    "reference": "BG 2.22"
+                },
+                {
+                    "text": "The soul is unseen, unthinkable and unchanging; knowing this, you have no cause to grieve",
+                    "reference": "BG 2.25"
+                },
+                {
+                    "text": "For the born, death is certain, and for the dead, birth is certain; do not mourn over what cannot be avoided",
+                    "reference": "BG 2.27"
+                }
+            ]
+        },
+        {
+            "problem": "Feeling Sinful",
+            "wheelText": "Feeling Sinful",
+            "color": "#AED6F1",
+            "darkColor": "#5499C7",
+            "verses": [
+                {
+                    "text": "Even if you were the most sinful of all sinners, you would cross the ocean of sin in the boat of divine knowledge",
+                    "reference": "BG 4.36"
+                },
+                {
+                    "text": "As blazing fire turns wood to ashes, so the fire of knowledge burns all past deeds to ashes",
+                    "reference": "BG 4.37"
+                },
+                {
+                    "text": "One who offers every act to the Divine, free of attachment, is untouched by sin, as a lotus leaf is untouched by water",
+                    "reference": "BG 5.10"
+                },
+                {
+                    "text": "Even a person of the worst conduct, if he worships Me with undivided love, is to be counted among the righteous",
+                    "reference": "BG 9.30"
+                },
+                {
+                    "text": "One who knows Me as unborn, without beginning, the great Lord of the worlds, is freed from all sin",
+                    "reference": "BG 10.3"
+                },
+                {
+                    "text": "Goodness is pure and luminous, free from sin; it binds one only to happiness and knowledge",
+                    "reference": "BG 14.6"
+                },
+                {
+                    "text": "Give up all other supports and take refuge in Me alone; I shall free you from all sin, do not grieve",
+                    "reference": "BG 18.66"
+                }
+            ]
+        },
+        {
+            "problem": "Losing Hope",
+            "wheelText": "Losing Hope",
+            "color": "#F5B7B1",
+            "darkColor": "#CD6155",
+            "verses": [
+                {
+                    "text": "In whatever way people approach Me, in that same way do I receive them",
+                    "reference": "BG 4.11"
+                },
+                {
+                    "text": "For those who worship Me with undivided mind, I carry what they lack and guard what they have",
+                    "reference": "BG 9.22"
+                },
+                {
+                    "text": "Fix your mind on Me, take refuge in Me, and you will surely come to Me",
+                    "reference": "BG 9.34"
+                },
+                {
+                    "text": "Give up all other supports and take refuge in Me alone; I shall free you from all sin, do not grieve",
+                    "reference": "BG 18.66"
+                },
+                {
+                    "text": "Where Krishna is, and where the devoted archer stands, there is prosperity, victory and righteousness",
+                    "reference": "BG 18.78"
+                }
+            ]
+        },
+        {
+            "problem": "Temptation",
+            "wheelText": "Temptation",
+            "color": "#A9DFBF",
+            "darkColor": "#229954",
+            "verses": [
+                {
+                    "text": "Even the wise who strive may find the turbulent senses carrying the mind forcibly away",
+                    "reference": "BG 2.60"
+                },
+                {
+                    "text": "One who restrains the senses and rests the mind on Me is truly established in wisdom",
+                    "reference": "BG 2.61"
+                },
+                {
+                    "text": "As rivers enter the ocean without disturbing it, so desires enter one who is at peace; such a one attains peace",
+                    "reference": "BG 2.70"
+                },
+                {
+                    "text": "This divine illusion is hard to overcome, but those who take refuge in Me cross beyond it",
+                    "reference": "BG 7.14"
+                }
+            ]
+        },
+        {
+            "problem": "Demotivated",
+            "wheelText": "Demotivated",
+            "color": "#D7BDE2",
+            "darkColor": "#7D3C98",
+            "verses": [
+                {
+                    "text": "Therefore arise, win glory, conquer your obstacles and enjoy a flourishing life",
+                    "reference": "BG 11.33"
+                },
+                {
+                    "text": "Better your own duty done imperfectly than another's done well; all work has some flaw, as fire has smoke",
+                    "reference": "BG 18.48"
+                },
+                {
+                    "text": "Where Krishna is, and where the devoted archer stands, there is prosperity, victory and righteousness",
+                    "reference": "BG 18.78"
+                }
+            ]
+        },
+        {
+            "problem": "Forgetfulness",
+            "wheelText": "Forgetfulness",
+            "color": "#FAD7A0",
+            "darkColor": "#CA6F1E",
+            "verses": [
+                {
+                    "text": "I am seated in the heart of all; from Me come memory, knowledge, and their fading away",
+                    "reference": "BG 15.15"
+                },
+                {
+                    "text": "The Lord dwells in the heart of every being, guiding all as they journey through this world",
+                    "reference": "BG 18.61"
+                }
+            ]
+        },
+        {
+            "problem": "Lust",
+            "wheelText": "Lust",
+            "color": "#F1948A",
+            "darkColor": "#C0392B",
+            "verses": [
+                {
+                    "text": "It is desire, it is anger, born of passion, all-devouring and never satisfied; know this to be your true enemy here",
+                    "reference": "BG 3.37"
+                },
+                {
+                    "text": "Therefore first master the senses, and slay this desire that destroys wisdom and realisation",
+                    "reference": "BG 3.41"
+                },
+                {
+                    "text": "Knowing the Self to be higher than the intellect, steady the mind by the Self and conquer this formidable enemy, desire",
+                    "reference": "BG 3.43"
+                },
+                {
+                    "text": "Pleasures born of sense contact are wombs of sorrow; they begin and they end, and the wise take no delight in them",
+                    "reference": "BG 5.22"
+                },
+                {
+                    "text": "Lust, anger and greed are the three gates to ruin, destroyers of the self; therefore give up these three",
+                    "reference": "BG 16.21"
+                }
+            ]
+        },
+        {
+            "problem": "Uncontrolled Mind",
+            "wheelText": "Restless Mind",
+            "color": "#A3E4D7",
+            "darkColor": "#148F77",
+            "verses": [
+                {
+                    "text": "Lift yourself up by your own self; the self alone can be your friend, and the self alone your enemy",
+                    "reference": "BG 6.5"
+                },
+                {
+                    "text": "For one who has conquered the mind, it is the dearest friend; for one who has not, it remains the worst enemy",
+                    "reference": "BG 6.6"
+                },
+                {
+                    "text": "Whenever the restless, unsteady mind wanders away, bring it back and rest it in the Self",
+                    "reference": "BG 6.26"
+                },
+                {
+                    "text": "The mind is restless indeed, but it can be mastered through steady practice and detachment",
+                    "reference": "BG 6.35"
+                }
+            ]
         }
     ]
 }

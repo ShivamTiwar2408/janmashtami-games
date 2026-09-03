@@ -170,3 +170,109 @@
   color: #ffd700;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
+
+/* Player Popup */
+
+.krishna-wheel-container .player-popup-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 5, 30, 0.75);
+  backdrop-filter: blur(8px);
+}
+
+.krishna-wheel-container .player-popup {
+  position: relative;
+  width: min(550px, 90vw);
+  padding: 30px 40px;
+  border-radius: 20px;
+  background: linear-gradient(145deg, #171035, #0d0927);
+  border: 2px solid #d6a63c;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  color: white;
+}
+
+.krishna-wheel-container .player-popup-close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  border: 0;
+  background: none;
+  color: #f5d77b;
+  font-size: 25px;
+  cursor: pointer;
+}
+
+.krishna-wheel-container .player-popup-heading {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.krishna-wheel-container .player-popup-heading h2 {
+  margin: 0;
+  color: #f6d77a;
+  font-size: 1.7rem;
+  line-height: 1.25;
+  text-align: center;
+  max-width: 100%;
+  white-space: normal;
+}
+
+.krishna-wheel-container .player-popup-heading p {
+  margin: 6px 0 0;
+  color: rgba(255,255,255,.7);
+  font-size: .9rem;
+}
+
+.krishna-wheel-container .player-details-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.krishna-wheel-container .player-input-group label {
+  display: block;
+  margin-bottom: 5px;
+  color: #ead08a;
+  font-size: .9rem;
+}
+
+.krishna-wheel-container .player-input-wrapper {
+  display: flex;
+  align-items: center;
+  height: 46px;
+  border: 1px solid rgba(238,194,91,.35);
+  border-radius: 10px;
+  background: rgba(255,255,255,.07);
+}
+
+.krishna-wheel-container .input-icon {
+  width: 45px;
+  text-align: center;
+  color: #e9bd52;
+}
+
+.krishna-wheel-container .player-input-wrapper input {
+  flex: 1;
+  height: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: white;
+  padding: 0 10px;
+}
+
+.krishna-wheel-container .player-start-button {
+  height: 48px;
+  margin-top: 5px;
+  border: 0;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #c9942f, #f1cf70, #d5a33a);
+  color: #241434;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+}

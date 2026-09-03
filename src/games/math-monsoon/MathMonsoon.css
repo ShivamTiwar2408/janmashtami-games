@@ -5,8 +5,7 @@
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Start Screen */
-.mm-start-screen,
+/* Start and game-over are the shared GameIntro / GameResultPanel screens now. */
 .mm-gameover-screen {
   width: 100%;
   height: 100%;
@@ -18,7 +17,6 @@
   overflow: hidden;
 }
 
-.mm-start-screen::before,
 .mm-gameover-screen::before {
   content: '';
   position: absolute;
@@ -35,7 +33,6 @@
   50% { transform: translateY(-5px); }
 }
 
-.mm-start-content,
 .mm-gameover-content {
   background: rgba(255, 255, 255, 0.95);
   padding: 3rem;
@@ -57,82 +54,6 @@
     opacity: 1;
     transform: translateY(0);
   }
-}
-
-.mm-title {
-  font-size: 3rem;
-  color: #1E5799;
-  margin-bottom: 0.5rem;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.mm-subtitle {
-  font-size: 1.2rem;
-  color: #666;
-  margin-bottom: 2rem;
-}
-
-.mm-instructions {
-  text-align: left;
-  background: #f0f8ff;
-  padding: 1.5rem;
-  border-radius: 12px;
-  margin-bottom: 2rem;
-}
-
-.mm-instructions h3 {
-  color: #1E5799;
-  margin-bottom: 1rem;
-  font-size: 1.2rem;
-}
-
-.mm-instructions ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.mm-instructions li {
-  padding: 0.5rem 0;
-  color: #444;
-  font-size: 1rem;
-}
-
-.mm-start-btn {
-  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
-  color: white;
-  border: none;
-  padding: 1rem 3rem;
-  font-size: 1.3rem;
-  border-radius: 50px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
-  display: block;
-  width: 100%;
-  margin-bottom: 1rem;
-}
-
-.mm-start-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.5);
-}
-
-.mm-back-btn {
-  background: transparent;
-  color: #1E5799;
-  border: 2px solid #1E5799;
-  padding: 0.8rem 2rem;
-  font-size: 1rem;
-  border-radius: 50px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  width: 100%;
-}
-
-.mm-back-btn:hover {
-  background: #1E5799;
-  color: white;
 }
 
 /* Game Container */
@@ -497,11 +418,6 @@
 
 /* Responsive */
 @media (max-width: 600px) {
-  .mm-title {
-    font-size: 2rem;
-  }
-
-  .mm-start-content,
   .mm-gameover-content {
     padding: 2rem;
     margin: 0.5rem;

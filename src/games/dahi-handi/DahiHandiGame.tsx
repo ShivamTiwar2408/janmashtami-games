@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { createDahiHandiScene, DahiHandiEngine } from './scene';
 import './DahiHandiGame.css';
+import { GameIntro, GameResultPanel } from '../../leaderboard';
 
 interface DahiHandiGameProps {
     onBack: () => void;
@@ -8,7 +9,6 @@ interface DahiHandiGameProps {
 
 const STONES_PER_LEVEL = 3;
 const SHOT_SECONDS = 10;   // hold a stone longer than this and it's forfeit
-const BEST_KEY = 'dahiHandiBest';
 
 type Phase = 'intro' | 'playing' | 'broke' | 'over';
 
@@ -25,7 +25,6 @@ const DahiHandiGame: React.FC<DahiHandiGameProps> = ({ onBack }) => {
     const [lastPoints, setLastPoints] = useState(0);
     const [armed, setArmed] = useState(false);   // stone loaded and the clock ticking
     const [clock, setClock] = useState(SHOT_SECONDS);
-    const [best, setBest] = useState(() => Number(localStorage.getItem(BEST_KEY) || 0));
 
     const dingRef = useRef<HTMLAudioElement>(null);
     const celebrateRef = useRef<HTMLAudioElement>(null);
@@ -112,13 +111,6 @@ const DahiHandiGame: React.FC<DahiHandiGameProps> = ({ onBack }) => {
         };
     }, []);
 
-    useEffect(() => {
-        if (score > best) {
-            setBest(score);
-            localStorage.setItem(BEST_KEY, String(score));
-        }
-    }, [score, best]);
-
     // Clear the transient "Missed" / "Direct hit" banner.
     useEffect(() => {
         if (!flash) return;
@@ -181,21 +173,18 @@ const DahiHandiGame: React.FC<DahiHandiGameProps> = ({ onBack }) => {
         return () => clearTimeout(t);
     }, [phase, nextLevel]);
 
-    // Enter / Space works for menus so it can run on a big screen too.
+    // Enter / Space works for menus so it can run on a big screen too. The
+    // intro is GameIntro's — it has its own key handling.
     useEffect(() => {
         const onKey = (e: KeyboardEvent) => {
             if (e.key !== 'Enter' && e.key !== ' ') return;
-            if (phase === 'intro' || phase === 'over') {
-                e.preventDefault();
-                start();
-            } else if (phase === 'broke') {
-                e.preventDefault();
-                nextLevel();
-            }
+            if (phase !== 'broke') return;
+            e.preventDefault();
+            nextLevel();
         };
         window.addEventListener('keydown', onKey);
         return () => window.removeEventListener('keydown', onKey);
-    }, [phase, start, nextLevel]);
+    }, [phase, nextLevel]);
 
     return (
         <div className="dh-game">
@@ -205,7 +194,10 @@ const DahiHandiGame: React.FC<DahiHandiGameProps> = ({ onBack }) => {
             <audio ref={celebrateRef} src="/celebration_effect.mp3" preload="auto" />
             <audio ref={errorRef} src="/error.mp3" preload="auto" />
 
-            <button className="dh-back-btn" onClick={onBack} aria-label="Back to home">← Back</button>
+            {/* The attract screen carries its own Back button. */}
+            {phase !== 'intro' && (
+                <button className="dh-back-btn" onClick={onBack} aria-label="Back to home">← Back</button>
+            )}
 
             {phase === 'playing' && (
                 <>
@@ -232,37 +224,39 @@ const DahiHandiGame: React.FC<DahiHandiGameProps> = ({ onBack }) => {
                 </>
             )}
 
-            {/* out of stones drops straight back onto the showreel — same bar, run's tally in it */}
-            {(phase === 'intro' || phase === 'over') && (
-                <div className="dh-overlay dh-overlay-attract">
-                    <div className="dh-demo-tag"><span className="dh-demo-dot" />Demo playing — take the sling</div>
-                    <div className="dh-attract-bar">
-                        <div>
-                            <h1 className="dh-title dh-title-sm">
-                                {phase === 'over' ? 'Out of Stones!' : 'Dahi Handi — Break the Makhan Pot'}
-                            </h1>
-                            <p className="dh-attract-line">
-                                {phase === 'over' ? (
-                                    <>
-                                        You reached <strong>level {level}</strong> with <strong>{score} pts</strong> —
-                                        the handi still swings. Krishna took many tries too.
-                                    </>
-                                ) : (
-                                    <>
-                                        Drag <strong>down &amp; back</strong> and release · 3 stones a level · 10s a
-                                        shot · the cord grows longer every round · a draught pushes every throw off line
-                                    </>
-                                )}
-                            </p>
-                        </div>
-                        <div className="dh-attract-cta">
-                            <button className="dh-primary-btn dh-cta" onClick={start}>
-                                {phase === 'over' ? 'Throw Again 🙏' : 'Take the Shot 🙏'}
-                            </button>
-                            {best > 0 && <p className="dh-best">Best: {best} pts</p>}
-                        </div>
-                    </div>
-                </div>
+            {/* The 3D showreel keeps playing behind this — hence `overlay`. */}
+            {phase === 'intro' && (
+                <GameIntro
+                    gameId="dahi-handi"
+                    emoji="🫙"
+                    title="Dahi Handi"
+                    tagline="Draw the sling, judge the arc, and burst the pot of makhan."
+                    hints={[
+                        '🎯 Drag down & back to stretch the sling, release to throw',
+                        '🪨 Three stones a level, 10 seconds a shot',
+                        '📏 The cord grows longer every round',
+                        '🌬️ A draught pushes every throw off line — allow for it',
+                    ]}
+                    ctaLabel="Take the Shot 🙏"
+                    overlay
+                    onStart={start}
+                    onBack={onBack}
+                />
+            )}
+
+            {phase === 'over' && (
+                <GameResultPanel
+                    gameId="dahi-handi"
+                    gameTitle="Dahi Handi 3D"
+                    headline="Out of Stones!"
+                    subline="The handi still swings — Krishna took many tries too."
+                    score={score}
+                    won={false}
+                    stats={[{ label: 'Level Reached', value: level }]}
+                    playAgainLabel="Throw Again"
+                    onPlayAgain={start}
+                    onBack={onBack}
+                />
             )}
 
             {phase === 'broke' && (

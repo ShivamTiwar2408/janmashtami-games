@@ -12,6 +12,9 @@ package-lock.json
 # production
 /build
 
+# playwright walkthrough output (videos + stills)
+/recordings
+
 # misc
 .DS_Store
 .env.local

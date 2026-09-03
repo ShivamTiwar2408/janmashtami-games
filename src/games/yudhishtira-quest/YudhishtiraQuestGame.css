@@ -14,7 +14,20 @@
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  z-index: 1000;
+  /* Below the portalled attract screen (880) and result panel (900), so those
+     land on top of the game rather than behind it. */
+  z-index: 10;
+}
+
+/* Attract mode: the quest's own opening film, playing silently behind the
+   bottom play bar. */
+.yud-attract-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.9;
 }
 
 /* Exit screen styles */
@@ -67,50 +80,6 @@
   transform: translateY(-2px);
 }
 
-/* Intro screen */
-.intro-screen {
-  text-align: center;
-  padding: 40px;
-  z-index: 10;
-}
-
-.intro-title {
-  font-size: 3.5em;
-  font-weight: 700;
-  margin-bottom: 20px;
-  background: linear-gradient(45deg, #ffd700, #ff6b6b);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.intro-text {
-  font-size: 1.3em;
-  line-height: 1.6;
-  max-width: 600px;
-  margin: 0 auto 40px;
-  background: rgba(0, 0, 0, 0.3);
-  padding: 20px;
-  border-radius: 15px;
-  border: 1px solid rgba(255, 215, 0, 0.3);
-}
-
-.start-button {
-  background: linear-gradient(135deg, #e94560, #ff6b6b);
-  color: white;
-  padding: 16px 32px;
-  border: none;
-  border-radius: 12px;
-  font-size: 1.3em;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-}
-
-.start-button:hover {
-  transform: translateY(-2px);
-}
-
 /* Video screen */
 .video-screen {
   position: fixed;
@@ -126,6 +95,17 @@
   width: 100%;
   height: 100%;
   object-fit: contain;
+}
+
+/* The closing film plays under the result panel (z-index 900) rather than
+   before it, so the board is up the moment the run ends. */
+.yud-result-film {
+  z-index: 5;
+  background: #000;
+}
+
+.yud-result-film .intro-video {
+  object-fit: cover;
 }
 
 .skip-video-btn {
@@ -503,11 +483,7 @@
 
 /* Responsive design */
 @media (max-width: 768px) {
-  .intro-title {
-    font-size: 2.5em;
-  }
-
-  .intro-text, .end-summary {
+  .end-summary {
     font-size: 1.1em;
   }
 
@@ -537,10 +513,6 @@
 }
 
 @media (max-width: 480px) {
-  .intro-title {
-    font-size: 2em;
-  }
-
   .question-box {
     font-size: 1.1em;
     padding: 15px;
@@ -618,4 +590,117 @@
 
 .popper:nth-child(7n) {
   animation-duration: 6s !important;
+}
+
+/* Player Input Popup */
+.yudhishtira-quest-game .player-popup-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 5, 30, 0.75);
+  backdrop-filter: blur(8px);
+}
+
+.yudhishtira-quest-game .player-popup {
+  position: relative;
+  width: min(550px, 90vw);
+  padding: 30px 40px;
+  border-radius: 20px;
+  background: linear-gradient(145deg, #171035, #0d0927);
+  border: 2px solid #d6a63c;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  color: white;
+}
+
+.yudhishtira-quest-game .player-popup-close {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  border: 0;
+  background: none;
+  color: #f5d77b;
+  font-size: 25px;
+  cursor: pointer;
+}
+
+.yudhishtira-quest-game .player-popup-heading {
+  text-align: center;
+  margin-bottom: 18px;
+}
+
+.yudhishtira-quest-game .player-popup-heading h2 {
+  margin: 0 auto;
+  max-width: 430px;
+  color: #f6d77a;
+  font-size: 1.7rem;
+  line-height: 1.25;
+  text-align: center;
+  white-space: normal !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  word-break: normal;
+  overflow-wrap: normal;
+}
+
+.yudhishtira-quest-game .player-popup-heading p {
+  margin: 8px 0 0;
+  color: rgba(255,255,255,.7);
+  font-size: .9rem;
+}
+
+.yudhishtira-quest-game .player-details-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.yudhishtira-quest-game .player-input-group label {
+  display: block;
+  margin-bottom: 5px;
+  color: #ead08a;
+  font-size: .9rem;
+}
+
+.yudhishtira-quest-game .player-input-wrapper {
+  display: flex;
+  align-items: center;
+  height: 46px;
+  border: 1px solid rgba(238,194,91,.35);
+  border-radius: 10px;
+  background: rgba(255,255,255,.07);
+}
+
+.yudhishtira-quest-game .input-icon {
+  width: 45px;
+  text-align: center;
+  color: #e9bd52;
+}
+
+.yudhishtira-quest-game .player-input-wrapper input {
+  flex: 1;
+  height: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: white;
+  padding: 0 10px;
+}
+
+.yudhishtira-quest-game .player-input-wrapper input::placeholder {
+  color: rgba(255,255,255,.4);
+}
+
+.yudhishtira-quest-game .player-start-button {
+  height: 48px;
+  margin-top: 5px;
+  border: 0;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #c9942f, #f1cf70, #d5a33a);
+  color: #241434;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
 }

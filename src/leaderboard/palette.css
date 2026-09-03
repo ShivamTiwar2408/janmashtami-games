@@ -1,0 +1,48 @@
+/*
+ * Festival palette, shared by the result panel and the player form.
+ *
+ * The first pass was near-black indigo — premium, but sombre. Janmashtami is a
+ * celebration, so this leans on the colours of the festival itself: marigold,
+ * saffron, rose, peacock teal and cream. Saturated and warm rather than pale,
+ * so white headline text stays legible over the gradient while the surfaces
+ * that carry small text (score card, leaderboard, form) are cream and take
+ * dark plum type.
+ *
+ * Declared on the two portal roots. `.pf-card` inherits — the modal sits inside
+ * .pf-overlay, the inline form inside .gr-root.
+ */
+
+.gr-root,
+.gi-root,
+.pf-overlay {
+    /* surfaces */
+    --fest-cream: #fffdf7;
+    --fest-cream-deep: #fff1db;
+    --fest-white: #ffffff;
+
+    /* type on cream */
+    --fest-ink: #3f1d4d;
+    --fest-ink-soft: rgba(63, 29, 77, 0.66);
+    --fest-ink-faint: rgba(63, 29, 77, 0.42);
+
+    /* accents */
+    --fest-marigold: #ff9e2c;
+    /* Deep enough to clear 4.5:1 for small text on the cream and white
+       surfaces it's used on — #d96a0a measured only 3.5:1. */
+    --fest-marigold-deep: #a34d05;
+    --fest-gold: #ffc53d;
+    --fest-gold-pale: #ffe3a0;
+    --fest-rose: #ef4a86;
+    --fest-teal: #0b7b7b;
+    --fest-green: #2fae6c;
+    --fest-red: #bd2138;
+
+    /* The celebratory backdrop. Saturated but deliberately deep: measured
+       against the real painted pixels, a lighter sweep dropped the pale-gold
+       overlay text to 3.6:1. These stops keep it above 4.5:1. */
+    --fest-sky:
+        radial-gradient(circle at 16% 10%, rgba(255, 197, 61, 0.34), transparent 50%),
+        radial-gradient(circle at 86% 14%, rgba(16, 190, 190, 0.3), transparent 48%),
+        radial-gradient(circle at 74% 90%, rgba(255, 110, 165, 0.32), transparent 54%),
+        linear-gradient(150deg, #5a2278 0%, #7f2464 38%, #9e3746 72%, #b85f24 100%);
+}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import './GovardhanLiftGame.css';
+import { GameIntro, GameResultPanel } from '../../leaderboard';
 
 interface GovardhanLiftGameProps {
     onBack: () => void;
@@ -52,21 +53,13 @@ const GovardhanLiftGame: React.FC<GovardhanLiftGameProps> = ({ onBack }) => {
     useEffect(() => {
         const onKey = (e: KeyboardEvent) => {
             const key = e.key;
-            if (gameState === 'intro') {
-                if (key === 'Enter' || key === ' ') { e.preventDefault(); startGame(); }
-                return;
-            }
-            if (gameState === 'won' || gameState === 'lost') {
-                if (key === 'Enter' || key === ' ') { e.preventDefault(); startGame(); }
-                return;
-            }
-            if (gameState === 'playing') {
-                // The whole crowd hammers keys together — accept almost everything
-                if (key.length === 1 || key === 'Enter' || key === ' ' ||
-                    key.startsWith('Arrow')) {
-                    e.preventDefault();
-                    registerTap();
-                }
+            // Intro and the result screens own their own keys — and the result
+            // screen has a form to type a name into.
+            if (gameState !== 'playing') return;
+            // The whole crowd hammers keys together — accept almost everything
+            if (key.length === 1 || key === 'Enter' || key === ' ' || key.startsWith('Arrow')) {
+                e.preventDefault();
+                registerTap();
             }
         };
         window.addEventListener('keydown', onKey);
@@ -104,24 +97,28 @@ const GovardhanLiftGame: React.FC<GovardhanLiftGameProps> = ({ onBack }) => {
             <audio ref={celebrateAudioRef} src="/celebration_effect.mp3" preload="auto" />
             <audio ref={dingAudioRef} src="/ding.mp3" preload="auto" />
 
-            <button className="gl-back-btn" onClick={onBack} aria-label="Back to home">← Back</button>
+            {/* The attract screen carries its own Back button. */}
+            {gameState !== 'intro' && (
+                <button className="gl-back-btn" onClick={onBack} aria-label="Back to home">← Back</button>
+            )}
 
             {/* INTRO */}
             {gameState === 'intro' && (
-                <div className="gl-intro">
-                    <div className="gl-intro-hill">⛰️</div>
-                    <h1 className="gl-title">Lift Govardhan Together</h1>
-                    <p className="gl-subtitle">
-                        When Krishna lifted Govardhan Hill on His little finger, the villagers
-                        raised their sticks too — believing they were helping. Together, as one
-                        family, <strong>everyone taps to lift the hill</strong> before time runs out!
-                    </p>
-                    <div className="gl-controls-hint">
-                        <span>👏 Everyone press ANY key / tap repeatedly</span>
-                        <span>Keep going — if you stop, the hill sinks!</span>
-                    </div>
-                    <button className="gl-primary-btn" onClick={startGame}>Start Lifting 🙏</button>
-                </div>
+                <GameIntro
+                    gameId="govardhan-lift"
+                    emoji="⛰️"
+                    title="Lift Govardhan Together"
+                    tagline="Krishna held the hill on one finger — the villagers raised their sticks too. Everyone taps to lift it before time runs out."
+                    hints={[
+                        '👏 Everyone press ANY key, or tap the screen, as fast as you can',
+                        '⛰️ Keep going — the moment the crowd stops, the hill sinks',
+                        `⏱ ${GAME_TIME} seconds to reach 100%`,
+                        '🙌 Every hand counts — the more people, the higher it rises',
+                    ]}
+                    ctaLabel="Start Lifting 🙏"
+                    onStart={startGame}
+                    onBack={onBack}
+                />
             )}
 
             {/* PLAYING */}
@@ -156,44 +153,34 @@ const GovardhanLiftGame: React.FC<GovardhanLiftGameProps> = ({ onBack }) => {
                 </div>
             )}
 
-            {/* WON */}
-            {gameState === 'won' && (
-                <div className="gl-end gl-won">
-                    <div className="gl-end-icon">🎉🏔️🎉</div>
-                    <h1 className="gl-title">Govardhan Lifted!</h1>
-                    <p className="gl-end-text">
-                        Together you did what no one could do alone. This is Krishna's lesson:
-                        surrender and unity move mountains. 🙏
-                    </p>
-                    <div className="gl-end-stats">
-                        <div className="gl-stat"><span className="gl-stat-num">{taps}</span><span className="gl-stat-label">Helping Hands</span></div>
-                        <div className="gl-stat"><span className="gl-stat-num">{GAME_TIME - timeLeft}s</span><span className="gl-stat-label">Time Taken</span></div>
-                    </div>
-                    <p className="gl-cta">Bring the whole family to our Janmashtami programs — scan to join!</p>
+            {/* RESULT — one screen for both outcomes, same as every other game */}
+            {(gameState === 'won' || gameState === 'lost') && (
+                <GameResultPanel
+                    gameId="govardhan-lift"
+                    gameTitle="Lift Govardhan Together"
+                    headline={gameState === 'won' ? 'Govardhan Lifted!' : 'So Close!'}
+                    subline={
+                        gameState === 'won'
+                            ? "Together you did what no one could do alone — surrender and unity move mountains. 🙏"
+                            : `You reached ${Math.round(liftPercent)}%. The hill needs more hands — gather friends and lift again!`
+                    }
+                    score={taps}
+                    won={gameState === 'won'}
+                    stats={[
+                        { label: 'Lifted To', value: `${Math.round(liftPercent)}%` },
+                        { label: 'Time Taken', value: `${GAME_TIME - timeLeft}s` },
+                    ]}
+                    playAgainLabel={gameState === 'won' ? 'Lift Again' : 'Try Again'}
+                    onPlayAgain={startGame}
+                    onBack={onBack}
+                >
                     <div className="gl-qr-row">
                         <img className="gl-qr" alt="Scan to join" src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(REGISTER_URL)}`} />
+                        <span className="gl-qr-label">
+                            Bring the whole family to our Janmashtami programs — scan to join! 🙏
+                        </span>
                     </div>
-                    <div className="gl-end-actions">
-                        <button className="gl-primary-btn" onClick={startGame}>Lift Again</button>
-                        <button className="gl-secondary-btn" onClick={onBack}>Home</button>
-                    </div>
-                </div>
-            )}
-
-            {/* LOST */}
-            {gameState === 'lost' && (
-                <div className="gl-end gl-lost">
-                    <div className="gl-end-icon">💪</div>
-                    <h1 className="gl-title">So Close!</h1>
-                    <p className="gl-end-text">
-                        You reached <strong>{Math.round(liftPercent)}%</strong>. The hill needs
-                        even more hands — gather more friends and try again together!
-                    </p>
-                    <div className="gl-end-actions">
-                        <button className="gl-primary-btn" onClick={startGame}>Try Again</button>
-                        <button className="gl-secondary-btn" onClick={onBack}>Home</button>
-                    </div>
-                </div>
+                </GameResultPanel>
             )}
         </div>
     );

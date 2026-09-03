@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import './MatchWisdomGame.css';
 import wisdomData from './wisdom-data.json';
+import { GameIntro, GameResultPanel } from '../../leaderboard';
 
 interface MatchWisdomGameProps {
     onBack: () => void;
@@ -135,10 +136,9 @@ const MatchWisdomGame: React.FC<MatchWisdomGameProps> = ({ onBack }) => {
     useEffect(() => {
         const onKey = (e: KeyboardEvent) => {
             const key = e.key;
-            if (gameState === 'intro') {
-                if (key === 'Enter' || key === ' ') { e.preventDefault(); startGame(); }
-                return;
-            }
+            // 'intro' and 'end' are owned by GameIntro / GameResultPanel — both
+            // have their own Enter handling and a form to type into.
+            if (gameState === 'intro' || gameState === 'end') return;
             if (gameState === 'playing') {
                 const count = shuffledOptions.length;
                 if (key === 'ArrowUp' || key === 'ArrowLeft') {
@@ -160,10 +160,6 @@ const MatchWisdomGame: React.FC<MatchWisdomGameProps> = ({ onBack }) => {
                 if (key === 'Enter' || key === ' ' || key === 'ArrowRight') { e.preventDefault(); nextRound(); }
                 return;
             }
-            if (gameState === 'end') {
-                if (key === 'Enter' || key === ' ') { e.preventDefault(); startGame(); }
-                return;
-            }
         };
         window.addEventListener('keydown', onKey);
         return () => window.removeEventListener('keydown', onKey);
@@ -180,24 +176,28 @@ const MatchWisdomGame: React.FC<MatchWisdomGameProps> = ({ onBack }) => {
             <audio ref={errorAudioRef} src="/error.mp3" preload="auto" />
             <audio ref={dingAudioRef} src="/celebration_effect.mp3" preload="auto" />
 
-            <button className="mw-back-btn" onClick={onBack} aria-label="Back to home">← Back</button>
+            {/* The attract screen carries its own Back button. */}
+            {gameState !== 'intro' && (
+                <button className="mw-back-btn" onClick={onBack} aria-label="Back to home">← Back</button>
+            )}
 
             {/* INTRO */}
             {gameState === 'intro' && (
-                <div className="mw-intro">
-                    <div className="mw-intro-icon">🪷</div>
-                    <h1 className="mw-title">Match the Wisdom</h1>
-                    <p className="mw-subtitle">
-                        A real-life feeling appears on screen. Choose the Bhagavad Gita verse
-                        that answers it. Learn how Krishna's words apply to everyday life.
-                    </p>
-                    <div className="mw-controls-hint">
-                        <span>⬆︎⬇︎ / ⬅︎➡︎ Move</span>
-                        <span>1–3 Quick pick</span>
-                        <span>Enter Select</span>
-                    </div>
-                    <button className="mw-primary-btn" onClick={startGame}>Begin ✨</button>
-                </div>
+                <GameIntro
+                    gameId="match-wisdom"
+                    emoji="🪷"
+                    title="Match the Wisdom"
+                    tagline="A real-life feeling appears on screen — choose the Bhagavad Gita verse that answers it."
+                    hints={[
+                        '🪷 Read the situation, then pick the verse that speaks to it',
+                        '⬆︎⬇︎ / ⬅︎➡︎ to move, 1–3 to quick-pick, Enter to lock in',
+                        '🔥 Answer in a row to build a streak bonus',
+                        '⏱ Every second left on the clock is worth points',
+                    ]}
+                    ctaLabel="Begin ✨"
+                    onStart={startGame}
+                    onBack={onBack}
+                />
             )}
 
             {/* PLAYING */}
@@ -263,30 +263,30 @@ const MatchWisdomGame: React.FC<MatchWisdomGameProps> = ({ onBack }) => {
 
             {/* END */}
             {gameState === 'end' && (
-                <div className="mw-end">
-                    <div className="mw-end-icon">🌸</div>
-                    <h1 className="mw-title">Wisdom Complete</h1>
-                    <div className="mw-end-stats">
-                        <div className="mw-stat"><span className="mw-stat-num">{score}</span><span className="mw-stat-label">Score</span></div>
-                        <div className="mw-stat"><span className="mw-stat-num">{bestStreak}</span><span className="mw-stat-label">Best Streak</span></div>
-                    </div>
-                    <p className="mw-cta">
-                        Which verse spoke to <em>you</em>? Get a daily Gita verse on WhatsApp
-                        and join our weekly Gita wisdom class.
-                    </p>
+                <GameResultPanel
+                    gameId="match-wisdom"
+                    gameTitle="Match the Wisdom"
+                    headline="Wisdom Complete"
+                    subline="Every verse you matched is Krishna's counsel for a real moment in your day."
+                    score={score}
+                    stats={[
+                        { label: 'Best Streak', value: `🔥 ${bestStreak}` },
+                        { label: 'Rounds', value: totalRounds },
+                    ]}
+                    onPlayAgain={startGame}
+                    onBack={onBack}
+                >
                     <div className="mw-qr-row">
                         <img
                             className="mw-qr"
                             alt="Scan to get daily wisdom"
                             src={`https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(REGISTER_URL)}`}
                         />
-                        <span className="mw-qr-label">Scan to sign up 🙏</span>
+                        <span className="mw-qr-label">
+                            Get a daily Gita verse on WhatsApp — scan to sign up 🙏
+                        </span>
                     </div>
-                    <div className="mw-end-actions">
-                        <button className="mw-primary-btn" onClick={startGame}>Play Again</button>
-                        <button className="mw-secondary-btn" onClick={onBack}>Home</button>
-                    </div>
-                </div>
+                </GameResultPanel>
             )}
         </div>
     );
