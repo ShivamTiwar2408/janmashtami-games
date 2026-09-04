@@ -11,6 +11,7 @@ import LexiconAscentGame from './games/lexicon-ascent';
 import MatchWisdomGame from './games/match-wisdom';
 import GovardhanLiftGame from './games/govardhan-lift';
 import DahiHandiGame from './games/dahi-handi';
+import ParticipantsPage from './leaderboard/ParticipantsPage';
 
 function KrishnaWheelGamePage() {
   const navigate = useNavigate();
@@ -96,7 +97,7 @@ function HomePage() {
       <div className="hero-section">
         <div className="hero-content">
           <div className="festival-badge">
-            ⭐ Festival Special 2025
+            ⭐ Festival Special
           </div>
           <h2 className="hero-title">
             Celebrate Janmashtami
@@ -428,7 +429,7 @@ function HomePage() {
       </main>
       <footer className="main-footer">
         <div className="container">
-          <p>&copy; 2025 Janmashtami Games. Celebrating Krishna's divine wisdom through interactive play.</p>
+          <p>Janmashtami Games. Celebrating Krishna's divine wisdom through interactive play.</p>
         </div>
       </footer>
     </div>
@@ -449,8 +450,12 @@ function App() {
         <Route path="/match-wisdom" element={<MatchWisdomGamePage />} />
         <Route path="/govardhan-lift" element={<GovardhanLiftGamePage />} />
         <Route path="/dahi-handi" element={<DahiHandiGamePage />} />
+        {/* Organisers' view. One per game, plus /participants for everything. */}
+        <Route path="/participants" element={<ParticipantsPage />} />
+        <Route path="/:gameId/participants" element={<ParticipantsPage />} />
       </Routes>
-      <Analytics />
+      {/* The kiosk build is offline by design — nothing to report to. */}
+      {!window.kiosk && <Analytics />}
     </Router>
   );
 }

@@ -1,0 +1,202 @@
+/* Participants dashboard — a plain, readable table on the festival backdrop. */
+
+.pp-root {
+    min-height: 100vh;
+    padding: 24px clamp(12px, 4vw, 48px) 48px;
+    background: var(--fest-sky);
+    color: var(--fest-cream);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    box-sizing: border-box;
+}
+
+.pp-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.pp-eyebrow {
+    margin: 0;
+    font-size: 0.78rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--fest-gold-pale);
+}
+
+.pp-title {
+    margin: 2px 0 0;
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+}
+
+.pp-totals {
+    display: flex;
+    gap: 16px;
+    font-size: 0.95rem;
+}
+
+.pp-totals strong {
+    color: var(--fest-gold);
+    font-size: 1.2rem;
+}
+
+.pp-export {
+    padding: 7px 14px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--fest-gold);
+    color: var(--fest-ink);
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.pp-export:hover:not(:disabled) {
+    background: var(--fest-marigold);
+}
+
+.pp-export:disabled {
+    opacity: 0.45;
+    cursor: default;
+}
+
+.pp-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.pp-nav a {
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.14);
+    color: var(--fest-cream);
+    font-size: 0.85rem;
+    text-decoration: none;
+}
+
+.pp-nav a:hover {
+    background: rgba(255, 255, 255, 0.26);
+}
+
+.pp-nav .pp-nav-current {
+    background: var(--fest-gold);
+    color: var(--fest-ink);
+    font-weight: 600;
+}
+
+.pp-empty {
+    max-width: 42ch;
+    padding: 16px 18px;
+    border-radius: 14px;
+    background: rgba(0, 0, 0, 0.22);
+    line-height: 1.5;
+}
+
+.pp-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--fest-cream);
+    color: var(--fest-ink);
+    border-radius: 14px;
+    overflow: hidden;
+    font-size: 0.92rem;
+}
+
+.pp-table th,
+.pp-table td {
+    padding: 9px 12px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.pp-table thead th {
+    background: var(--fest-cream-deep);
+    font-size: 0.74rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fest-ink-soft);
+    white-space: nowrap;
+}
+
+.pp-table tbody tr + tr td {
+    border-top: 1px solid rgba(63, 29, 77, 0.12);
+}
+
+.pp-rank {
+    color: var(--fest-ink-faint);
+    font-variant-numeric: tabular-nums;
+}
+
+.pp-name {
+    font-weight: 600;
+}
+
+.pp-phone,
+.pp-when {
+    font-variant-numeric: tabular-nums;
+    color: var(--fest-ink-soft);
+    white-space: nowrap;
+}
+
+.pp-best {
+    font-weight: 700;
+    color: var(--fest-marigold-deep);
+}
+
+.pp-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.pp-chip {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 5px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: rgba(11, 123, 123, 0.12);
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+.pp-chip b {
+    color: var(--fest-teal);
+}
+
+.pp-chip i {
+    font-style: normal;
+    color: var(--fest-ink-faint);
+}
+
+.pp-chip-current {
+    background: var(--fest-gold-pale);
+}
+
+.pp-footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: space-between;
+    margin-top: 18px;
+    font-size: 0.85rem;
+    color: var(--fest-gold-pale);
+}
+
+.pp-footer a {
+    color: var(--fest-cream);
+}
+
+/* Narrow screens: let the table scroll rather than squash the columns. */
+@media (max-width: 720px) {
+    .pp-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+}

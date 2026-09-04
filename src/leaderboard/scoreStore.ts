@@ -4,7 +4,19 @@
  * Everything lives in IndexedDB in the visitor's own browser — no network calls
  * anywhere in this file, by design. One row per (game, name, phone); replaying
  * updates that row rather than adding another.
+ *
+ * Inside the exhibition kiosk shell the same rows are also mirrored to
+ * players.json on disk (see electron/main.js), so organisers can collect the
+ * entries without opening devtools.
  */
+
+declare global {
+  interface Window {
+    kiosk?: {
+      saveScore(entry: ScoreEntry): Promise<string>;
+    };
+  }
+}
 
 const DB_NAME = 'KrishnaLilaScores';
 const DB_VERSION = 1;
@@ -170,6 +182,13 @@ export const getLeaderboard = async (gameId: string): Promise<ScoreEntry[]> => {
   return rows.sort(byRank);
 };
 
+/** Every row for every game — what the organisers' participants dashboard reads. */
+export const getAllEntries = async (): Promise<ScoreEntry[]> => {
+  const db = await openDb();
+  const store = db.transaction(STORE, 'readonly').objectStore(STORE);
+  return asPromise<ScoreEntry[]>(store.getAll());
+};
+
 /**
  * Everyone who has played anything on this device, most recent first.
  *
@@ -209,20 +228,27 @@ export const submitScore = async (
   const db = await openDb();
   const id = entryId(gameId, player);
 
-  const previousBest = await new Promise<number>((resolve, reject) => {
+  const [row, previousBest] = await new Promise<[ScoreEntry, number]>((resolve, reject) => {
     const tx = db.transaction(STORE, 'readwrite');
     const store = tx.objectStore(STORE);
     const getReq = store.get(id);
 
     getReq.onsuccess = () => {
       const existing = getReq.result as ScoreEntry | undefined;
-      store.put(mergeEntry(existing, gameId, player, score, new Date().toISOString()));
-      tx.oncomplete = () => resolve(existing?.best ?? 0);
+      const merged = mergeEntry(existing, gameId, player, score, new Date().toISOString());
+      store.put(merged);
+      tx.oncomplete = () => resolve([merged, existing?.best ?? 0]);
     };
 
     getReq.onerror = () => reject(getReq.error);
     tx.onerror = () => reject(tx.error);
     tx.onabort = () => reject(tx.error);
+  });
+
+  // Same row, on disk as JSON. Never blocks the result screen: a file-system
+  // hiccup must not swallow the score the player just earned.
+  window.kiosk?.saveScore(row).catch(() => {
+    /* ignore — IndexedDB above is still the source of truth */
   });
 
   const entries = await getLeaderboard(gameId);

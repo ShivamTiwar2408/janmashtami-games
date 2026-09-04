@@ -27,3 +27,6 @@ yarn-debug.log*
 yarn-error.log*
 .vercel
 .env*
+
+# electron kiosk build output
+/dist

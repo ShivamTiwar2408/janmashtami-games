@@ -2,6 +2,7 @@
   "name": "janmashtami-games",
   "version": "0.1.0",
   "private": true,
+  "main": "electron/main.js",
   "dependencies": {
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.6.4",
@@ -27,7 +28,28 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "kiosk": "npm run build && electron electron/main.js",
+    "kiosk:run": "electron electron/main.js",
+    "kiosk:dist": "npm run build && electron-builder --mac"
+  },
+  "build": {
+    "extends": null,
+    "appId": "com.janmashtami.games",
+    "productName": "Janmashtami Games",
+    "asar": false,
+    "files": [
+      "electron/**/*",
+      "build/**/*"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "mac": {
+      "target": "dmg",
+      "category": "public.app-category.games",
+      "identity": null
+    }
   },
   "eslintConfig": {
     "extends": [
@@ -48,6 +70,8 @@
     ]
   },
   "devDependencies": {
+    "electron": "^33.4.11",
+    "electron-builder": "^25.1.8",
     "playwright": "^1.62.1"
   }
 }
