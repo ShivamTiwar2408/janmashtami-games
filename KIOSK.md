@@ -4,20 +4,51 @@ The same games, wrapped in an Electron app that installs on the TV's Mac, runs
 fullscreen with no browser chrome, needs no internet, and writes every player's
 details to a JSON file on disk.
 
-## Build the installer
+## Build the installers
 
 ```bash
 npm install
-npm run kiosk:dist        # -> dist/Janmashtami Games-<version>-arm64.dmg
+npm run kiosk:dist        # all three -> dist/Janmashtami-Games-mac-arm64.dmg
+                          #              dist/Janmashtami-Games-mac-x64.dmg
+                          #              dist/Janmashtami-Games-windows.exe
+npm run kiosk:dist:mac    # just the two .dmg files
+npm run kiosk:dist:win    # just the .exe
 ```
 
-Copy the `.dmg` to the exhibition machine, open it, drag the app to
-Applications. Nothing else is needed — the app never touches the network.
+One `.dmg` per Mac architecture, plus an x64 NSIS installer for Windows that
+lets the user pick the install directory. All three are produced on macOS —
+electron-builder ships its own `makensis`, so no Wine is needed.
 
-The app is unsigned, so the very first launch needs **right-click → Open** once
-(Gatekeeper). After that it opens normally.
+A single universal `.dmg` would be neater, but `@electron/universal` has to
+merge the two app trees file by file and stalls on this app, because `asar` is
+off and `build/` is ~180 MB of media. Two downloads is the cheaper trade.
 
-To try it without packaging: `npm run kiosk`.
+**Mac**: open the `.dmg`, drag the app to Applications. Unsigned, so the very
+first launch needs **right-click → Open** once (Gatekeeper). After that it
+opens normally.
+
+**Windows**: run the `.exe`. Unsigned, so SmartScreen shows "Windows protected
+your PC" — **More info → Run anyway**, once.
+
+Neither ever touches the network. To try it without packaging: `npm run kiosk`.
+
+## Publishing the installers for download
+
+The footer of the website links to these two files on the repo's GitHub
+releases (the buttons only render in a browser — inside the kiosk app there's
+nothing to download). The filenames carry no version number, so
+`releases/latest/download/<file>` stays valid across releases:
+
+```bash
+gh release create v0.1.0 dist/Janmashtami-Games-mac-*.dmg dist/Janmashtami-Games-windows.exe \
+  --title "Kiosk v0.1.0" --notes "Offline exhibition build."
+
+# later versions: bump package.json, rebuild, then
+gh release create v0.1.1 dist/Janmashtami-Games-mac-*.dmg dist/Janmashtami-Games-windows.exe --generate-notes
+```
+
+`dist/` is gitignored — each installer is ~350 MB and must never be committed.
+The website's footer buttons 404 until a release with these filenames exists.
 
 ## Exit
 

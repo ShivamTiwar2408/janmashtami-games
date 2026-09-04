@@ -66,6 +66,24 @@ function DahiHandiGamePage() {
  */
 const SHOW_ARCHIVED_GAMES = false;
 
+/*
+ * The offline kiosk installers, hosted on the repo's GitHub releases — a .dmg
+ * and a .exe are far too big to sit in this repo or in a Vercel deploy.
+ * `releases/latest/download/<file>` always resolves to the newest release, and
+ * package.json pins version-free artifact names so these links never rot.
+ */
+const KIOSK_RELEASE = 'https://github.com/ShivamTiwar2408/janmashtami-games/releases/latest/download';
+
+const KIOSK_DOWNLOADS = [
+  {
+    emoji: '🍎',
+    label: 'Mac (Apple Silicon)',
+    href: `${KIOSK_RELEASE}/Janmashtami-Games-mac-arm64.dmg`,
+  },
+  { emoji: '🍎', label: 'Mac (Intel)', href: `${KIOSK_RELEASE}/Janmashtami-Games-mac-x64.dmg` },
+  { emoji: '🪟', label: 'Windows', href: `${KIOSK_RELEASE}/Janmashtami-Games-windows.exe` },
+];
+
 function HomePage() {
   const navigate = useNavigate();
 
@@ -430,6 +448,23 @@ function HomePage() {
       <footer className="main-footer">
         <div className="container">
           <p>Janmashtami Games. Celebrating Krishna's divine wisdom through interactive play.</p>
+          {/* Only on the web — inside the kiosk app there's nothing to download. */}
+          {!window.kiosk && (
+            <div className="kiosk-downloads">
+              <span className="kiosk-downloads-label">Run it offline on a booth machine:</span>
+              {KIOSK_DOWNLOADS.map((d) => (
+                <a key={d.label} className="kiosk-download" href={d.href}>
+                  {d.emoji} {d.label}
+                </a>
+              ))}
+              <a
+                className="kiosk-download kiosk-download-help"
+                href="https://github.com/ShivamTiwar2408/janmashtami-games/blob/main/KIOSK.md"
+              >
+                Setup guide
+              </a>
+            </div>
+          )}
         </div>
       </footer>
     </div>

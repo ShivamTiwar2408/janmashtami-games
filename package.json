@@ -31,7 +31,9 @@
     "eject": "react-scripts eject",
     "kiosk": "npm run build && electron electron/main.js",
     "kiosk:run": "electron electron/main.js",
-    "kiosk:dist": "npm run build && electron-builder --mac"
+    "kiosk:dist": "npm run build && electron-builder --mac --win",
+    "kiosk:dist:mac": "npm run build && electron-builder --mac",
+    "kiosk:dist:win": "npm run build && electron-builder --win"
   },
   "build": {
     "extends": null,
@@ -46,9 +48,29 @@
       "output": "dist"
     },
     "mac": {
-      "target": "dmg",
+      "target": {
+        "target": "dmg",
+        "arch": [
+          "arm64",
+          "x64"
+        ]
+      },
       "category": "public.app-category.games",
-      "identity": null
+      "identity": null,
+      "artifactName": "Janmashtami-Games-mac-${arch}.${ext}"
+    },
+    "win": {
+      "target": {
+        "target": "nsis",
+        "arch": "x64"
+      },
+      "artifactName": "Janmashtami-Games-windows.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true
     }
   },
   "eslintConfig": {

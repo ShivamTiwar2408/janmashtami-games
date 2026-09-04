@@ -853,6 +853,39 @@
     color: var(--text-secondary);
 }
 
+/* Offline kiosk installers — deliberately small, they're for organisers. */
+.kiosk-downloads {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 14px;
+    font-size: 0.8rem;
+}
+
+.kiosk-downloads-label {
+    color: var(--text-light);
+}
+
+.kiosk-download {
+    padding: 4px 11px;
+    border: 1px solid var(--border-light);
+    border-radius: 999px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.kiosk-download:hover {
+    border-color: #ff9e2c;
+    color: #a34d05;
+}
+
+.kiosk-download-help {
+    border-style: dashed;
+}
+
 /* Dark Mode */
 .App.dark-mode {
     --text-primary: #ffffff;
